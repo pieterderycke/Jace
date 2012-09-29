@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Calculator.Operations;
+using Calculator.Tokenizer;
 
 namespace Calculator
 {
@@ -9,6 +11,19 @@ namespace Calculator
     {
         static void Main(string[] args)
         {
+            TokenReader tokenReader = new TokenReader();
+            List<object> tokens = tokenReader.Read("(42+8)* 2");
+
+            AstBuilder builder = new AstBuilder();
+            Operation<int> operation = builder.Build(tokens);
+
+            IInterpreter interpreter = new BasicInterpreter();
+            int result = interpreter.Execute(operation);
+
+            Console.WriteLine("Result: {0}", result);
+
+            Console.WriteLine("Press enter to exit...");
+            Console.ReadLine();
         }
     }
 }
