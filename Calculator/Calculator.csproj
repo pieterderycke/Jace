@@ -41,8 +41,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AstBuilder.cs" />
+    <Compile Include="BasicInterpreter.cs" />
+    <Compile Include="IInterpreter.cs" />
+    <Compile Include="Operations\Addition.cs" />
+    <Compile Include="Operations\Constant.cs" />
+    <Compile Include="Operations\IOperation.cs" />
+    <Compile Include="Operations\Multiplication.cs" />
+    <Compile Include="Operations\Substraction.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tokenizer\TokenReader.cs" />
+    <Compile Include="Tokenizer\TokenizerException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
