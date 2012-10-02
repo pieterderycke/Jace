@@ -18,9 +18,9 @@ namespace Calculator
             if (operation == null)
                 throw new ArgumentException("operation");
 
-            if (operation.GetType() == typeof(Constant<int>))
+            if (operation.GetType() == typeof(IntegerConstant))
             {
-                Constant<int> constant = (Constant<int>)operation;
+                IntegerConstant constant = (IntegerConstant)operation;
                 return constant.Value;
             }
             else if (operation.GetType() == typeof(Multiplication))
