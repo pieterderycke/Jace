@@ -16,8 +16,8 @@ namespace Calculator.Tests
             IInterpreter interpreter = new BasicInterpreter();
             double result = interpreter.Execute(new Substraction(
                 DataType.Integer,
-                new Constant<int>(6),
-                new Constant<int>(9)));
+                new IntegerConstant(6),
+                new IntegerConstant(9)));
 
             Assert.AreEqual(-3.0, result);
         }
@@ -30,8 +30,8 @@ namespace Calculator.Tests
             double result = interpreter.Execute(
                 new Addition(
                     DataType.Integer,
-                    new Constant<int>(6),
-                    new Multiplication(DataType.Integer, new Constant<int>(2), new Constant<int>(4))));
+                    new IntegerConstant(6),
+                    new Multiplication(DataType.Integer, new IntegerConstant(2), new IntegerConstant(4))));
 
             Assert.AreEqual(14.0, result);
         }

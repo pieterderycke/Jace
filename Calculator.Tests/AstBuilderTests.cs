@@ -56,14 +56,26 @@ namespace Calculator.Tests
         public void TestDivision()
         {
             AstBuilder builder = new AstBuilder();
-            Operation operation = builder.Build(new List<object>() { 10, '/', 2, });
+            Operation operation = builder.Build(new List<object>() { 10, '/', 2 });
 
             Assert.AreEqual(typeof(Division), operation.GetType());
 
             Division division = (Division)operation;
 
-            Assert.AreEqual(new Constant<int>(10), division.Dividend);
-            Assert.AreEqual(new Constant<int>(2), division.Divisor);
+            Assert.AreEqual(new IntegerConstant(10), division.Dividend);
+            Assert.AreEqual(new IntegerConstant(2), division.Divisor);
+        }
+
+        [TestMethod]
+        public void TestMultiplication()
+        {
+            AstBuilder builder = new AstBuilder();
+            Operation operation = builder.Build(new List<object>() { 10, '*', 2.0 });
+
+            Multiplication multiplication = (Multiplication)operation;
+
+            Assert.AreEqual(new IntegerConstant(10), multiplication.Argument1);
+            Assert.AreEqual(new FloatingPointConstant(2.0), multiplication.Argument2);
         }
     }
 }

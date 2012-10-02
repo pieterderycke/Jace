@@ -29,7 +29,9 @@ namespace Calculator
             foreach (object token in tokens)
             {
                 if (token.GetType() == typeof(int))
-                    resultStack.Push(new Constant<int>((int)token));
+                    resultStack.Push(new IntegerConstant((int)token));
+                if(token.GetType() == typeof(double))
+                    resultStack.Push(new FloatingPointConstant((double)token));
                 else if(token.GetType() == typeof(char))
                 {
                     char character = (char)token;
@@ -133,15 +135,6 @@ namespace Calculator
         private DataType RequiredDataType(Operation argument1, Operation argument2)
         {
             return (argument1.DataType == DataType.FloatingPoint || argument2.DataType == DataType.FloatingPoint) ? DataType.FloatingPoint : DataType.Integer;
-        }
-
-        [Obsolete]
-        private Operation PrepareArgument(DataType requiredDataType, Operation operation)
-        {
-            if (requiredDataType == DataType.FloatingPoint && operation.DataType != DataType.FloatingPoint)
-                return new ConversionToFloatingPoint(operation);
-            else
-                return operation;
         }
     }
 }
