@@ -8,7 +8,7 @@ namespace Calculator
 {
     public interface IInterpreter
     {
-        int Execute(Operation<int> operation, Dictionary<string, int> variables);
-        int Execute(Operation<int> operation);
+        double Execute(Operation operation, Dictionary<string, int> variables);
+        double Execute(Operation operation);
     }
 }

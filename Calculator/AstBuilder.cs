@@ -9,6 +9,8 @@ namespace Calculator
     public class AstBuilder
     {
         private Dictionary<char, int> operationPrecedence = new Dictionary<char, int>();
+        private Stack<Operation> resultStack = new Stack<Operation>();
+        private Stack<object> operatorStack = new Stack<object>();
 
         public AstBuilder()
         {
@@ -16,12 +18,13 @@ namespace Calculator
             operationPrecedence.Add('+', 1);
             operationPrecedence.Add('-', 1);
             operationPrecedence.Add('*', 2);
+            operationPrecedence.Add('/', 2);
         }
 
-        public Operation<int> Build(IList<object> tokens)
+        public Operation Build(IList<object> tokens)
         {
-            Stack<Operation<int>> resultStack = new Stack<Operation<int>>();
-            Stack<object> operatorStack = new Stack<object>();
+            resultStack.Clear();
+            operatorStack.Clear();
 
             foreach (object token in tokens)
             {
@@ -43,15 +46,16 @@ namespace Calculator
                         {
                             char operation2 = (char)operatorStack.Peek();
 
-                            if (operationPrecedence[operation1] > operationPrecedence[operation2])
-                            {
-                                operatorStack.Push(operation1);
-                            }
-                            else
+                            if ((IsLeftAssociativeOperation(operation1) && operationPrecedence[operation1] <= operationPrecedence[operation2]) ||
+                                (operationPrecedence[operation1] < operationPrecedence[operation2]))
                             {
                                 operatorStack.Pop();
                                 operatorStack.Push(operation1);
-                                resultStack.Push(Convert(operation1, resultStack));
+                                resultStack.Push(Convert(operation2));
+                            }
+                            else
+                            {
+                                operatorStack.Push(operation1);                                
                             }
                         }
                     }
@@ -61,35 +65,56 @@ namespace Calculator
                     }
                     else if (character == ')')
                     {
-                        PopOperations(operatorStack, resultStack);
+                        PopOperations();
                     }
                 }
             }
 
-            PopOperations(operatorStack, resultStack);
+            PopOperations();
 
             return resultStack.First();
         }
 
-        private void PopOperations(Stack<object> operatorStack, Stack<Operation<int>> resultStack)
+        private void PopOperations()
         {
             while (operatorStack.Count > 0 && (char)operatorStack.Peek() != '(')
             {
                 char operation = (char)operatorStack.Pop();
-                resultStack.Push(Convert(operation, resultStack));
+                resultStack.Push(Convert(operation));
             }
         }
 
-        private Operation<int> Convert(char operation, Stack<Operation<int>> resultStack)
+        private Operation Convert(char operation)
         {
+            DataType dataType;
+            Operation argument1;
+            Operation argument2;
+
             switch (operation)
             {
                 case '+':
-                    return new Addition<int>(resultStack.Pop(), resultStack.Pop());
+                    argument2 = resultStack.Pop();
+                    argument1 = resultStack.Pop();
+                    dataType = RequiredDataType(argument1, argument2);
+
+                    return new Addition(dataType, argument1, argument2);
                 case '-':
-                    return new Substraction<int>(resultStack.Pop(), resultStack.Pop());
+                    argument2 = resultStack.Pop();
+                    argument1 = resultStack.Pop();
+                    dataType = RequiredDataType(argument1, argument2);
+
+                    return new Substraction(dataType, argument1, argument2);
                 case '*':
-                    return new Multiplication<int>(resultStack.Pop(), resultStack.Pop());
+                    argument2 = resultStack.Pop();
+                    argument1 = resultStack.Pop();
+                    dataType = RequiredDataType(argument1, argument2);
+
+                    return new Multiplication(dataType, argument1, argument2);
+                case '/':
+                    Operation divisor = resultStack.Pop();
+                    Operation divident = resultStack.Pop();
+
+                    return new Division(DataType.FloatingPoint, divident, divisor);
                 default:
                     throw new ArgumentException(string.Format("Unknown operation \"{0}\".", operation), "operation");
             }
@@ -97,7 +122,26 @@ namespace Calculator
 
         private bool IsOperation(char character)
         {
-            return character == '*' || character == '+';
+            return character == '*' || character == '+' || character == '-' || character == '/' || character == '^';
+        }
+
+        private bool IsLeftAssociativeOperation(char character)
+        {
+            return character == '*' || character == '+' || character == '-' || character == '/';
+        }
+
+        private DataType RequiredDataType(Operation argument1, Operation argument2)
+        {
+            return (argument1.DataType == DataType.FloatingPoint || argument2.DataType == DataType.FloatingPoint) ? DataType.FloatingPoint : DataType.Integer;
+        }
+
+        [Obsolete]
+        private Operation PrepareArgument(DataType requiredDataType, Operation operation)
+        {
+            if (requiredDataType == DataType.FloatingPoint && operation.DataType != DataType.FloatingPoint)
+                return new ConversionToFloatingPoint(operation);
+            else
+                return operation;
         }
     }
 }

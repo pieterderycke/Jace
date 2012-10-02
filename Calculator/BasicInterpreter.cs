@@ -8,12 +8,12 @@ namespace Calculator
 {
     public class BasicInterpreter : IInterpreter
     {
-        public int Execute(Operation<int> operation)
+        public double Execute(Operation operation)
         {
             return Execute(operation, new Dictionary<string, int>());
         }
 
-        public int Execute(Operation<int> operation, Dictionary<string, int> variables)
+        public double Execute(Operation operation, Dictionary<string, int> variables)
         {
             if (operation == null)
                 throw new ArgumentException("operation");
@@ -23,20 +23,25 @@ namespace Calculator
                 Constant<int> constant = (Constant<int>)operation;
                 return constant.Value;
             }
-            else if (operation.GetType() == typeof(Multiplication<int>))
+            else if (operation.GetType() == typeof(Multiplication))
             {
-                Multiplication<int> multiplication = (Multiplication<int>)operation;
+                Multiplication multiplication = (Multiplication)operation;
                 return Execute(multiplication.Argument1, variables) * Execute(multiplication.Argument2, variables);
             }
-            else if (operation.GetType() == typeof(Addition<int>))
+            else if (operation.GetType() == typeof(Addition))
             {
-                Addition<int> addition = (Addition<int>)operation;
+                Addition addition = (Addition)operation;
                 return Execute(addition.Argument1, variables) + Execute(addition.Argument2, variables);
             }
-            else if (operation.GetType() == typeof(Substraction<int>))
+            else if (operation.GetType() == typeof(Substraction))
             {
-                Substraction<int> addition = (Substraction<int>)operation;
+                Substraction addition = (Substraction)operation;
                 return Execute(addition.Argument1, variables) - Execute(addition.Argument2, variables);
+            }
+            else if (operation.GetType() == typeof(Division))
+            {
+                Division division = (Division)operation;
+                return Execute(division.Dividend, variables) / Execute(division.Divisor, variables);
             }
             else
             {

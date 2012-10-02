@@ -75,16 +75,22 @@ namespace Calculator.Tokenizer
                     }
                 }
 
-                if (IsPartOfVariable(characters[i]))
+                if (IsPartOfVariable(characters[i], true))
                 {
                     string buffer = "" + characters[i];
 
-                    while (++i < characters.Length && IsPartOfVariable(characters[i]))
+                    while (++i < characters.Length && IsPartOfVariable(characters[i], false))
                     {
                         buffer += characters[i];
                     }
 
                     tokens.Add(buffer);
+
+                    if (i == characters.Length)
+                    {
+                        // Last character read
+                        continue;
+                    }
                 }
 
                 switch (characters[i])
@@ -112,9 +118,9 @@ namespace Calculator.Tokenizer
             return character == decimalSeparator || (character >= '0' && character <= '9');
         }
 
-        private bool IsPartOfVariable(char character)
+        private bool IsPartOfVariable(char character, bool isFirstCharacter)
         {
-            return (character >= 'a' && character <= 'z') || (character >= 'A' && character <= 'Z');
+            return (character >= 'a' && character <= 'z') || (character >= 'A' && character <= 'Z') || (!isFirstCharacter && character >= '0' && character <= '9');
         }
     }
 }

@@ -122,5 +122,17 @@ namespace Calculator.Tests
             Assert.AreEqual("varb", tokens[1]);
             Assert.AreEqual('(', tokens[2]);
         }
+
+        [TestMethod]
+        public void TestTokenReader10()
+        {
+            TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
+            List<object> tokens = reader.Read("var1+2");
+
+            Assert.AreEqual(3, tokens.Count);
+            Assert.AreEqual("var1", tokens[0]);
+            Assert.AreEqual('+', tokens[1]);
+            Assert.AreEqual(2, tokens[2]);
+        }
     }
 }

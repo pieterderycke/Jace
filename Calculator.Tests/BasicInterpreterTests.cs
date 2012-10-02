@@ -11,16 +11,29 @@ namespace Calculator.Tests
     public class BasicInterpreterTests
     {
         [TestMethod]
+        public void TestBasicInterpreterSubstraction()
+        {
+            IInterpreter interpreter = new BasicInterpreter();
+            double result = interpreter.Execute(new Substraction(
+                DataType.Integer,
+                new Constant<int>(6),
+                new Constant<int>(9)));
+
+            Assert.AreEqual(-3.0, result);
+        }
+
+        [TestMethod]
         public void TestBasicInterpreter1()
         {
             IInterpreter interpreter = new BasicInterpreter();
             // 6 + (2 * 4)
-            int result = interpreter.Execute(
-                new Addition<int>(
+            double result = interpreter.Execute(
+                new Addition(
+                    DataType.Integer,
                     new Constant<int>(6),
-                    new Multiplication<int>(new Constant<int>(2), new Constant<int>(4))), null);
+                    new Multiplication(DataType.Integer, new Constant<int>(2), new Constant<int>(4))));
 
-            Assert.AreEqual(14, result);
+            Assert.AreEqual(14.0, result);
         }
     }
 }

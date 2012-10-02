@@ -15,10 +15,10 @@ namespace Calculator
             List<object> tokens = tokenReader.Read("(42+8)* 2");
 
             AstBuilder builder = new AstBuilder();
-            Operation<int> operation = builder.Build(tokens);
+            Operation operation = builder.Build(tokens);
 
             IInterpreter interpreter = new BasicInterpreter();
-            int result = interpreter.Execute(operation);
+            double result = interpreter.Execute(operation);
 
             Console.WriteLine("Result: {0}", result);
 

@@ -37,7 +37,7 @@ namespace Calculator.DemoApp
             ShowTokens(tokens);
 
             AstBuilder astBuilder = new AstBuilder();
-            Operation<int> operation = (Operation<int>)astBuilder.Build(tokens);
+            Operation operation = astBuilder.Build(tokens);
 
             ShowAbstractSyntaxTree(operation);
 
