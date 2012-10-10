@@ -15,23 +15,36 @@ namespace Calculator.Util
     /// </summary>
     public class FuncAdapter
     {
-        public Delegate Wrap(Type delegateType, List<Calculator.Execution.ParameterInfo> parameters, 
+        /// <summary>
+        /// Wrap the parsed the function into a delegate of the specified type. The delegate must accept 
+        /// the parameters defined in the parameters collection. The order of parameters is respected as defined
+        /// in parameters collection.
+        /// <br/>
+        /// The function must accept a dictionary of strings and doubles as input. The values passed to the 
+        /// wrapping function will be passed to the function using the dictionary. The keys in the dictionary
+        /// are the names of the parameters of the wrapping function.
+        /// </summary>
+        /// <param name="delegateType">The required type of the wrapping function delegate.</param>
+        /// <param name="parameters">The required parameters of the wrapping function delegate.</param>
+        /// <param name="function">The function that must be wrapped.</param>
+        /// <returns>A delegate instance of the required type.</returns>
+        public Delegate Wrap(Type delegateType, IEnumerable<Calculator.Execution.ParameterInfo> parameters, 
             Func<Dictionary<string, double>, double> function)
         {
-            Type dictionaryType = typeof(Dictionary<string, double>);
-            ConstructorInfo dictionaryConstructorInfo = dictionaryType.GetConstructor(Type.EmptyTypes);
+            Calculator.Execution.ParameterInfo[] parameterArray = parameters.ToArray();
 
-            Type[] parameterTypes = GetParameterTypes(parameters);
+            Type[] parameterTypes = GetParameterTypes(parameterArray);
 
-            DynamicMethod method = new DynamicMethod("FuncWrapperMethod", typeof(double), parameterTypes, typeof(FuncAdapterArguments));
+            DynamicMethod method = new DynamicMethod("FuncWrapperMethod", typeof(double), 
+                parameterTypes, typeof(FuncAdapterArguments));
 
             ILGenerator generator = method.GetILGenerator();
 
-            GenerateMethodBody(generator, parameters, function);
+            GenerateMethodBody(generator, parameterArray, function);
 
-            for (int i = 0; i < parameters.Count; i++)
+            for (int i = 0; i < parameterArray.Length; i++)
             {
-                Calculator.Execution.ParameterInfo parameter = parameters[i];
+                Calculator.Execution.ParameterInfo parameter = parameterArray[i];
                 method.DefineParameter((i + 1), ParameterAttributes.In, parameter.Name);
             }
 
@@ -63,19 +76,19 @@ namespace Calculator.Util
         //    assemblyBuilder.Save(@"test.dll");
         //}
 
-        private Type[] GetParameterTypes(List<Calculator.Execution.ParameterInfo> parameters)
+        private Type[] GetParameterTypes(Calculator.Execution.ParameterInfo[] parameters)
         {
-            Type[] parameterTypes = new Type[parameters.Count + 1];
+            Type[] parameterTypes = new Type[parameters.Length + 1];
 
             parameterTypes[0] = typeof(FuncAdapterArguments);
 
-            for (int i = 0; i < parameters.Count; i++)
+            for (int i = 0; i < parameters.Length; i++)
                 parameterTypes[i + 1] = (parameters[i].DataType == DataType.FloatingPoint) ? typeof(double) : typeof(int);
 
             return parameterTypes;
         }
 
-        private void GenerateMethodBody(ILGenerator generator, List<Calculator.Execution.ParameterInfo> parameters,
+        private void GenerateMethodBody(ILGenerator generator, Calculator.Execution.ParameterInfo[] parameters,
             Func<Dictionary<string, double>, double> function)
         {
             Type dictionaryType = typeof(Dictionary<string, double>);
@@ -90,7 +103,7 @@ namespace Calculator.Util
             generator.Emit(OpCodes.Newobj, dictionaryConstructorInfo);
             generator.Emit(OpCodes.Stloc_0);
 
-            for (int i = 0; i < parameters.Count; i++)
+            for (int i = 0; i < parameters.Length; i++)
             {
                 Calculator.Execution.ParameterInfo parameter = parameters[i];
 
