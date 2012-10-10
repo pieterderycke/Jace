@@ -28,7 +28,35 @@ namespace Calculator.Tests
             CalculationEngine engine = new CalculationEngine();
             double result = engine.Calculate("var1*var2", variables);
 
-            Assert.AreEqual(8, 5, result);
+            Assert.AreEqual(8.5, result);
+        }
+
+        [TestMethod]
+        public void TestBuild()
+        { 
+            CalculationEngine engine = new CalculationEngine();
+            Func<Dictionary<string, double>, double> function = engine.Build("var1+2*(3*age)");
+
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("var1", 2);
+            variables.Add("age", 4);
+
+            double result = function(variables);
+            Assert.AreEqual(26.0, result);
+        }
+
+        [TestMethod]
+        public void TestFunctionBuilder()
+        {
+            CalculationEngine engine = new CalculationEngine();
+            Func<int, double, double> function = (Func<int, double, double>)engine.Function("var1+2*(3*age)")
+                .Parameter("var1", DataType.Integer)
+                .Parameter("age", DataType.FloatingPoint)
+                .Result(DataType.FloatingPoint)
+                .Build();
+
+            double result = function(2, 4);
+            Assert.AreEqual(26.0, result);
         }
     }
 }

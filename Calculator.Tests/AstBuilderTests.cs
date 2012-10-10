@@ -89,5 +89,21 @@ namespace Calculator.Tests
             Assert.AreEqual(new IntegerConstant(10), multiplication.Argument1);
             Assert.AreEqual(new Variable("var1"), multiplication.Argument2);
         }
+
+        [TestMethod]
+        public void TestMultipleVariable()
+        {
+            AstBuilder builder = new AstBuilder();
+            Operation operation = builder.Build(new List<object>() { "var1", '+', 2, '*', '(', 3, '*', "age", ')' });
+
+            Addition addition = (Addition)operation;
+            Multiplication multiplication1 = (Multiplication)addition.Argument2;
+            Multiplication multiplication2 = (Multiplication)multiplication1.Argument2;
+
+            Assert.AreEqual(new Variable("var1"), addition.Argument1);
+            Assert.AreEqual(new IntegerConstant(2), multiplication1.Argument1);
+            Assert.AreEqual(new IntegerConstant(3), multiplication2.Argument1);
+            Assert.AreEqual(new Variable("age"), multiplication2.Argument2);
+        }
     }
 }

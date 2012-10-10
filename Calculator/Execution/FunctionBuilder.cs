@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using Calculator.Operations;
+using Calculator.Util;
 
 namespace Calculator.Execution
 {
@@ -47,48 +48,10 @@ namespace Calculator.Execution
             if (!resultDataType.HasValue)
                 throw new Exception("Please define a result data type for the function.");
 
-            Operation operation = engine.BuildAbstractSyntaxTree(functionText);
+            Func<Dictionary<string, double>, double> function = engine.Build(functionText);
 
-            return null;
-        }
-
-        //private void Test()
-        //{
-        //    ModuleBuilder moduleBuilder = CreateDynamicModuleBuilder();
-
-        //    Type[] parameterTypes = new Type[] { typeof(int), typeof(double) };
-        //    Type returnType = typeof(double);
-
-        //    Type dictionaryType = typeof(Dictionary<string, double>);
-        //    ConstructorInfo dictionaryConstructorInfo = dictionaryType.GetConstructor(Type.EmptyTypes);
-
-        //    MethodBuilder methodBuilder = moduleBuilder.DefineGlobalMethod("test", MethodAttributes.Static, returnType, parameterTypes);
-
-        //    ILGenerator generator = methodBuilder.GetILGenerator();
-
-        //    generator.Emit(OpCodes.Newobj, new ConstructorInfo(dictionaryConstructorInfo));
-        //    generator.Emit(OpCodes.Stloc_0);
-
-        //    foreach (ParameterInfo parameter in parameters)
-        //    {
-        //        generator.Emit(OpCodes.Ldloc_0);
-        //        generator.Emit(OpCodes.Ldstr, parameter.Name);
-        //        generator.Emit(OpCodes.Ldarg_1);
-
-        //        if(parameter.DataType != DataType.FloatingPoint)
-        //            generator.Emit(OpCodes.Conv_R8);
-
-        //        generator.Emit(OpCodes.Callvirt, dictionaryType.GetMethod("Add", new Type[] { typeof(string), typeof(double) }));
-        //    }
-        //}
-
-        private ModuleBuilder CreateDynamicModuleBuilder()
-        {
-            AssemblyName assemblyName = new AssemblyName("JaceDynamicAssembly");
-            AppDomain domain = AppDomain.CurrentDomain;
-            AssemblyBuilder assemblyBuilder = domain.DefineDynamicAssembly(assemblyName,
-                AssemblyBuilderAccess.Run);
-            return assemblyBuilder.DefineDynamicModule(assemblyName.Name);
+            FuncAdapter adapter = new FuncAdapter();
+            return adapter.Wrap(parameters, variables => function(variables));
         }
     }
 }

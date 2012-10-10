@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{91CC2C02-72EA-43AF-95B0-F45EDF91538E}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Calculator</RootNamespace>
     <AssemblyName>Calculator</AssemblyName>
@@ -31,6 +31,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -44,6 +47,8 @@
     <Compile Include="AstBuilder.cs" />
     <Compile Include="BasicInterpreter.cs" />
     <Compile Include="CalculationEngine.cs" />
+    <Compile Include="DataType.cs" />
+    <Compile Include="ExecutionMode.cs" />
     <Compile Include="ReflectionEmitInterpreter.cs" />
     <Compile Include="Execution\FunctionBuilder.cs" />
     <Compile Include="Execution\ParameterInfo.cs" />
@@ -51,16 +56,13 @@
     <Compile Include="Operations\Addition.cs" />
     <Compile Include="Operations\Constant.cs" />
     <Compile Include="Operations\ConversionToFloatingPoint.cs" />
-    <Compile Include="Operations\DataType.cs" />
     <Compile Include="Operations\Division.cs" />
     <Compile Include="Operations\Operation.cs" />
     <Compile Include="Operations\Multiplication.cs" />
     <Compile Include="Operations\Substraction.cs" />
     <Compile Include="Operations\Variable.cs" />
     <Compile Include="Operations\VariableNotDefinedException.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestClass.cs" />
     <Compile Include="Tokenizer\TokenReader.cs" />
     <Compile Include="Tokenizer\TokenizerException.cs" />
     <Compile Include="Util\FuncAdapter.cs" />

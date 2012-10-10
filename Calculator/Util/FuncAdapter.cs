@@ -24,16 +24,17 @@ namespace Calculator.Util
         /// wrapping function will be passed to the function using the dictionary. The keys in the dictionary
         /// are the names of the parameters of the wrapping function.
         /// </summary>
-        /// <param name="delegateType">The required type of the wrapping function delegate.</param>
         /// <param name="parameters">The required parameters of the wrapping function delegate.</param>
         /// <param name="function">The function that must be wrapped.</param>
         /// <returns>A delegate instance of the required type.</returns>
-        public Delegate Wrap(Type delegateType, IEnumerable<Calculator.Execution.ParameterInfo> parameters, 
+        public Delegate Wrap(IEnumerable<Calculator.Execution.ParameterInfo> parameters, 
             Func<Dictionary<string, double>, double> function)
         {
             Calculator.Execution.ParameterInfo[] parameterArray = parameters.ToArray();
 
             Type[] parameterTypes = GetParameterTypes(parameterArray);
+
+            Type delegateType = GetDelegateType(parameterArray);
 
             DynamicMethod method = new DynamicMethod("FuncWrapperMethod", typeof(double), 
                 parameterTypes, typeof(FuncAdapterArguments));
@@ -75,6 +76,19 @@ namespace Calculator.Util
 
         //    assemblyBuilder.Save(@"test.dll");
         //}
+
+        private Type GetDelegateType(Calculator.Execution.ParameterInfo[] parameters)
+        {
+            string funcTypeName = string.Format("System.Func`{0}", parameters.Length + 1);
+            Type funcType = Type.GetType(funcTypeName);
+
+            Type[] typeArguments = new Type[parameters.Length + 1];
+            for (int i = 0; i < parameters.Length; i++)
+                typeArguments[i] = (parameters[i].DataType == DataType.FloatingPoint) ? typeof(double) : typeof(int);
+            typeArguments[typeArguments.Length - 1] = typeof(double);
+
+            return funcType.MakeGenericType(typeArguments);
+        }
 
         private Type[] GetParameterTypes(Calculator.Execution.ParameterInfo[] parameters)
         {

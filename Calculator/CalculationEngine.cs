@@ -10,6 +10,21 @@ namespace Calculator
 {
     public class CalculationEngine
     {
+        private readonly IInterpreter interpreter;
+
+        public CalculationEngine()
+            : this(ExecutionMode.Interpreted)
+        {
+        }
+
+        public CalculationEngine(ExecutionMode executionMode)
+        {
+            if (executionMode == ExecutionMode.Interpreted)
+                interpreter = new BasicInterpreter();
+            else
+                throw new ArgumentException("Unsupported execution mode", "executionMode");
+        }
+
         public double Calculate(string function)
         {
             return Calculate(function, new Dictionary<string, double>());
@@ -19,7 +34,6 @@ namespace Calculator
         {
             Operation operation = BuildAbstractSyntaxTree(function);
 
-            IInterpreter interpreter = new BasicInterpreter();
             return interpreter.Execute(operation, variables);
         }
 
@@ -28,13 +42,20 @@ namespace Calculator
             return new FunctionBuilder(functionText, this);
         }
 
+        public Func<Dictionary<string, double>, double> Build(string functionText)
+        {
+            Operation operation = BuildAbstractSyntaxTree(functionText);
+
+            return variables => interpreter.Execute(operation, variables);
+        }
+
         /// <summary>
         /// Build the abstract syntax tree for a given function. The function string will
         /// be first tokenized.
         /// </summary>
         /// <param name="functionText">A string containing the mathematical formula that must be converted into an abstract syntax tree.</param>
         /// <returns>The abstract syntax tree of the formula.</returns>
-        internal Operation BuildAbstractSyntaxTree(string functionText)
+        private Operation BuildAbstractSyntaxTree(string functionText)
         {
             TokenReader tokenReader = new TokenReader();
             List<object> tokens = tokenReader.Read(functionText);

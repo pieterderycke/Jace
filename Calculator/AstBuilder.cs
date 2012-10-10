@@ -86,6 +86,9 @@ namespace Calculator
                 char operation = (char)operatorStack.Pop();
                 resultStack.Push(Convert(operation));
             }
+
+            if (operatorStack.Count > 0 && (char)operatorStack.Peek() == '(')
+                operatorStack.Pop();
         }
 
         private Operation Convert(char operation)

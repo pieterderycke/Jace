@@ -35,5 +35,28 @@ namespace Calculator.Tests
 
             Assert.AreEqual(14.0, result);
         }
+
+        [TestMethod]
+        public void TestBasicInterpreterWithVariables()
+        {
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("var1", 2);
+            variables.Add("age", 4);
+
+            IInterpreter interpreter = new BasicInterpreter();
+            // var1 + 2 * (3 * age)
+            double result = interpreter.Execute(
+                new Addition(DataType.FloatingPoint,
+                    new Variable("var1"),
+                    new Multiplication(
+                        DataType.FloatingPoint,
+                        new IntegerConstant(2),
+                        new Multiplication(
+                            DataType.FloatingPoint, 
+                            new IntegerConstant(3), 
+                            new Variable("age")))), variables);
+
+            Assert.AreEqual(26.0, result);
+        }
     }
 }

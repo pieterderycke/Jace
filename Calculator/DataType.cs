@@ -5,7 +5,9 @@ using System.Text;
 
 namespace Calculator
 {
-    public class TestClass
+    public enum DataType
     {
+        Integer,
+        FloatingPoint
     }
 }

@@ -24,8 +24,7 @@ namespace Calculator.Tests
 
             Func<Dictionary<string, double>, double> function = (dictionary) => dictionary["test1"] + dictionary["test2"]; 
 
-            Func<int, double, double> wrappedFunction = (Func<int, double, double>)adapter.Wrap(typeof(Func<int, double, double>), 
-                parameters, function);
+            Func<int, double, double> wrappedFunction = (Func<int, double, double>)adapter.Wrap(parameters, function);
 
             Assert.AreEqual(3.0, wrappedFunction(1, 2.0));
         }
@@ -42,8 +41,7 @@ namespace Calculator.Tests
 
             Func<Dictionary<string, double>, double> function = (dictionary) => dictionary["test1"] + dictionary["test2"];
 
-            Func<int, double, double> wrappedFunction = (Func<int, double, double>)adapter.Wrap(typeof(Func<int, double, double>),
-                parameters, function);
+            Func<int, double, double> wrappedFunction = (Func<int, double, double>)adapter.Wrap(parameters, function);
 
             adapter = null;
             GC.Collect();

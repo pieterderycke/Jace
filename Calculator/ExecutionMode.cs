@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Calculator.Operations
+namespace Calculator
 {
-    public enum DataType
+    public enum ExecutionMode
     {
-        Integer,
-        FloatingPoint
+        Interpreted,
+        Compiled
     }
 }
