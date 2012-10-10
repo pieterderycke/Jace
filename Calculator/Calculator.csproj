@@ -43,6 +43,10 @@
   <ItemGroup>
     <Compile Include="AstBuilder.cs" />
     <Compile Include="BasicInterpreter.cs" />
+    <Compile Include="CalculationEngine.cs" />
+    <Compile Include="ReflectionEmitInterpreter.cs" />
+    <Compile Include="Execution\FunctionBuilder.cs" />
+    <Compile Include="Execution\ParameterInfo.cs" />
     <Compile Include="IInterpreter.cs" />
     <Compile Include="Operations\Addition.cs" />
     <Compile Include="Operations\Constant.cs" />
@@ -52,10 +56,14 @@
     <Compile Include="Operations\Operation.cs" />
     <Compile Include="Operations\Multiplication.cs" />
     <Compile Include="Operations\Substraction.cs" />
+    <Compile Include="Operations\Variable.cs" />
+    <Compile Include="Operations\VariableNotDefinedException.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestClass.cs" />
     <Compile Include="Tokenizer\TokenReader.cs" />
     <Compile Include="Tokenizer\TokenizerException.cs" />
+    <Compile Include="Util\FuncAdapter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -30,9 +30,11 @@ namespace Calculator
             {
                 if (token.GetType() == typeof(int))
                     resultStack.Push(new IntegerConstant((int)token));
-                if(token.GetType() == typeof(double))
+                else if (token.GetType() == typeof(double))
                     resultStack.Push(new FloatingPointConstant((double)token));
-                else if(token.GetType() == typeof(char))
+                else if (token.GetType() == typeof(string))
+                    resultStack.Push(new Variable((string)token));
+                else if (token.GetType() == typeof(char))
                 {
                     char character = (char)token;
 
@@ -57,7 +59,7 @@ namespace Calculator
                             }
                             else
                             {
-                                operatorStack.Push(operation1);                                
+                                operatorStack.Push(operation1);
                             }
                         }
                     }

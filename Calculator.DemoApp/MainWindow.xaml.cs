@@ -120,30 +120,25 @@ namespace Calculator.DemoApp
         {
             Type operationType = operation.GetType();
 
-            if (operationType.IsGenericType)
+            string name = operationType.Name;
+            string dataType = "" + operation.DataType;
+            string value = "";
+
+            IntegerConstant integerConstant = operation as IntegerConstant;
+            if (integerConstant != null)
             {
-                string name = operationType.Name.Substring(0, operationType.Name.LastIndexOf('`'));
-                string dataType = GetDataTypeName(operationType.GetGenericArguments()[0]);
-                string value = "";
-
-                Constant<int> integerConstant = operation as Constant<int>;
-                if (integerConstant != null)
-                {
-                    value = "(" + integerConstant.Value + ")";
-                }
-                else
-                {
-                    Constant<double> floatingPointConstant = operation as Constant<double>;
-                    if (floatingPointConstant != null)
-                        value = "(" + floatingPointConstant.Value + ")";
-                }
-
-                return string.Format("{0}<{1}>{2}", name, dataType, value);
+                value = "(" + integerConstant.Value + ")";
             }
             else
             {
-                return operationType.Name;
+                FloatingPointConstant floatingPointConstant = operation as FloatingPointConstant;
+                if (floatingPointConstant != null)
+                {
+                    value = "(" + floatingPointConstant.Value + ")";
+                }
             }
+
+            return string.Format(CultureInfo.InvariantCulture, "{0}<{1}>{2}", name, dataType, value);
         }
 
         private string GetDataTypeName(Type dataType)

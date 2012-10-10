@@ -55,6 +55,8 @@
   <ItemGroup>
     <Compile Include="AstBuilderTests.cs" />
     <Compile Include="BasicInterpreterTests.cs" />
+    <Compile Include="CalculationEngineTests.cs" />
+    <Compile Include="FuncAdapterTests.cs" />
     <Compile Include="TokenReaderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

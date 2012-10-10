@@ -11,19 +11,27 @@ namespace Calculator
     {
         static void Main(string[] args)
         {
-            TokenReader tokenReader = new TokenReader();
-            List<object> tokens = tokenReader.Read("(42+8)* 2");
+            CalculationEngine engine = new CalculationEngine();
+            Func<int, double, double> function = (Func<int, double, double>)engine.Function("var1+2*(3*age)")
+                .Parameter("var1", DataType.Integer)
+                .Parameter("var2", DataType.FloatingPoint)
+                .Result(DataType.FloatingPoint).Build();
 
-            AstBuilder builder = new AstBuilder();
-            Operation operation = builder.Build(tokens);
+            double result = function(2, 2.3);
 
-            IInterpreter interpreter = new BasicInterpreter();
-            double result = interpreter.Execute(operation);
+            //TokenReader tokenReader = new TokenReader();
+            //List<object> tokens = tokenReader.Read("(42+8)* 2");
 
-            Console.WriteLine("Result: {0}", result);
+            //AstBuilder builder = new AstBuilder();
+            //Operation operation = builder.Build(tokens);
 
-            Console.WriteLine("Press enter to exit...");
-            Console.ReadLine();
+            //IInterpreter interpreter = new BasicInterpreter();
+            //double result = interpreter.Execute(operation);
+
+            //Console.WriteLine("Result: {0}", result);
+
+            //Console.WriteLine("Press enter to exit...");
+            //Console.ReadLine();
         }
     }
 }

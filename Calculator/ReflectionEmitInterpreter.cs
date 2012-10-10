@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 using System.Text;
 using Calculator.Operations;
 
 namespace Calculator
 {
-    public class BasicInterpreter : IInterpreter
+    public class ReflectionEmitInterpreter : IInterpreter
     {
         public double Execute(Operation operation)
         {
@@ -69,6 +71,34 @@ namespace Calculator
             {
                 throw new ArgumentException(string.Format("Unsupported operation \"{0}\".", operation.GetType().FullName), "operation");
             }
+        }
+
+        private void Test()
+        {
+            ModuleBuilder moduleBuilder = CreateDynamicModuleBuilder();
+
+            Type[] parameterTypes = new Type[] { typeof(int), typeof(double)};
+            Type returnType = typeof(double);
+
+            ConstructorInfo dictionaryConstructorInfo = typeof(Dictionary<string, double>).GetConstructor(Type.EmptyTypes);
+
+            MethodBuilder methodBuilder = moduleBuilder.DefineGlobalMethod("test", MethodAttributes.Static, returnType, parameterTypes);
+
+            ILGenerator generator = methodBuilder.GetILGenerator();
+
+            //generator.Emit(OpCodes.Newobj, new ConstructorInfo(dictionaryConstructorInfo));
+            generator.Emit(OpCodes.Stloc_0);
+            generator.Emit(OpCodes.Ldloc_0);
+            generator.Emit(OpCodes.Ldstr, "parameter1");
+        }
+
+        private ModuleBuilder CreateDynamicModuleBuilder()
+        {
+            AssemblyName assemblyName = new AssemblyName("JaceDynamicAssembly");
+            AppDomain domain = AppDomain.CurrentDomain;
+            AssemblyBuilder assemblyBuilder = domain.DefineDynamicAssembly(assemblyName,
+                AssemblyBuilderAccess.Run);
+            return assemblyBuilder.DefineDynamicModule(assemblyName.Name);
         }
     }
 }

@@ -77,5 +77,17 @@ namespace Calculator.Tests
             Assert.AreEqual(new IntegerConstant(10), multiplication.Argument1);
             Assert.AreEqual(new FloatingPointConstant(2.0), multiplication.Argument2);
         }
+
+        [TestMethod]
+        public void TestVariable()
+        {
+            AstBuilder builder = new AstBuilder();
+            Operation operation = builder.Build(new List<object>() { 10, '*', "var1" });
+
+            Multiplication multiplication = (Multiplication)operation;
+
+            Assert.AreEqual(new IntegerConstant(10), multiplication.Argument1);
+            Assert.AreEqual(new Variable("var1"), multiplication.Argument2);
+        }
     }
 }
