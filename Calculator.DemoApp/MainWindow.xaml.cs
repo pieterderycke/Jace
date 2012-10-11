@@ -41,8 +41,8 @@ namespace Calculator.DemoApp
 
             ShowAbstractSyntaxTree(operation);
 
-            IExecutor interpreter = new Interpreter();
-            double result = interpreter.Execute(operation);
+            IExecutor executor = new Interpreter();
+            double result = executor.Execute(operation);
 
             resultTextBox.Text = "" + result;
         }

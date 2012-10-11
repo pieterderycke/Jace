@@ -13,8 +13,8 @@ namespace Calculator.Tests
         [TestMethod]
         public void TestBasicInterpreterSubstraction()
         {
-            IExecutor interpreter = new Interpreter();
-            double result = interpreter.Execute(new Substraction(
+            IExecutor executor = new Interpreter();
+            double result = executor.Execute(new Substraction(
                 DataType.Integer,
                 new IntegerConstant(6),
                 new IntegerConstant(9)));
@@ -25,9 +25,9 @@ namespace Calculator.Tests
         [TestMethod]
         public void TestBasicInterpreter1()
         {
-            IExecutor interpreter = new Interpreter();
+            IExecutor executor = new Interpreter();
             // 6 + (2 * 4)
-            double result = interpreter.Execute(
+            double result = executor.Execute(
                 new Addition(
                     DataType.Integer,
                     new IntegerConstant(6),

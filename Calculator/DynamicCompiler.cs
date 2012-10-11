@@ -26,19 +26,30 @@ namespace Calculator
 
         public double Execute(Operation operation, Dictionary<string, double> variables)
         {
-            DynamicMethod method = new DynamicMethod("MyCalcMethod", typeof(double),
-                new Type[] { typeof(Dictionary<string, double>) });
-            ILGenerator generator = method.GetILGenerator();
-            generator.DeclareLocal(typeof(double));
-            GenerateMethodBody(generator, operation, variables);
-            generator.Emit(OpCodes.Ret);
-
-            Func<Dictionary<string, double>, double> function = 
-                (Func<Dictionary<string, double>, double>)method.CreateDelegate(typeof(Func<Dictionary<string, double>, double>));
-            return function(variables);
+            return BuildFunction(operation)(variables);
         }
 
-        private void GenerateMethodBody(ILGenerator generator, Operation operation, Dictionary<string, double> variables)
+        public Func<Dictionary<string, double>, double> BuildFunction(Operation operation)
+        {
+            DynamicMethod method = new DynamicMethod("MyCalcMethod", typeof(double),
+                new Type[] { typeof(Dictionary<string, double>) });
+            GenerateMethodBody(method, operation);
+
+            Func<Dictionary<string, double>, double> function =
+                (Func<Dictionary<string, double>, double>)method.CreateDelegate(typeof(Func<Dictionary<string, double>, double>));
+
+            return function;
+        }
+
+        private void GenerateMethodBody(DynamicMethod method, Operation operation)
+        {
+            ILGenerator generator = method.GetILGenerator();
+            generator.DeclareLocal(typeof(double));
+            GenerateMethodBody(generator, operation);
+            generator.Emit(OpCodes.Ret);
+        }
+
+        private void GenerateMethodBody(ILGenerator generator, Operation operation)
         {
             if (operation == null)
                 throw new ArgumentNullException("operation");
@@ -71,32 +82,32 @@ namespace Calculator
             else if (operation.GetType() == typeof(Multiplication))
             {
                 Multiplication multiplication = (Multiplication)operation;
-                GenerateMethodBody(generator, multiplication.Argument1, variables);
-                GenerateMethodBody(generator, multiplication.Argument2, variables);
+                GenerateMethodBody(generator, multiplication.Argument1);
+                GenerateMethodBody(generator, multiplication.Argument2);
 
                 generator.Emit(OpCodes.Mul);
             }
             else if (operation.GetType() == typeof(Addition))
             {
                 Addition addition = (Addition)operation;
-                GenerateMethodBody(generator, addition.Argument1, variables);
-                GenerateMethodBody(generator, addition.Argument2, variables);
+                GenerateMethodBody(generator, addition.Argument1);
+                GenerateMethodBody(generator, addition.Argument2);
 
                 generator.Emit(OpCodes.Add);
             }
             else if (operation.GetType() == typeof(Substraction))
             {
                 Substraction addition = (Substraction)operation;
-                GenerateMethodBody(generator, addition.Argument1, variables);
-                GenerateMethodBody(generator, addition.Argument2, variables);
+                GenerateMethodBody(generator, addition.Argument1);
+                GenerateMethodBody(generator, addition.Argument2);
 
                 generator.Emit(OpCodes.Sub);
             }
             else if (operation.GetType() == typeof(Division))
             {
                 Division division = (Division)operation;
-                GenerateMethodBody(generator, division.Dividend, variables);
-                GenerateMethodBody(generator, division.Divisor, variables);
+                GenerateMethodBody(generator, division.Dividend);
+                GenerateMethodBody(generator, division.Divisor);
 
                 generator.Emit(OpCodes.Div);
             }

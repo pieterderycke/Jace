@@ -8,11 +8,11 @@ namespace Calculator.Benchmark
 {
     class Program
     {
-        private const int NumberOfTests = 100000;
+        private const int NumberOfTests = 1000000;
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Function: {0}", "2+3*7");
+            Console.WriteLine("Function: {0}", "2+3*7/23");
             Console.WriteLine("Number Of Tests: {0}", NumberOfTests);
 
             Console.WriteLine("Interpreted Mode:");

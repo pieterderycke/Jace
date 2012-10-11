@@ -13,6 +13,8 @@ namespace Calculator
     {
         private readonly IExecutor executor;
         private readonly CultureInfo cultureInfo;
+        private readonly Dictionary<string, Func<Dictionary<string, double>, double>> executionFunctionCache;
+        private readonly bool cacheEnabled;
 
         public CalculationEngine()
             : this(CultureInfo.CurrentCulture, ExecutionMode.Interpreted)
@@ -20,8 +22,15 @@ namespace Calculator
         }
 
         public CalculationEngine(CultureInfo cultureInfo, ExecutionMode executionMode)
+            : this(cultureInfo, executionMode, true) 
         {
+        }
+
+        public CalculationEngine(CultureInfo cultureInfo, ExecutionMode executionMode, bool cacheEnabled)
+        {
+            this.executionFunctionCache = new Dictionary<string, Func<Dictionary<string, double>, double>>();
             this.cultureInfo = cultureInfo;
+            this.cacheEnabled = cacheEnabled;
 
             if (executionMode == ExecutionMode.Interpreted)
                 executor = new Interpreter();
@@ -32,16 +41,25 @@ namespace Calculator
                     "executionMode");
         }
 
-        public double Calculate(string function)
+        public double Calculate(string functionText)
         {
-            return Calculate(function, new Dictionary<string, double>());
+            return Calculate(functionText, new Dictionary<string, double>());
         }
 
-        public double Calculate(string function, Dictionary<string, double> variables)
+        public double Calculate(string functionText, Dictionary<string, double> variables)
         {
-            Operation operation = BuildAbstractSyntaxTree(function);
+            if (IsInFunctionCache(functionText))
+            {
+                Func<Dictionary<string, double>, double> function = executionFunctionCache[functionText];
+                return function(variables);
+            }
+            else
+            {
+                Operation operation = BuildAbstractSyntaxTree(functionText);
+                Func<Dictionary<string, double>, double> function = BuildFunction(functionText, operation);
 
-            return executor.Execute(operation, variables);
+                return function(variables);
+            }
         }
 
         public FunctionBuilder Function(string functionText)
@@ -51,9 +69,15 @@ namespace Calculator
 
         public Func<Dictionary<string, double>, double> Build(string functionText)
         {
-            Operation operation = BuildAbstractSyntaxTree(functionText);
-
-            return variables => executor.Execute(operation, variables);
+            if (IsInFunctionCache(functionText))
+            {
+                return executionFunctionCache[functionText];
+            }
+            else
+            {
+                Operation operation = BuildAbstractSyntaxTree(functionText);
+                return BuildFunction(functionText, operation);
+            }
         }
 
         /// <summary>
@@ -69,6 +93,22 @@ namespace Calculator
 
             AstBuilder astBuilder = new AstBuilder();
             return astBuilder.Build(tokens);
+        }
+
+        private Func<Dictionary<string, double>, double> BuildFunction(string functionText, Operation operation)
+        {
+            if (!IsInFunctionCache(functionText))
+            {
+                Func<Dictionary<string, double>, double> function = executor.BuildFunction(operation);
+                executionFunctionCache.Add(functionText, function);
+            }
+
+            return executionFunctionCache[functionText];
+        }
+
+        private bool IsInFunctionCache(string functionText)
+        {
+            return cacheEnabled && executionFunctionCache.ContainsKey(functionText);
         }
     }
 }

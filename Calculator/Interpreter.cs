@@ -8,6 +8,11 @@ namespace Calculator
 {
     public class Interpreter : IExecutor
     {
+        public Func<Dictionary<string, double>, double> BuildFunction(Operation operation)
+        { 
+            return variables => Execute(operation, variables);
+        }
+
         public double Execute(Operation operation)
         {
             return Execute(operation, new Dictionary<string, double>());

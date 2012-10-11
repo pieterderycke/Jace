@@ -8,8 +8,10 @@ namespace Calculator
 {
     public interface IExecutor
     {
+        double Execute(Operation operation);
         double Execute(Operation operation, Dictionary<string, int> variables);
         double Execute(Operation operation, Dictionary<string, double> variables);
-        double Execute(Operation operation);
+
+        Func<Dictionary<string, double>, double> BuildFunction(Operation operation);
     }
 }
