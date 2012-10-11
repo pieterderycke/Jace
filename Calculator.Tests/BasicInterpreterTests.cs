@@ -13,7 +13,7 @@ namespace Calculator.Tests
         [TestMethod]
         public void TestBasicInterpreterSubstraction()
         {
-            IInterpreter interpreter = new BasicInterpreter();
+            IExecutor interpreter = new Interpreter();
             double result = interpreter.Execute(new Substraction(
                 DataType.Integer,
                 new IntegerConstant(6),
@@ -25,7 +25,7 @@ namespace Calculator.Tests
         [TestMethod]
         public void TestBasicInterpreter1()
         {
-            IInterpreter interpreter = new BasicInterpreter();
+            IExecutor interpreter = new Interpreter();
             // 6 + (2 * 4)
             double result = interpreter.Execute(
                 new Addition(
@@ -43,7 +43,7 @@ namespace Calculator.Tests
             variables.Add("var1", 2);
             variables.Add("age", 4);
 
-            IInterpreter interpreter = new BasicInterpreter();
+            IExecutor interpreter = new Interpreter();
             // var1 + 2 * (3 * age)
             double result = interpreter.Execute(
                 new Addition(DataType.FloatingPoint,

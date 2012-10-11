@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -9,6 +10,24 @@ namespace Calculator.Tests
     [TestClass]
     public class CalculationEngineTests
     {
+        [TestMethod]
+        public void TestCalculationFormula1FloatingPointCompiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);
+            double result = engine.Calculate("2.0+3.0");
+
+            Assert.AreEqual(5.0, result);
+        }
+
+        [TestMethod]
+        public void TestCalculationFormula1IntegersCompiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);
+            double result = engine.Calculate("2+3");
+
+            Assert.AreEqual(5.0, result);
+        }
+
         [TestMethod]
         public void TestCalculateFormula1()
         {

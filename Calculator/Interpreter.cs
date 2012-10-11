@@ -6,7 +6,7 @@ using Calculator.Operations;
 
 namespace Calculator
 {
-    public class BasicInterpreter : IInterpreter
+    public class Interpreter : IExecutor
     {
         public double Execute(Operation operation)
         {
@@ -25,7 +25,7 @@ namespace Calculator
         public double Execute(Operation operation, Dictionary<string, double> variables)
         {
             if (operation == null)
-                throw new ArgumentException("operation");
+                throw new ArgumentNullException("operation");
 
             if (operation.GetType() == typeof(IntegerConstant))
             {

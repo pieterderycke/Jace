@@ -6,7 +6,7 @@ using Calculator.Operations;
 
 namespace Calculator
 {
-    public interface IInterpreter
+    public interface IExecutor
     {
         double Execute(Operation operation, Dictionary<string, int> variables);
         double Execute(Operation operation, Dictionary<string, double> variables);

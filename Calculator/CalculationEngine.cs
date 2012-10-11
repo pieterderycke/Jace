@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Calculator.Execution;
@@ -10,19 +11,25 @@ namespace Calculator
 {
     public class CalculationEngine
     {
-        private readonly IInterpreter interpreter;
+        private readonly IExecutor executor;
+        private readonly CultureInfo cultureInfo;
 
         public CalculationEngine()
-            : this(ExecutionMode.Interpreted)
+            : this(CultureInfo.CurrentCulture, ExecutionMode.Interpreted)
         {
         }
 
-        public CalculationEngine(ExecutionMode executionMode)
+        public CalculationEngine(CultureInfo cultureInfo, ExecutionMode executionMode)
         {
+            this.cultureInfo = cultureInfo;
+
             if (executionMode == ExecutionMode.Interpreted)
-                interpreter = new BasicInterpreter();
+                executor = new Interpreter();
+            else if (executionMode == ExecutionMode.Compiled)
+                executor = new DynamicCompiler();
             else
-                throw new ArgumentException("Unsupported execution mode", "executionMode");
+                throw new ArgumentException(string.Format("Unsupported execution mode \"\".", executionMode), 
+                    "executionMode");
         }
 
         public double Calculate(string function)
@@ -34,7 +41,7 @@ namespace Calculator
         {
             Operation operation = BuildAbstractSyntaxTree(function);
 
-            return interpreter.Execute(operation, variables);
+            return executor.Execute(operation, variables);
         }
 
         public FunctionBuilder Function(string functionText)
@@ -46,7 +53,7 @@ namespace Calculator
         {
             Operation operation = BuildAbstractSyntaxTree(functionText);
 
-            return variables => interpreter.Execute(operation, variables);
+            return variables => executor.Execute(operation, variables);
         }
 
         /// <summary>
@@ -57,7 +64,7 @@ namespace Calculator
         /// <returns>The abstract syntax tree of the formula.</returns>
         private Operation BuildAbstractSyntaxTree(string functionText)
         {
-            TokenReader tokenReader = new TokenReader();
+            TokenReader tokenReader = new TokenReader(cultureInfo);
             List<object> tokens = tokenReader.Read(functionText);
 
             AstBuilder astBuilder = new AstBuilder();

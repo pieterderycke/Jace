@@ -45,14 +45,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AstBuilder.cs" />
-    <Compile Include="BasicInterpreter.cs" />
     <Compile Include="CalculationEngine.cs" />
     <Compile Include="DataType.cs" />
+    <Compile Include="DynamicCompiler.cs" />
     <Compile Include="ExecutionMode.cs" />
-    <Compile Include="ReflectionEmitInterpreter.cs" />
     <Compile Include="Execution\FunctionBuilder.cs" />
     <Compile Include="Execution\ParameterInfo.cs" />
-    <Compile Include="IInterpreter.cs" />
+    <Compile Include="IExecutor.cs" />
+    <Compile Include="Interpreter.cs" />
     <Compile Include="Operations\Addition.cs" />
     <Compile Include="Operations\Constant.cs" />
     <Compile Include="Operations\ConversionToFloatingPoint.cs" />
