@@ -72,12 +72,28 @@ namespace Calculator
                 Type dictionaryType = typeof(Dictionary<string, double>);
 
                 Variable variable = (Variable)operation;
-                //if (variables.ContainsKey(variable.Name))
+
+                Label throwExceptionLabel = generator.DefineLabel();
+                Label returnLabel = generator.DefineLabel();
+
                 generator.Emit(OpCodes.Ldarg_0);
                 generator.Emit(OpCodes.Ldstr, variable.Name);
-                generator.Emit(OpCodes.Callvirt, dictionaryType.GetMethod("Add", new Type[] { typeof(string), typeof(double) }));
-                //else
-                //    throw new VariableNotDefinedException(string.Format("The variable \"{0}\" used is not defined.", variable.Name));
+                generator.Emit(OpCodes.Callvirt, dictionaryType.GetMethod("ContainsKey", new Type[] { typeof(string) }));
+                generator.Emit(OpCodes.Ldc_I4_0);
+                generator.Emit(OpCodes.Ceq);
+                generator.Emit(OpCodes.Brtrue_S, throwExceptionLabel);
+
+                generator.Emit(OpCodes.Ldarg_0);
+                generator.Emit(OpCodes.Ldstr, variable.Name);
+                generator.Emit(OpCodes.Callvirt, dictionaryType.GetMethod("get_Item", new Type[] { typeof(string) }));
+                generator.Emit(OpCodes.Br_S, returnLabel);
+
+                generator.MarkLabel(throwExceptionLabel);
+                generator.Emit(OpCodes.Ldstr, string.Format("The variable \"{0}\" used is not defined.", variable.Name));
+                generator.Emit(OpCodes.Newobj, typeof(VariableNotDefinedException).GetConstructor(new Type[] { typeof(string) }));
+                generator.Emit(OpCodes.Throw);
+
+                generator.MarkLabel(returnLabel);
             }
             else if (operation.GetType() == typeof(Multiplication))
             {
