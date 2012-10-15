@@ -15,22 +15,29 @@ namespace Jace
         private readonly CultureInfo cultureInfo;
         private readonly Dictionary<string, Func<Dictionary<string, double>, double>> executionFunctionCache;
         private readonly bool cacheEnabled;
+        private readonly bool optimizerEnabled;
 
         public CalculationEngine()
-            : this(CultureInfo.CurrentCulture, ExecutionMode.Interpreted)
+            : this(CultureInfo.CurrentCulture, ExecutionMode.Compiled)
+        {
+        }
+
+        public CalculationEngine(CultureInfo cultureInfo)
+            : this(cultureInfo, ExecutionMode.Compiled)
         {
         }
 
         public CalculationEngine(CultureInfo cultureInfo, ExecutionMode executionMode)
-            : this(cultureInfo, executionMode, true) 
+            : this(cultureInfo, executionMode, true, true) 
         {
         }
 
-        public CalculationEngine(CultureInfo cultureInfo, ExecutionMode executionMode, bool cacheEnabled)
+        public CalculationEngine(CultureInfo cultureInfo, ExecutionMode executionMode, bool cacheEnabled, bool optimizerEnabled)
         {
             this.executionFunctionCache = new Dictionary<string, Func<Dictionary<string, double>, double>>();
             this.cultureInfo = cultureInfo;
             this.cacheEnabled = cacheEnabled;
+            this.optimizerEnabled = optimizerEnabled;
 
             if (executionMode == ExecutionMode.Interpreted)
                 executor = new Interpreter();
