@@ -97,13 +97,16 @@ namespace Calculator
 
         private Func<Dictionary<string, double>, double> BuildFunction(string functionText, Operation operation)
         {
-            if (!IsInFunctionCache(functionText))
+            lock (this)
             {
-                Func<Dictionary<string, double>, double> function = executor.BuildFunction(operation);
-                executionFunctionCache.Add(functionText, function);
-            }
+                if (!IsInFunctionCache(functionText))
+                {
+                    Func<Dictionary<string, double>, double> function = executor.BuildFunction(operation);
+                    executionFunctionCache.Add(functionText, function);
+                }
 
-            return executionFunctionCache[functionText];
+                return executionFunctionCache[functionText];
+            }
         }
 
         private bool IsInFunctionCache(string functionText)
