@@ -135,6 +135,9 @@ namespace Calculator.Util
                     case 2:
                         generator.Emit(OpCodes.Ldarg_3);
                         break;
+                    default:
+                        generator.Emit(OpCodes.Ldarg, i + 1);
+                        break;
                 }
 
                 if (parameter.DataType != DataType.FloatingPoint)

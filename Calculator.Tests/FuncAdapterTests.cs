@@ -49,6 +49,23 @@ namespace Calculator.Tests
             Assert.AreEqual(3.0, wrappedFunction(1, 2.0));
         }
 
+        [TestMethod]
+        public void TestFourArguments()
+        {
+            FuncAdapter adapater = new FuncAdapter();
+
+            List<ParameterInfo> parameters = new List<ParameterInfo>() { 
+                new ParameterInfo() { Name = "test1", DataType = DataType.Integer },
+                new ParameterInfo() { Name = "test2", DataType = DataType.Integer },
+                new ParameterInfo() { Name = "test3", DataType = DataType.Integer },
+                new ParameterInfo() { Name = "test4", DataType = DataType.Integer }
+            };
+
+            Func<int, int, int, int, double> wrappedFunction = (Func<int, int, int, int, double>)adapater.Wrap(parameters, dictionary => dictionary["test4"]);
+
+            Assert.AreEqual(8.0, wrappedFunction(2, 4, 6, 8));
+        }
+
         // Uncomment for debugging purposes
         //[TestMethod]
         //public void SaveToDisk()
