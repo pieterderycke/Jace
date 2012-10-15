@@ -127,6 +127,14 @@ namespace Jace
 
                 generator.Emit(OpCodes.Div);
             }
+            else if (operation.GetType() == typeof(Exponentiation))
+            {
+                Exponentiation exponentation = (Exponentiation)operation;
+                GenerateMethodBody(generator, exponentation.Base);
+                GenerateMethodBody(generator, exponentation.Exponent);
+
+                generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Pow"));
+            }
             else
             {
                 throw new ArgumentException(string.Format("Unsupported operation \"{0}\".", operation.GetType().FullName), "operation");

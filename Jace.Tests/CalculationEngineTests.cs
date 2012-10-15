@@ -39,6 +39,24 @@ namespace Jace.Tests
         }
 
         [TestMethod]
+        public void TestCalculatePowCompiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);
+            double result = engine.Calculate("2^3.0");
+
+            Assert.AreEqual(8.0, result);
+        }
+
+        [TestMethod]
+        public void TestCalculatePowInterpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+            double result = engine.Calculate("2^3.0");
+
+            Assert.AreEqual(8.0, result);
+        }
+
+        [TestMethod]
         public void TestCalculateFormulaWithVariables()
         {
             Dictionary<string, double> variables = new Dictionary<string, double>();

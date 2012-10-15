@@ -70,6 +70,11 @@ namespace Jace
                 Division division = (Division)operation;
                 return Execute(division.Dividend, variables) / Execute(division.Divisor, variables);
             }
+            else if (operation.GetType() == typeof(Exponentiation))
+            {
+                Exponentiation exponentiation = (Exponentiation)operation;
+                return Math.Pow(Execute(exponentiation.Base, variables), Execute(exponentiation.Exponent, variables));
+            }
             else
             {
                 throw new ArgumentException(string.Format("Unsupported operation \"{0}\".", operation.GetType().FullName), "operation");

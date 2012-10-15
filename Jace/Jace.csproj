@@ -57,6 +57,7 @@
     <Compile Include="Operations\Constant.cs" />
     <Compile Include="Operations\ConversionToFloatingPoint.cs" />
     <Compile Include="Operations\Division.cs" />
+    <Compile Include="Operations\Exponentiation.cs" />
     <Compile Include="Operations\Operation.cs" />
     <Compile Include="Operations\Multiplication.cs" />
     <Compile Include="Operations\Substraction.cs" />

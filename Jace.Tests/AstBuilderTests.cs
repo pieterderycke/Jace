@@ -79,6 +79,18 @@ namespace Jace.Tests
         }
 
         [TestMethod]
+        public void TestExponentiation()
+        {
+            AstBuilder builder = new AstBuilder();
+            Operation operation = builder.Build(new List<object>() { 2, '^', 3 });
+
+            Exponentiation exponentiation = (Exponentiation)operation;
+
+            Assert.AreEqual(new IntegerConstant(2), exponentiation.Base);
+            Assert.AreEqual(new IntegerConstant(3), exponentiation.Exponent);
+        }
+
+        [TestMethod]
         public void TestVariable()
         {
             AstBuilder builder = new AstBuilder();

@@ -101,6 +101,7 @@ namespace Jace.Tokenizer
                     case '-':
                     case '*':
                     case '/':
+                    case '^':
                     case '(':
                     case ')':
                         tokens.Add(characters[i]);

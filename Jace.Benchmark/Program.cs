@@ -49,7 +49,7 @@ namespace Jace.Benchmark
             Console.WriteLine("Number Of Variables Of Each Function: {0}", 3);
             Console.WriteLine("Number Of Executions For Each Function: {0}", 10000.ToString("N0"));
             Console.WriteLine("Total Number Of Executions: {0}", (10000 * 1000).ToString("N0"));
-            Console.WriteLine("Parallell: {0}", true);
+            Console.WriteLine("Parallel: {0}", true);
             Console.WriteLine();
 
             List<string> functions = GenerateRandomFunctions(1000);

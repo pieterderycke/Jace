@@ -19,6 +19,7 @@ namespace Jace
             operationPrecedence.Add('-', 1);
             operationPrecedence.Add('*', 2);
             operationPrecedence.Add('/', 2);
+            operationPrecedence.Add('^', 3);
         }
 
         public Operation Build(IList<object> tokens)
@@ -122,6 +123,11 @@ namespace Jace
                     Operation divident = resultStack.Pop();
 
                     return new Division(DataType.FloatingPoint, divident, divisor);
+                case '^':
+                    Operation exponent = resultStack.Pop();
+                    Operation @base = resultStack.Pop();
+
+                    return new Exponentiation(DataType.FloatingPoint, @base, exponent);
                 default:
                     throw new ArgumentException(string.Format("Unknown operation \"{0}\".", operation), "operation");
             }

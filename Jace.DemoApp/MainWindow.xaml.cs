@@ -112,6 +112,13 @@ namespace Jace.DemoApp
                 item.Items.Add(CreateTreeViewItem(division.Dividend));
                 item.Items.Add(CreateTreeViewItem(division.Divisor));
             }
+            else if (operation.GetType() == typeof(Exponentiation))
+            {
+                Exponentiation exponentiation = (Exponentiation)operation;
+
+                item.Items.Add(CreateTreeViewItem(exponentiation.Base));
+                item.Items.Add(CreateTreeViewItem(exponentiation.Exponent));
+            }
 
             return item;
         }
