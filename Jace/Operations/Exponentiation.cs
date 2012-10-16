@@ -8,7 +8,7 @@ namespace Jace.Operations
     public class Exponentiation : Operation
     {
         public Exponentiation(DataType dataType, Operation @base, Operation exponent)
-            : base(dataType)
+            : base(dataType, @base.DependsOnVariables || exponent.DependsOnVariables)
         {
             Base = @base;
             Exponent = exponent;

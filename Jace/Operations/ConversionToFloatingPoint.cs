@@ -8,7 +8,7 @@ namespace Jace.Operations
     public class ConversionToFloatingPoint : Operation
     {
         public ConversionToFloatingPoint(Operation operation)
-            : base(DataType.FloatingPoint)
+            : base(DataType.FloatingPoint, operation.DependsOnVariables)
         {
             this.Operation = operation;
         }

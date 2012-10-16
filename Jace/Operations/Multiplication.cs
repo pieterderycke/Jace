@@ -8,7 +8,7 @@ namespace Jace.Operations
     public class Multiplication : Operation
     {
         public Multiplication(DataType dataType, Operation argument1, Operation argument2)
-            : base(dataType)
+            : base(dataType, argument1.DependsOnVariables || argument2.DependsOnVariables)
         {
             this.Argument1 = argument1;
             this.Argument2 = argument2;

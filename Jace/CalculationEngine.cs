@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -12,8 +13,9 @@ namespace Jace
     public class CalculationEngine
     {
         private readonly IExecutor executor;
+        private readonly Optimizer optimizer;
         private readonly CultureInfo cultureInfo;
-        private readonly Dictionary<string, Func<Dictionary<string, double>, double>> executionFunctionCache;
+        private readonly ConcurrentDictionary<string, Func<Dictionary<string, double>, double>> executionFunctionCache;
         private readonly bool cacheEnabled;
         private readonly bool optimizerEnabled;
 
@@ -34,7 +36,7 @@ namespace Jace
 
         public CalculationEngine(CultureInfo cultureInfo, ExecutionMode executionMode, bool cacheEnabled, bool optimizerEnabled)
         {
-            this.executionFunctionCache = new Dictionary<string, Func<Dictionary<string, double>, double>>();
+            this.executionFunctionCache = new ConcurrentDictionary<string, Func<Dictionary<string, double>, double>>();
             this.cultureInfo = cultureInfo;
             this.cacheEnabled = cacheEnabled;
             this.optimizerEnabled = optimizerEnabled;
@@ -46,6 +48,8 @@ namespace Jace
             else
                 throw new ArgumentException(string.Format("Unsupported execution mode \"\".", executionMode), 
                     "executionMode");
+
+            optimizer = new Optimizer();
         }
 
         public double Calculate(string functionText)
@@ -99,21 +103,17 @@ namespace Jace
             List<object> tokens = tokenReader.Read(functionText);
 
             AstBuilder astBuilder = new AstBuilder();
-            return astBuilder.Build(tokens);
+            Operation operation = astBuilder.Build(tokens);
+
+            if (optimizerEnabled)
+                return optimizer.Optimize(operation);
+            else
+                return operation;
         }
 
         private Func<Dictionary<string, double>, double> BuildFunction(string functionText, Operation operation)
         {
-            lock (this)
-            {
-                if (!IsInFunctionCache(functionText))
-                {
-                    Func<Dictionary<string, double>, double> function = executor.BuildFunction(operation);
-                    executionFunctionCache.Add(functionText, function);
-                }
-
-                return executionFunctionCache[functionText];
-            }
+            return executionFunctionCache.GetOrAdd(functionText, v => executor.BuildFunction(operation));
         }
 
         private bool IsInFunctionCache(string functionText)

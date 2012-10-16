@@ -1,5 +1,5 @@
-# Jace.NET (Just another calculation engine)
-Jace.NET is a calculation engine for the .NET platform.
+# Jace.NET
+Jace.NET is a high performance calculation engine for the .NET platform. It stands for "Just Another Calculation Engine".
 
 ## What does it do?
 Jace.NET can interprete and execute strings containing mathematical functions. These functions can rely on variables. If variables are used, values can be provided for these variables at execution time of the mathematical function.
@@ -54,3 +54,11 @@ Func<int, double, double> function = (Func<int, double, double>)engine.Function(
 	
 double result = function(2, 4.2);
 ```
+
+## Performance
+Below you can find the results of Jace.NET benchmark that show its high performance calculation engine. Tests were done on an Intel i7 2640M laptop.
+1000 random functions were generated, each containing 3 variables and a number of constants (a mix of integers and floating point numbers). Each random generated function was executed 10 000 times. So in total 10 000 000 calculations are done during the benchmark. You can find the benchmark application in "Jace.Benchmark" if you want to run it on your system.
+
+|Calculation Mode|Total Duration|
+|Interpreted|00:00:06.7860119|
+|Compiled|00:00:02.5584045|
