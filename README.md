@@ -59,6 +59,5 @@ double result = function(2, 4.2);
 Below you can find the results of Jace.NET benchmark that show its high performance calculation engine. Tests were done on an Intel i7 2640M laptop.
 1000 random functions were generated, each containing 3 variables and a number of constants (a mix of integers and floating point numbers). Each random generated function was executed 10 000 times. So in total 10 000 000 calculations are done during the benchmark. You can find the benchmark application in "Jace.Benchmark" if you want to run it on your system.
 
-Calculation Mode:
-* Interpreted: 00:00:06.7860119
-* Compiled: 00:00:02.5584045
+* Interpreted Mode : 00:00:06.7860119
+* Dynamic Compilation Mode: 00:00:02.5584045
