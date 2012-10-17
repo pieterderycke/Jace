@@ -59,6 +59,12 @@ namespace Jace
 
         public double Calculate(string functionText, Dictionary<string, double> variables)
         {
+            if (string.IsNullOrEmpty(functionText))
+                throw new ArgumentNullException("functionText");
+
+            if (variables == null)
+                throw new ArgumentNullException("variables");
+
             if (IsInFunctionCache(functionText))
             {
                 Func<Dictionary<string, double>, double> function = executionFunctionCache[functionText];
@@ -75,11 +81,17 @@ namespace Jace
 
         public FunctionBuilder Function(string functionText)
         {
+            if (string.IsNullOrEmpty(functionText))
+                throw new ArgumentNullException("functionText");
+
             return new FunctionBuilder(functionText, this);
         }
 
         public Func<Dictionary<string, double>, double> Build(string functionText)
         {
+            if (string.IsNullOrEmpty(functionText))
+                throw new ArgumentNullException("functionText");
+
             if (IsInFunctionCache(functionText))
             {
                 return executionFunctionCache[functionText];
