@@ -45,6 +45,7 @@ namespace Jace.Tokenizer
                 if (IsPartOfNumeric(characters[i]))
                 {
                     string buffer = "" + characters[i];
+                    int startPosition = i;
 
                     while (++i < characters.Length && IsPartOfNumeric(characters[i]))
                     {
@@ -55,7 +56,7 @@ namespace Jace.Tokenizer
                     int intValue;
                     if (int.TryParse(buffer, out intValue))
                     {
-                        tokens.Add(new Token() { TokenType = TokenType.Integer, Value = intValue });
+                        tokens.Add(new Token() { TokenType = TokenType.Integer, Value = intValue, StartPosition = startPosition, Length = i - startPosition });
                     }
                     else
                     {
@@ -63,7 +64,7 @@ namespace Jace.Tokenizer
                         if (double.TryParse(buffer, NumberStyles.Float | NumberStyles.AllowThousands,
                             cultureInfo, out doubleValue))
                         {
-                            tokens.Add(new Token() { TokenType = TokenType.FloatingPoint, Value = doubleValue });
+                            tokens.Add(new Token() { TokenType = TokenType.FloatingPoint, Value = doubleValue, StartPosition = startPosition, Length = i - startPosition });
                         }
                         // Else we skip
                     }
@@ -78,13 +79,14 @@ namespace Jace.Tokenizer
                 if (IsPartOfVariable(characters[i], true))
                 {
                     string buffer = "" + characters[i];
+                    int startPosition = i;
 
                     while (++i < characters.Length && IsPartOfVariable(characters[i], false))
                     {
                         buffer += characters[i];
                     }
 
-                    tokens.Add(new Token() { TokenType = TokenType.Text, Value = buffer });
+                    tokens.Add(new Token() { TokenType = TokenType.Text, Value = buffer, StartPosition = startPosition, Length = i -startPosition });
 
                     if (i == characters.Length)
                     {
@@ -102,13 +104,13 @@ namespace Jace.Tokenizer
                     case '*':
                     case '/':
                     case '^':
-                        tokens.Add(new Token() { TokenType = TokenType.Operation, Value = characters[i] });
+                        tokens.Add(new Token() { TokenType = TokenType.Operation, Value = characters[i], StartPosition = i, Length = 1 });
                         break;
                     case '(':
-                        tokens.Add(new Token() { TokenType = TokenType.LeftBracket, Value = characters[i] });
+                        tokens.Add(new Token() { TokenType = TokenType.LeftBracket, Value = characters[i], StartPosition = i, Length = 1 });
                         break;
                     case ')':
-                        tokens.Add(new Token() { TokenType = TokenType.RightBracket, Value = characters[i] });
+                        tokens.Add(new Token() { TokenType = TokenType.RightBracket, Value = characters[i], StartPosition = i, Length = 1 });
                         break;
                     default:
                         break;

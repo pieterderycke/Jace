@@ -11,9 +11,9 @@ namespace Jace.Tokenizer
     public struct Token
     {
         /// <summary>
-        /// The position of the token in the input function text.
+        /// The start position of the token in the input function text.
         /// </summary>
-        public int Position;
+        public int StartPosition;
         
         /// <summary>
         /// The length of token in the input function text.
