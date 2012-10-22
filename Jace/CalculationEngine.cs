@@ -115,7 +115,7 @@ namespace Jace
             List<Token> tokens = tokenReader.Read(functionText);
 
             AstBuilder astBuilder = new AstBuilder();
-            Operation operation = astBuilder.Build(tokens.Select(t => t.Value).ToList());
+            Operation operation = astBuilder.Build(tokens);
 
             if (optimizerEnabled)
                 return optimizer.Optimize(operation);

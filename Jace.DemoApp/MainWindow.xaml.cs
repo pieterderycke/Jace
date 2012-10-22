@@ -32,7 +32,7 @@ namespace Jace.DemoApp
             string formula = formulaTextBox.Text;
 
             TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
-            List<object> tokens = reader.Read(formula).Select(t => t.Value).ToList();
+            List<Token> tokens = reader.Read(formula);
 
             ShowTokens(tokens);
 
@@ -47,13 +47,13 @@ namespace Jace.DemoApp
             resultTextBox.Text = "" + result;
         }
 
-        private void ShowTokens(List<object> tokens)
+        private void ShowTokens(List<Token> tokens)
         { 
             string result = "[ ";
 
             for(int i = 0; i < tokens.Count; i++)
             {
-                object token = tokens[i];
+                object token = tokens[i].Value;
 
                 if (token.GetType() == typeof(string))
                     result += "\"" + token + "\"";

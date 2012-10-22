@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Jace.Operations;
+using Jace.Tokenizer;
 
 namespace Jace
 {
@@ -22,26 +23,34 @@ namespace Jace
             operationPrecedence.Add('^', 3);
         }
 
-        public Operation Build(IList<object> tokens)
+        public Operation Build(IList<Token> tokens)
         {
             resultStack.Clear();
             operatorStack.Clear();
 
-            foreach (object token in tokens)
+            foreach (Token token in tokens)
             {
-                if (token.GetType() == typeof(int))
-                    resultStack.Push(new IntegerConstant((int)token));
-                else if (token.GetType() == typeof(double))
-                    resultStack.Push(new FloatingPointConstant((double)token));
-                else if (token.GetType() == typeof(string))
-                    resultStack.Push(new Variable((string)token));
-                else if (token.GetType() == typeof(char))
-                {
-                    char character = (char)token;
+                object value = token.Value;
 
-                    if (IsOperation(character))
-                    {
-                        char operation1 = character;
+                switch (token.TokenType)
+                {
+                    case TokenType.Integer:
+                        resultStack.Push(new IntegerConstant((int)token.Value));
+                        break;
+                    case TokenType.FloatingPoint:
+                        resultStack.Push(new FloatingPointConstant((double)token.Value));
+                        break;
+                    case TokenType.Text:
+                        resultStack.Push(new Variable((string)token.Value));
+                        break;
+                    case TokenType.LeftBracket:
+                        operatorStack.Push((char)token.Value);
+                        break;
+                    case TokenType.RightBracket:
+                        PopOperations();
+                        break;
+                    case TokenType.Operation:
+                        char operation1 = (char)token.Value;
 
                         if (operatorStack.Count == 0)
                         {
@@ -63,15 +72,8 @@ namespace Jace
                                 operatorStack.Push(operation1);
                             }
                         }
-                    }
-                    else if (character == '(')
-                    {
-                        operatorStack.Push(character);
-                    }
-                    else if (character == ')')
-                    {
-                        PopOperations();
-                    }
+
+                        break;
                 }
             }
 

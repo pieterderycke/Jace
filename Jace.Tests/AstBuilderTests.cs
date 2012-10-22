@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Jace.Operations;
+using Jace.Tokenizer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Jace.Tests
@@ -14,7 +15,15 @@ namespace Jace.Tests
         public void TestBuildFormula1()
         {
             AstBuilder builder = new AstBuilder();
-            Operation operation = builder.Build(new List<object>() { '(', 42, '+', 8, ')', '*', 2 });
+            Operation operation = builder.Build(new List<Token>() { 
+                new Token() { Value = '(', TokenType = TokenType.LeftBracket }, 
+                new Token() { Value = 42, TokenType = TokenType.Integer }, 
+                new Token() { Value = '+', TokenType = TokenType.Operation }, 
+                new Token() { Value = 8, TokenType = TokenType.Integer }, 
+                new Token() { Value = ')', TokenType = TokenType.RightBracket }, 
+                new Token() { Value = '*', TokenType = TokenType.Operation }, 
+                new Token() { Value = 2, TokenType = TokenType.Integer } 
+            });
 
             Multiplication multiplication = (Multiplication)operation;
             Addition addition = (Addition)multiplication.Argument1;
@@ -28,7 +37,13 @@ namespace Jace.Tests
         public void TestBuildFormula2()
         {
             AstBuilder builder = new AstBuilder();
-            Operation operation = builder.Build(new List<object>() { 2, '+', 8, '*', 3 });
+            Operation operation = builder.Build(new List<Token>() {
+                new Token() { Value = 2, TokenType = TokenType.Integer }, 
+                new Token() { Value = '+', TokenType = TokenType.Operation }, 
+                new Token() { Value = 8, TokenType = TokenType.Integer }, 
+                new Token() { Value = '*', TokenType = TokenType.Operation }, 
+                new Token() { Value = 3, TokenType = TokenType.Integer } 
+            });
 
             Addition addition = (Addition)operation;
             Multiplication multiplication = (Multiplication)addition.Argument2;
@@ -42,7 +57,13 @@ namespace Jace.Tests
         public void TestBuildFormula3()
         {
             AstBuilder builder = new AstBuilder();
-            Operation operation = builder.Build(new List<object>() { 2, '*', 8, '-', 3 });
+            Operation operation = builder.Build(new List<Token>() {
+                new Token() { Value = 2, TokenType = TokenType.Integer }, 
+                new Token() { Value = '*', TokenType = TokenType.Operation }, 
+                new Token() { Value = 8, TokenType = TokenType.Integer }, 
+                new Token() { Value = '-', TokenType = TokenType.Operation }, 
+                new Token() { Value = 3, TokenType = TokenType.Integer }
+            });
 
             Substraction substraction = (Substraction)operation;
             Multiplication multiplication = (Multiplication)substraction.Argument1;
@@ -56,7 +77,11 @@ namespace Jace.Tests
         public void TestDivision()
         {
             AstBuilder builder = new AstBuilder();
-            Operation operation = builder.Build(new List<object>() { 10, '/', 2 });
+            Operation operation = builder.Build(new List<Token>() { 
+                new Token() { Value = 10, TokenType = TokenType.Integer }, 
+                new Token() { Value = '/', TokenType = TokenType.Operation }, 
+                new Token() { Value = 2, TokenType = TokenType.Integer }
+            });
 
             Assert.AreEqual(typeof(Division), operation.GetType());
 
@@ -70,7 +95,11 @@ namespace Jace.Tests
         public void TestMultiplication()
         {
             AstBuilder builder = new AstBuilder();
-            Operation operation = builder.Build(new List<object>() { 10, '*', 2.0 });
+            Operation operation = builder.Build(new List<Token>() { 
+                new Token() { Value = 10, TokenType = TokenType.Integer }, 
+                new Token() { Value = '*', TokenType = TokenType.Operation }, 
+                new Token() { Value = 2.0, TokenType = TokenType.FloatingPoint }
+            });
 
             Multiplication multiplication = (Multiplication)operation;
 
@@ -82,7 +111,11 @@ namespace Jace.Tests
         public void TestExponentiation()
         {
             AstBuilder builder = new AstBuilder();
-            Operation operation = builder.Build(new List<object>() { 2, '^', 3 });
+            Operation operation = builder.Build(new List<Token>() { 
+                new Token() { Value = 2, TokenType = TokenType.Integer }, 
+                new Token() { Value = '^', TokenType = TokenType.Operation }, 
+                new Token() { Value = 3, TokenType = TokenType.Integer }
+            });
 
             Exponentiation exponentiation = (Exponentiation)operation;
 
@@ -94,7 +127,11 @@ namespace Jace.Tests
         public void TestVariable()
         {
             AstBuilder builder = new AstBuilder();
-            Operation operation = builder.Build(new List<object>() { 10, '*', "var1" });
+            Operation operation = builder.Build(new List<Token>() { 
+                new Token() { Value = 10, TokenType = TokenType.Integer }, 
+                new Token() { Value = '*', TokenType = TokenType.Operation }, 
+                new Token() { Value = "var1", TokenType = TokenType.Text }
+            });
 
             Multiplication multiplication = (Multiplication)operation;
 
@@ -106,7 +143,17 @@ namespace Jace.Tests
         public void TestMultipleVariable()
         {
             AstBuilder builder = new AstBuilder();
-            Operation operation = builder.Build(new List<object>() { "var1", '+', 2, '*', '(', 3, '*', "age", ')' });
+            Operation operation = builder.Build(new List<Token>() { 
+                new Token() { Value = "var1", TokenType = TokenType.Text }, 
+                new Token() { Value = '+', TokenType = TokenType.Operation }, 
+                new Token() { Value = 2, TokenType = TokenType.Integer }, 
+                new Token() { Value = '*', TokenType = TokenType.Operation }, 
+                new Token() { Value = '(', TokenType = TokenType.LeftBracket }, 
+                new Token() { Value = 3, TokenType = TokenType.Integer }, 
+                new Token() { Value = '*', TokenType = TokenType.Operation }, 
+                new Token() { Value = "age", TokenType = TokenType.Text }, 
+                new Token() { Value = ')', TokenType = TokenType.RightBracket }
+            });
 
             Addition addition = (Addition)operation;
             Multiplication multiplication1 = (Multiplication)addition.Argument2;
