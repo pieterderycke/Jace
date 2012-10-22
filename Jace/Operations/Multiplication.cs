@@ -14,7 +14,7 @@ namespace Jace.Operations
             this.Argument2 = argument2;
         }
 
-        public Operation Argument1 { get; private set; }
-        public Operation Argument2 { get; private set; }
+        public Operation Argument1 { get; internal set; }
+        public Operation Argument2 { get; internal set; }
     }
 }

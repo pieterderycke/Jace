@@ -49,7 +49,7 @@ namespace Jace
                 throw new ArgumentException(string.Format("Unsupported execution mode \"\".", executionMode), 
                     "executionMode");
 
-            optimizer = new Optimizer();
+            optimizer = new Optimizer(new Interpreter()); // We run the optimizer with the interpreter 
         }
 
         public double Calculate(string functionText)

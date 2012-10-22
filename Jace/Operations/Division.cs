@@ -14,7 +14,7 @@ namespace Jace.Operations
             this.Divisor = divisor;
         }
 
-        public Operation Dividend { get; private set; }
-        public Operation Divisor { get; private set; }
+        public Operation Dividend { get; internal set; }
+        public Operation Divisor { get; internal set; }
     }
 }

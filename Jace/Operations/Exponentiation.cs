@@ -14,7 +14,7 @@ namespace Jace.Operations
             Exponent = exponent;
         }
 
-        public Operation Base { get; private set; }
-        public Operation Exponent { get; private set; }
+        public Operation Base { get; internal set; }
+        public Operation Exponent { get; internal set; }
     }
 }
