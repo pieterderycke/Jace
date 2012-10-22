@@ -13,126 +13,126 @@ namespace Jace.Tests
         public void TestTokenReader1()
         {
             TokenReader reader = new TokenReader();
-            List<object> tokens = reader.Read("42+31");
+            List<Token> tokens = reader.Read("42+31");
 
             Assert.AreEqual(3, tokens.Count);
-            Assert.AreEqual(42, tokens[0]);
-            Assert.AreEqual('+', tokens[1]);
-            Assert.AreEqual(31, tokens[2]);
+            Assert.AreEqual(42, tokens[0].Value);
+            Assert.AreEqual('+', tokens[1].Value);
+            Assert.AreEqual(31, tokens[2].Value);
         }
 
         [TestMethod]
         public void TestTokenReader2()
         {
             TokenReader reader = new TokenReader();
-            List<object> tokens = reader.Read("(42+31)");
+            List<Token> tokens = reader.Read("(42+31)");
 
             Assert.AreEqual(5, tokens.Count);
-            Assert.AreEqual('(', tokens[0]);
-            Assert.AreEqual(42, tokens[1]);
-            Assert.AreEqual('+', tokens[2]);
-            Assert.AreEqual(31, tokens[3]);
-            Assert.AreEqual(')', tokens[4]);
+            Assert.AreEqual('(', tokens[0].Value);
+            Assert.AreEqual(42, tokens[1].Value);
+            Assert.AreEqual('+', tokens[2].Value);
+            Assert.AreEqual(31, tokens[3].Value);
+            Assert.AreEqual(')', tokens[4].Value);
         }
 
         [TestMethod]
         public void TestTokenReader3()
         {
             TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
-            List<object> tokens = reader.Read("(42+31.0");
+            List<Token> tokens = reader.Read("(42+31.0");
 
             Assert.AreEqual(4, tokens.Count);
-            Assert.AreEqual('(', tokens[0]);
-            Assert.AreEqual(42, tokens[1]);
-            Assert.AreEqual('+', tokens[2]);
-            Assert.AreEqual(31.0, tokens[3]);
+            Assert.AreEqual('(', tokens[0].Value);
+            Assert.AreEqual(42, tokens[1].Value);
+            Assert.AreEqual('+', tokens[2].Value);
+            Assert.AreEqual(31.0, tokens[3].Value);
         }
 
         [TestMethod]
         public void TestTokenReader4()
         {
             TokenReader reader = new TokenReader();
-            List<object> tokens = reader.Read("(42+ 8) *2");
+            List<Token> tokens = reader.Read("(42+ 8) *2");
 
             Assert.AreEqual(7, tokens.Count);
-            Assert.AreEqual('(', tokens[0]);
-            Assert.AreEqual(42, tokens[1]);
-            Assert.AreEqual('+', tokens[2]);
-            Assert.AreEqual(8, tokens[3]);
-            Assert.AreEqual(')', tokens[4]);
-            Assert.AreEqual('*', tokens[5]);
-            Assert.AreEqual(2, tokens[6]);
+            Assert.AreEqual('(', tokens[0].Value);
+            Assert.AreEqual(42, tokens[1].Value);
+            Assert.AreEqual('+', tokens[2].Value);
+            Assert.AreEqual(8, tokens[3].Value);
+            Assert.AreEqual(')', tokens[4].Value);
+            Assert.AreEqual('*', tokens[5].Value);
+            Assert.AreEqual(2, tokens[6].Value);
         }
 
         [TestMethod]
         public void TestTokenReader5()
         {
             TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
-            List<object> tokens = reader.Read("(42.87+31.0");
+            List<Token> tokens = reader.Read("(42.87+31.0");
 
             Assert.AreEqual(4, tokens.Count);
-            Assert.AreEqual('(', tokens[0]);
-            Assert.AreEqual(42.87, tokens[1]);
-            Assert.AreEqual('+', tokens[2]);
-            Assert.AreEqual(31.0, tokens[3]);
+            Assert.AreEqual('(', tokens[0].Value);
+            Assert.AreEqual(42.87, tokens[1].Value);
+            Assert.AreEqual('+', tokens[2].Value);
+            Assert.AreEqual(31.0, tokens[3].Value);
         }
 
         [TestMethod]
         public void TestTokenReader6()
         {
             TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
-            List<object> tokens = reader.Read("(var+31.0");
+            List<Token> tokens = reader.Read("(var+31.0");
 
             Assert.AreEqual(4, tokens.Count);
-            Assert.AreEqual('(', tokens[0]);
-            Assert.AreEqual("var", tokens[1]);
-            Assert.AreEqual('+', tokens[2]);
-            Assert.AreEqual(31.0, tokens[3]);
+            Assert.AreEqual('(', tokens[0].Value);
+            Assert.AreEqual("var", tokens[1].Value);
+            Assert.AreEqual('+', tokens[2].Value);
+            Assert.AreEqual(31.0, tokens[3].Value);
         }
 
         [TestMethod]
         public void TestTokenReader7()
         {
             TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
-            List<object> tokens = reader.Read("varb");
+            List<Token> tokens = reader.Read("varb");
 
             Assert.AreEqual(1, tokens.Count);
-            Assert.AreEqual("varb", tokens[0]);
+            Assert.AreEqual("varb", tokens[0].Value);
         }
 
         [TestMethod]
         public void TestTokenReader8()
         {
             TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
-            List<object> tokens = reader.Read("varb(");
+            List<Token> tokens = reader.Read("varb(");
 
             Assert.AreEqual(2, tokens.Count);
-            Assert.AreEqual("varb", tokens[0]);
-            Assert.AreEqual('(', tokens[1]);
+            Assert.AreEqual("varb", tokens[0].Value);
+            Assert.AreEqual('(', tokens[1].Value);
         }
 
         [TestMethod]
         public void TestTokenReader9()
         {
             TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
-            List<object> tokens = reader.Read("+varb(");
+            List<Token> tokens = reader.Read("+varb(");
 
             Assert.AreEqual(3, tokens.Count);
-            Assert.AreEqual('+', tokens[0]);
-            Assert.AreEqual("varb", tokens[1]);
-            Assert.AreEqual('(', tokens[2]);
+            Assert.AreEqual('+', tokens[0].Value);
+            Assert.AreEqual("varb", tokens[1].Value);
+            Assert.AreEqual('(', tokens[2].Value);
         }
 
         [TestMethod]
         public void TestTokenReader10()
         {
             TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
-            List<object> tokens = reader.Read("var1+2");
+            List<Token> tokens = reader.Read("var1+2");
 
             Assert.AreEqual(3, tokens.Count);
-            Assert.AreEqual("var1", tokens[0]);
-            Assert.AreEqual('+', tokens[1]);
-            Assert.AreEqual(2, tokens[2]);
+            Assert.AreEqual("var1", tokens[0].Value);
+            Assert.AreEqual('+', tokens[1].Value);
+            Assert.AreEqual(2, tokens[2].Value);
         }
     }
 }

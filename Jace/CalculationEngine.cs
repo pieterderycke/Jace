@@ -112,10 +112,10 @@ namespace Jace
         private Operation BuildAbstractSyntaxTree(string functionText)
         {
             TokenReader tokenReader = new TokenReader(cultureInfo);
-            List<object> tokens = tokenReader.Read(functionText);
+            List<Token> tokens = tokenReader.Read(functionText);
 
             AstBuilder astBuilder = new AstBuilder();
-            Operation operation = astBuilder.Build(tokens);
+            Operation operation = astBuilder.Build(tokens.Select(t => t.Value).ToList());
 
             if (optimizerEnabled)
                 return optimizer.Optimize(operation);

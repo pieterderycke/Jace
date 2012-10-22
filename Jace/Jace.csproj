@@ -64,8 +64,10 @@
     <Compile Include="Operations\Variable.cs" />
     <Compile Include="Optimizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tokenizer\Token.cs" />
     <Compile Include="Tokenizer\TokenReader.cs" />
     <Compile Include="Tokenizer\TokenizerException.cs" />
+    <Compile Include="Tokenizer\TokenType.cs" />
     <Compile Include="Util\FuncAdapter.cs" />
     <Compile Include="VariableNotDefinedException.cs" />
   </ItemGroup>

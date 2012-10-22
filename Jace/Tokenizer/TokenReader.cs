@@ -31,12 +31,12 @@ namespace Jace.Tokenizer
         /// </summary>
         /// <param name="formula">The formula that must be converted into a list of tokens.</param>
         /// <returns>The list of tokens for the provided formula.</returns>
-        public List<object> Read(string formula)
+        public List<Token> Read(string formula)
         {
             if (string.IsNullOrEmpty(formula))
                 throw new ArgumentNullException("formula");
 
-            List<object> tokens = new List<object>();
+            List<Token> tokens = new List<Token>();
 
             char[] characters = formula.ToCharArray();
 
@@ -55,7 +55,7 @@ namespace Jace.Tokenizer
                     int intValue;
                     if (int.TryParse(buffer, out intValue))
                     {
-                        tokens.Add(intValue);
+                        tokens.Add(new Token() { TokenType = TokenType.Integer, Value = intValue });
                     }
                     else
                     {
@@ -63,7 +63,7 @@ namespace Jace.Tokenizer
                         if (double.TryParse(buffer, NumberStyles.Float | NumberStyles.AllowThousands,
                             cultureInfo, out doubleValue))
                         {
-                            tokens.Add(doubleValue);
+                            tokens.Add(new Token() { TokenType = TokenType.FloatingPoint, Value = doubleValue });
                         }
                         // Else we skip
                     }
@@ -84,7 +84,7 @@ namespace Jace.Tokenizer
                         buffer += characters[i];
                     }
 
-                    tokens.Add(buffer);
+                    tokens.Add(new Token() { TokenType = TokenType.Text, Value = buffer });
 
                     if (i == characters.Length)
                     {
@@ -102,9 +102,13 @@ namespace Jace.Tokenizer
                     case '*':
                     case '/':
                     case '^':
+                        tokens.Add(new Token() { TokenType = TokenType.Operation, Value = characters[i] });
+                        break;
                     case '(':
+                        tokens.Add(new Token() { TokenType = TokenType.LeftBracket, Value = characters[i] });
+                        break;
                     case ')':
-                        tokens.Add(characters[i]);
+                        tokens.Add(new Token() { TokenType = TokenType.RightBracket, Value = characters[i] });
                         break;
                     default:
                         break;
