@@ -11,7 +11,7 @@ namespace Jace
     {
         private Dictionary<char, int> operationPrecedence = new Dictionary<char, int>();
         private Stack<Operation> resultStack = new Stack<Operation>();
-        private Stack<object> operatorStack = new Stack<object>();
+        private Stack<Token> operatorStack = new Stack<Token>();
 
         public AstBuilder()
         {
@@ -43,7 +43,7 @@ namespace Jace
                     case TokenType.Text:
                         if (IsFunctionName((string)token.Value))
                         {
-                            operatorStack.Push(token.Value);
+                            operatorStack.Push(token);
                         }
                         else
                         {
@@ -51,42 +51,44 @@ namespace Jace
                         }
                         break;
                     case TokenType.LeftBracket:
-                        operatorStack.Push((char)token.Value);
+                        operatorStack.Push(token);
                         break;
                     case TokenType.RightBracket:
                         PopOperations();
                         break;
                     case TokenType.Operation:
-                        char operation1 = (char)token.Value;
+                        Token operation1Token = token;
+                        char operation1 = (char)operation1Token.Value;
 
                         if (operatorStack.Count == 0)
                         {
-                            operatorStack.Push(operation1);
+                            operatorStack.Push(operation1Token);
                         }
                         else
                         {
-                            bool isFunctionOnTopOfStack = operatorStack.Peek() is string;
+                            bool isFunctionOnTopOfStack = operatorStack.Peek().TokenType == TokenType.Text;
 
                             if (!isFunctionOnTopOfStack)
                             {
-                                char operation2 = (char)operatorStack.Peek();
+                                Token operation2Token = operatorStack.Peek();
+                                char operation2 = (char)operation2Token.Value;
 
                                 if ((IsLeftAssociativeOperation(operation1) && operationPrecedence[operation1] <= operationPrecedence[operation2]) ||
                                     (operationPrecedence[operation1] < operationPrecedence[operation2]))
                                 {
                                     operatorStack.Pop();
-                                    operatorStack.Push(operation1);
+                                    operatorStack.Push(operation1Token);
                                     resultStack.Push(Convert(operation2));
                                 }
                                 else
                                 {
-                                    operatorStack.Push(operation1);
+                                    operatorStack.Push(operation1Token);
                                 }
                             }
                             else
                             {
-                                string function = (string)operatorStack.Pop();
-                                operatorStack.Push(operation1);
+                                string function = (string)operatorStack.Pop().Value;
+                                operatorStack.Push(operation1Token);
                                 resultStack.Push(Convert(function));
                             }
                         }
@@ -102,21 +104,24 @@ namespace Jace
 
         private void PopOperations()
         {
-            while (operatorStack.Count > 0 && (!(operatorStack.Peek() is char) || (char)operatorStack.Peek() != '('))
+            while (operatorStack.Count > 0 && operatorStack.Peek().TokenType != TokenType.LeftBracket)
             {
-                if (operatorStack.Peek() is char)
+                Token token = operatorStack.Pop();
+
+                switch (token.TokenType)
                 {
-                    char operation = (char)operatorStack.Pop();
-                    resultStack.Push(Convert(operation));
-                }
-                else
-                {
-                    string function = (string)operatorStack.Pop();
-                    resultStack.Push(Convert(function));
+                    case TokenType.Operation:
+                        char operation = (char)token.Value;
+                        resultStack.Push(Convert(operation));
+                        break;
+                    case TokenType.Text:
+                        string function = (string)token.Value;
+                        resultStack.Push(Convert(function));
+                        break;
                 }
             }
 
-            if (operatorStack.Count > 0 && operatorStack.Peek() is char && (char)operatorStack.Peek() == '(')
+            if (operatorStack.Count > 0 && operatorStack.Peek().TokenType == TokenType.LeftBracket)
                 operatorStack.Pop();
         }
 
