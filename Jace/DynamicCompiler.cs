@@ -135,6 +135,26 @@ namespace Jace
 
                 generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Pow"));
             }
+            else if (operation.GetType() == typeof(Function))
+            {
+                Function function = (Function)operation;
+
+                switch (function.FunctionType)
+                {
+                    case FunctionType.Sine:
+                        GenerateMethodBody(generator, function.Arguments[0]);
+                        
+                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Sin"));
+                        break;
+                    case FunctionType.Cosine:
+                        GenerateMethodBody(generator, function.Arguments[0]);
+                        
+                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Cos"));
+                        break;
+                    default:
+                        throw new ArgumentException(string.Format("Unsupported function \"{0}\".", function.FunctionType), "operation");
+                }
+            }
             else
             {
                 throw new ArgumentException(string.Format("Unsupported operation \"{0}\".", operation.GetType().FullName), "operation");

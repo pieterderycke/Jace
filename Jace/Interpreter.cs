@@ -86,7 +86,7 @@ namespace Jace
                     case FunctionType.Cosine:
                         return Math.Cos(Execute(function.Arguments[0]));
                     default:
-                        throw new Exception(string.Format("Unsupported function \"{0}\".", function.FunctionType));
+                        throw new ArgumentException(string.Format("Unsupported function \"{0}\".", function.FunctionType), "operation");
                 }
             }
             else
