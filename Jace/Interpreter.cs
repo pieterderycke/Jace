@@ -75,6 +75,20 @@ namespace Jace
                 Exponentiation exponentiation = (Exponentiation)operation;
                 return Math.Pow(Execute(exponentiation.Base, variables), Execute(exponentiation.Exponent, variables));
             }
+            else if (operation.GetType() == typeof(Function))
+            {
+                Function function = (Function)operation;
+
+                switch (function.FunctionType)
+                { 
+                    case FunctionType.Sine:
+                        return Math.Sin(Execute(function.Arguments[0]));
+                    case FunctionType.Cosine:
+                        return Math.Cos(Execute(function.Arguments[0]));
+                    default:
+                        throw new Exception(string.Format("Unsupported function \"{0}\".", function.FunctionType));
+                }
+            }
             else
             {
                 throw new ArgumentException(string.Format("Unsupported operation \"{0}\".", operation.GetType().FullName), "operation");

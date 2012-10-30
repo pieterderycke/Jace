@@ -164,5 +164,66 @@ namespace Jace.Tests
             Assert.AreEqual(new IntegerConstant(3), multiplication2.Argument1);
             Assert.AreEqual(new Variable("age"), multiplication2.Argument2);
         }
+
+        [TestMethod]
+        public void TestSinFunction1()
+        {
+            AstBuilder builder = new AstBuilder();
+            Operation operation = builder.Build(new List<Token>() { 
+                new Token() { Value = "sin", TokenType = TokenType.Text }, 
+                new Token() { Value = '(', TokenType = TokenType.LeftBracket }, 
+                new Token() { Value = 2, TokenType = TokenType.Integer }, 
+                new Token() { Value = ')', TokenType = TokenType.RightBracket }
+            });
+
+            Function sineFunction = (Function)operation;
+            Assert.AreEqual(new IntegerConstant(2), sineFunction.Arguments.Single());
+        }
+
+        [TestMethod]
+        public void TestSinFunction2()
+        {
+            AstBuilder builder = new AstBuilder();
+            Operation operation = builder.Build(new List<Token>() { 
+                new Token() { Value = "sin", TokenType = TokenType.Text }, 
+                new Token() { Value = '(', TokenType = TokenType.LeftBracket }, 
+                new Token() { Value = 2, TokenType = TokenType.Integer }, 
+                new Token() { Value = '+', TokenType = TokenType.Operation }, 
+                new Token() { Value = 3, TokenType = TokenType.Integer }, 
+                new Token() { Value = ')', TokenType = TokenType.RightBracket }
+            });
+
+            Function sineFunction = (Function)operation;
+
+            Addition addition = (Addition)sineFunction.Arguments.Single();
+            Assert.AreEqual(new IntegerConstant(2), addition.Argument1);
+            Assert.AreEqual(new IntegerConstant(3), addition.Argument2);
+        }
+
+        [TestMethod]
+        public void TestSinFunction3()
+        {
+            AstBuilder builder = new AstBuilder();
+            Operation operation = builder.Build(new List<Token>() { 
+                new Token() { Value = "sin", TokenType = TokenType.Text }, 
+                new Token() { Value = '(', TokenType = TokenType.LeftBracket }, 
+                new Token() { Value = 2, TokenType = TokenType.Integer }, 
+                new Token() { Value = '+', TokenType = TokenType.Operation }, 
+                new Token() { Value = 3, TokenType = TokenType.Integer }, 
+                new Token() { Value = ')', TokenType = TokenType.RightBracket },
+                new Token() { Value = '*', TokenType = TokenType.Operation },
+                new Token() { Value = 4.9, TokenType = TokenType.FloatingPoint }
+            });
+
+            Multiplication multiplication = (Multiplication)operation;
+
+            Function sineFunction = (Function)multiplication.Argument1;
+
+            Addition addition = (Addition)sineFunction.Arguments.Single();
+            Assert.AreEqual(new IntegerConstant(2), addition.Argument1);
+            Assert.AreEqual(new IntegerConstant(3), addition.Argument2);
+
+            Assert.AreEqual(new FloatingPointConstant(4.9), multiplication.Argument2);
+        }
     }
 }

@@ -92,6 +92,42 @@ namespace Jace.Tests
         }
 
         [TestMethod]
+        public void TestCalculateSineFunctionInterpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+            double result = engine.Calculate("sin(14)");
+
+            Assert.AreEqual(Math.Sin(14.0), result);
+        }
+
+        [TestMethod]
+        public void TestCalculateSineFunctionCompiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            double result = engine.Calculate("sin(14)");
+
+            Assert.AreEqual(Math.Sin(14.0), result);
+        }
+
+        [TestMethod]
+        public void TestCalculateCosineFunctionInterpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+            double result = engine.Calculate("cos(41)");
+
+            Assert.AreEqual(Math.Cos(41.0), result);
+        }
+
+        [TestMethod]
+        public void TestCalculateCosineFunctionCompiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            double result = engine.Calculate("cos(41)");
+
+            Assert.AreEqual(Math.Cos(41.0), result);
+        }
+
+        [TestMethod]
         public void TestBuild()
         { 
             CalculationEngine engine = new CalculationEngine();

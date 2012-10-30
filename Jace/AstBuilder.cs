@@ -41,7 +41,14 @@ namespace Jace
                         resultStack.Push(new FloatingPointConstant((double)token.Value));
                         break;
                     case TokenType.Text:
-                        resultStack.Push(new Variable((string)token.Value));
+                        if (IsFunctionName((string)token.Value))
+                        {
+                            operatorStack.Push(token.Value);
+                        }
+                        else
+                        {
+                            resultStack.Push(new Variable((string)token.Value));
+                        }
                         break;
                     case TokenType.LeftBracket:
                         operatorStack.Push((char)token.Value);
@@ -58,18 +65,29 @@ namespace Jace
                         }
                         else
                         {
-                            char operation2 = (char)operatorStack.Peek();
+                            bool isFunctionOnTopOfStack = operatorStack.Peek() is string;
 
-                            if ((IsLeftAssociativeOperation(operation1) && operationPrecedence[operation1] <= operationPrecedence[operation2]) ||
-                                (operationPrecedence[operation1] < operationPrecedence[operation2]))
+                            if (!isFunctionOnTopOfStack)
                             {
-                                operatorStack.Pop();
-                                operatorStack.Push(operation1);
-                                resultStack.Push(Convert(operation2));
+                                char operation2 = (char)operatorStack.Peek();
+
+                                if ((IsLeftAssociativeOperation(operation1) && operationPrecedence[operation1] <= operationPrecedence[operation2]) ||
+                                    (operationPrecedence[operation1] < operationPrecedence[operation2]))
+                                {
+                                    operatorStack.Pop();
+                                    operatorStack.Push(operation1);
+                                    resultStack.Push(Convert(operation2));
+                                }
+                                else
+                                {
+                                    operatorStack.Push(operation1);
+                                }
                             }
                             else
                             {
+                                string function = (string)operatorStack.Pop();
                                 operatorStack.Push(operation1);
+                                resultStack.Push(Convert(function));
                             }
                         }
 
@@ -84,13 +102,21 @@ namespace Jace
 
         private void PopOperations()
         {
-            while (operatorStack.Count > 0 && (char)operatorStack.Peek() != '(')
+            while (operatorStack.Count > 0 && (!(operatorStack.Peek() is char) || (char)operatorStack.Peek() != '('))
             {
-                char operation = (char)operatorStack.Pop();
-                resultStack.Push(Convert(operation));
+                if (operatorStack.Peek() is char)
+                {
+                    char operation = (char)operatorStack.Pop();
+                    resultStack.Push(Convert(operation));
+                }
+                else
+                {
+                    string function = (string)operatorStack.Pop();
+                    resultStack.Push(Convert(function));
+                }
             }
 
-            if (operatorStack.Count > 0 && (char)operatorStack.Peek() == '(')
+            if (operatorStack.Count > 0 && operatorStack.Peek() is char && (char)operatorStack.Peek() == '(')
                 operatorStack.Pop();
         }
 
@@ -135,6 +161,19 @@ namespace Jace
             }
         }
 
+        private Operation Convert(string function)
+        {
+            switch (function)
+            {
+                case "sin":
+                    return new Function(DataType.FloatingPoint, FunctionType.Sine, new Operation[] { resultStack.Pop() });
+                case "cos":
+                    return new Function(DataType.FloatingPoint, FunctionType.Cosine, new Operation[] { resultStack.Pop() });
+                default:
+                    throw new ArgumentException(string.Format("Unknown function \"{0}\".", function), "function");
+            }
+        }
+
         private bool IsOperation(char character)
         {
             return character == '*' || character == '+' || character == '-' || character == '/' || character == '^';
@@ -148,6 +187,18 @@ namespace Jace
         private DataType RequiredDataType(Operation argument1, Operation argument2)
         {
             return (argument1.DataType == DataType.FloatingPoint || argument2.DataType == DataType.FloatingPoint) ? DataType.FloatingPoint : DataType.Integer;
+        }
+
+        private bool IsFunctionName(string text)
+        {
+            switch (text.ToLowerInvariant())
+            {
+                case "sin":
+                case "cos":
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 }
