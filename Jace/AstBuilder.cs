@@ -66,11 +66,11 @@ namespace Jace
                         }
                         else
                         {
-                            bool isFunctionOnTopOfStack = operatorStack.Peek().TokenType == TokenType.Text;
+                            Token operation2Token = operatorStack.Peek();
+                            bool isFunctionOnTopOfStack = operation2Token.TokenType == TokenType.Text;
 
                             if (!isFunctionOnTopOfStack)
                             {
-                                Token operation2Token = operatorStack.Peek();
                                 char operation2 = (char)operation2Token.Value;
 
                                 if ((IsLeftAssociativeOperation(operation1) && operationPrecedence[operation1] <= operationPrecedence[operation2]) ||
@@ -87,7 +87,9 @@ namespace Jace
                             }
                             else
                             {
-                                string function = (string)operatorStack.Pop().Value;
+                                string function = (string)operation2Token.Value;
+
+                                operatorStack.Pop();
                                 operatorStack.Push(operation1Token);
                                 resultStack.Push(Convert(function));
                             }
