@@ -1,0 +1,12 @@
+﻿<Window x:Class="Jace.DemoApp.InputDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="InputDialog" Height="138" Width="474" ShowInTaskbar="False" ResizeMode="NoResize"
+        FocusManager.FocusedElement="{Binding ElementName=valueTextBox}">
+    <Grid>
+        <Label x:Name="questionLabel" Content="Value:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="valueTextBox" Height="23" Margin="10,41,10,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <Button Content="OK" HorizontalAlignment="Right" Margin="0,69,10,0" VerticalAlignment="Top" Width="75" IsDefault="True" Click="OK_Click"/>
+
+    </Grid>
+</Window>

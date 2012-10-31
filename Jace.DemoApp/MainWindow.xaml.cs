@@ -41,8 +41,15 @@ namespace Jace.DemoApp
 
             ShowAbstractSyntaxTree(operation);
 
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            foreach (Variable variable in GetVariables(operation))
+            {
+                double value = AskValueOfVariable(variable);
+                variables.Add(variable.Name, value);
+            }
+
             IExecutor executor = new Interpreter();
-            double result = executor.Execute(operation);
+            double result = executor.Execute(operation, variables);
 
             resultTextBox.Text = "" + result;
         }
@@ -119,6 +126,13 @@ namespace Jace.DemoApp
                 item.Items.Add(CreateTreeViewItem(exponentiation.Base));
                 item.Items.Add(CreateTreeViewItem(exponentiation.Exponent));
             }
+            else if (operation.GetType() == typeof(Function))
+            {
+                Function function = (Function)operation;
+
+                foreach (Operation argument in function.Arguments)
+                    item.Items.Add(CreateTreeViewItem(argument));
+            }
 
             return item;
         }
@@ -143,6 +157,22 @@ namespace Jace.DemoApp
                 {
                     value = "(" + floatingPointConstant.Value + ")";
                 }
+                else
+                {
+                    Variable variable = operation as Variable;
+                    if (variable != null)
+                    {
+                        value = "(" + variable.Name + ")";
+                    }
+                    else
+                    {
+                        Function function = operation as Function;
+                        if (function != null)
+                        {
+                            value = "(" + function.FunctionType + ")";
+                        }
+                    }
+                }
             }
 
             return string.Format(CultureInfo.InvariantCulture, "{0}<{1}>{2}", name, dataType, value);
@@ -159,6 +189,70 @@ namespace Jace.DemoApp
                 default:
                     return dataType.Name;
             }
+        }
+
+        private IEnumerable<Variable> GetVariables(Operation operation)
+        {
+            List<Variable> variables = new List<Variable>();
+            GetVariables(operation, variables);
+            return variables;
+        }
+
+        private void GetVariables(Operation operation, List<Variable> variables)
+        {
+            if (operation.DependsOnVariables)
+            {
+                if (operation.GetType() == typeof(Variable))
+                {
+                    variables.Add((Variable)operation);
+                }
+                else if (operation.GetType() == typeof(Addition))
+                {
+                    Addition addition = (Addition)operation;
+                    GetVariables(addition.Argument1, variables);
+                    GetVariables(addition.Argument2, variables);
+                }
+                else if (operation.GetType() == typeof(Multiplication))
+                {
+                    Multiplication multiplication = (Multiplication)operation;
+                    GetVariables(multiplication.Argument1, variables);
+                    GetVariables(multiplication.Argument2, variables);
+                }
+                else if (operation.GetType() == typeof(Substraction))
+                {
+                    Substraction substraction = (Substraction)operation;
+                    GetVariables(substraction.Argument1, variables);
+                    GetVariables(substraction.Argument2, variables);
+                }
+                else if (operation.GetType() == typeof(Division))
+                {
+                    Division division = (Division)operation;
+                    GetVariables(division.Dividend, variables);
+                    GetVariables(division.Divisor, variables);
+                }
+                else if (operation.GetType() == typeof(Exponentiation))
+                {
+                    Exponentiation exponentiation = (Exponentiation)operation;
+                    GetVariables(exponentiation.Base, variables);
+                    GetVariables(exponentiation.Exponent, variables);
+                }
+                else if (operation.GetType() == typeof(Function))
+                {
+                    Function function = (Function)operation;
+                    foreach (Operation argument in function.Arguments)
+                    {
+                        GetVariables(argument, variables);
+                    }
+                }
+            }
+        }
+
+        private double AskValueOfVariable(Variable variable)
+        {
+            InputDialog dialog = new InputDialog(variable.Name);
+            dialog.ShowDialog();
+
+            return dialog.Value;
         }
     }
 }
