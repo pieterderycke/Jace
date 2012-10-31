@@ -82,9 +82,9 @@ namespace Jace
                 switch (function.FunctionType)
                 { 
                     case FunctionType.Sine:
-                        return Math.Sin(Execute(function.Arguments[0]));
+                        return Math.Sin(Execute(function.Arguments[0], variables));
                     case FunctionType.Cosine:
-                        return Math.Cos(Execute(function.Arguments[0]));
+                        return Math.Cos(Execute(function.Arguments[0], variables));
                     default:
                         throw new ArgumentException(string.Format("Unsupported function \"{0}\".", function.FunctionType), "operation");
                 }
