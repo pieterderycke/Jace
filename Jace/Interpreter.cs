@@ -85,6 +85,12 @@ namespace Jace
                         return Math.Sin(Execute(function.Arguments[0], variables));
                     case FunctionType.Cosine:
                         return Math.Cos(Execute(function.Arguments[0], variables));
+                    case FunctionType.Loge:
+                        return Math.Log(Execute(function.Arguments[0], variables));
+                    case FunctionType.Log10:
+                        return Math.Log10(Execute(function.Arguments[0], variables));
+                    case FunctionType.Logn:
+                        return Math.Log(Execute(function.Arguments[0], variables), Execute(function.Arguments[1], variables));
                     default:
                         throw new ArgumentException(string.Format("Unsupported function \"{0}\".", function.FunctionType), "operation");
                 }

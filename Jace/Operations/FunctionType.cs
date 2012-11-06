@@ -8,6 +8,9 @@ namespace Jace.Operations
     public enum FunctionType
     {
         Sine,
-        Cosine
+        Cosine,
+        Loge,
+        Log10,
+        Logn
     }
 }

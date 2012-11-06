@@ -151,6 +151,22 @@ namespace Jace
                         
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Cos"));
                         break;
+                    case FunctionType.Loge:
+                        GenerateMethodBody(generator, function.Arguments[0]);
+
+                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Log", new Type[] { typeof(double) }));
+                        break;
+                    case FunctionType.Log10:
+                        GenerateMethodBody(generator, function.Arguments[0]);
+                        
+                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Log10"));
+                        break;
+                    case FunctionType.Logn:
+                        GenerateMethodBody(generator, function.Arguments[0]);
+                        GenerateMethodBody(generator, function.Arguments[1]);
+
+                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Log", new Type[] { typeof(double), typeof(double) }));
+                        break;
                     default:
                         throw new ArgumentException(string.Format("Unsupported function \"{0}\".", function.FunctionType), "operation");
                 }

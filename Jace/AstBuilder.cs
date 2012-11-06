@@ -176,6 +176,15 @@ namespace Jace
                     return new Function(DataType.FloatingPoint, FunctionType.Sine, new Operation[] { resultStack.Pop() });
                 case "cos":
                     return new Function(DataType.FloatingPoint, FunctionType.Cosine, new Operation[] { resultStack.Pop() });
+                case "loge":
+                    return new Function(DataType.FloatingPoint, FunctionType.Loge, new Operation[] { resultStack.Pop() });
+                case "log10":
+                    return new Function(DataType.FloatingPoint, FunctionType.Log10, new Operation[] { resultStack.Pop() });
+                case "logn":
+                    Operation[] operations = new Operation[2];
+                    operations[1] = resultStack.Pop();
+                    operations[0] = resultStack.Pop();
+                    return new Function(DataType.FloatingPoint, FunctionType.Logn, operations);
                 default:
                     throw new ArgumentException(string.Format("Unknown function \"{0}\".", function), "function");
             }
@@ -202,6 +211,9 @@ namespace Jace
             {
                 case "sin":
                 case "cos":
+                case "loge":
+                case "log10":
+                case "logn":
                     return true;
                 default:
                     return false;

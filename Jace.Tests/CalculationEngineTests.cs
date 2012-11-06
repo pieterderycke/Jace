@@ -128,6 +128,24 @@ namespace Jace.Tests
         }
 
         [TestMethod]
+        public void TestCalculateLognFunctionInterpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false);
+            double result = engine.Calculate("logn(14, 3)");
+
+            Assert.AreEqual(Math.Log(14.0, 3.0), result);
+        }
+
+        [TestMethod]
+        public void TestCalculateLognFunctionCompiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            double result = engine.Calculate("logn(14, 3)");
+
+            Assert.AreEqual(Math.Log(14.0, 3.0), result);
+        }
+
+        [TestMethod]
         public void TestBuild()
         { 
             CalculationEngine engine = new CalculationEngine();
