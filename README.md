@@ -40,7 +40,7 @@ Dictionary<string, double> variables = new Dictionary<string, double>();
 variables.Add("var1", 2);
 variables.Add("otherVariable", 4.2);
 	
-double result = function(2, 4.2);
+double result = function(variables);
 ```
 
 To build a typed .NET Func:
