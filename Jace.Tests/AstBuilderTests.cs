@@ -225,5 +225,47 @@ namespace Jace.Tests
 
             Assert.AreEqual(new FloatingPointConstant(4.9), multiplication.Argument2);
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(ParseException))]
+        public void TestBuildInvalidFormula1()
+        {
+            AstBuilder builder = new AstBuilder();
+            Operation operation = builder.Build(new List<Token>() { 
+                new Token() { Value = '(', TokenType = TokenType.LeftBracket, StartPosition = 0 }, 
+                new Token() { Value = 42, TokenType = TokenType.Integer, StartPosition = 1 }, 
+                new Token() { Value = '+', TokenType = TokenType.Operation, StartPosition = 3 }, 
+                new Token() { Value = 8, TokenType = TokenType.Integer, StartPosition = 4 }, 
+                new Token() { Value = ')', TokenType = TokenType.RightBracket, StartPosition = 5 }, 
+                new Token() { Value = '*', TokenType = TokenType.Operation, StartPosition = 6 }, 
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ParseException))]
+        public void TestBuildInvalidFormula2()
+        {
+            AstBuilder builder = new AstBuilder();
+            Operation operation = builder.Build(new List<Token>() { 
+                new Token() { Value = 42, TokenType = TokenType.Integer, StartPosition = 0 }, 
+                new Token() { Value = '+', TokenType = TokenType.Operation, StartPosition = 2 }, 
+                new Token() { Value = 8, TokenType = TokenType.Integer, StartPosition = 3 }, 
+                new Token() { Value = ')', TokenType = TokenType.RightBracket, StartPosition = 4 }, 
+                new Token() { Value = '*', TokenType = TokenType.Operation, StartPosition = 5 }, 
+                new Token() { Value = 2, TokenType = TokenType.Integer, StartPosition = 6 }, 
+            });
+        }
+
+        [TestMethod]
+        public void TestBuildInvalidFormula3()
+        {
+            AstBuilder builder = new AstBuilder();
+            Operation operation = builder.Build(new List<Token>() { 
+                new Token() { Value = '(', TokenType = TokenType.LeftBracket, StartPosition = 0 }, 
+                new Token() { Value = 42, TokenType = TokenType.Integer, StartPosition = 1 }, 
+                new Token() { Value = '+', TokenType = TokenType.Operation, StartPosition = 3 }, 
+                new Token() { Value = 8, TokenType = TokenType.Integer, StartPosition = 4 }, 
+            });
+        }
     }
 }

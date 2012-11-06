@@ -54,7 +54,7 @@ namespace Jace
                         operatorStack.Push(token);
                         break;
                     case TokenType.RightBracket:
-                        PopOperations();
+                        PopOperations(true, token);
                         break;
                     case TokenType.Operation:
                         Token operation1Token = token;
@@ -78,7 +78,7 @@ namespace Jace
                                 {
                                     operatorStack.Pop();
                                     operatorStack.Push(operation1Token);
-                                    resultStack.Push(Convert(operation2));
+                                    resultStack.Push(Convert(operation2Token));
                                 }
                                 else
                                 {
@@ -99,13 +99,17 @@ namespace Jace
                 }
             }
 
-            PopOperations();
+            PopOperations(false, null);
 
             return resultStack.First();
         }
 
-        private void PopOperations()
+        private void PopOperations(bool untillLeftBracket, Token? currentToken)
         {
+            if (untillLeftBracket && !currentToken.HasValue)
+                throw new ArgumentNullException("currentToken", "If the parameter \"untillLeftBracket\" is set to true, " +
+                    "the parameter \"currentToken\" cannot be null.");
+
             while (operatorStack.Count > 0 && operatorStack.Peek().TokenType != TokenType.LeftBracket)
             {
                 Token token = operatorStack.Pop();
@@ -113,8 +117,7 @@ namespace Jace
                 switch (token.TokenType)
                 {
                     case TokenType.Operation:
-                        char operation = (char)token.Value;
-                        resultStack.Push(Convert(operation));
+                        resultStack.Push(Convert(token));
                         break;
                     case TokenType.Text:
                         string function = (string)token.Value;
@@ -123,48 +126,70 @@ namespace Jace
                 }
             }
 
-            if (operatorStack.Count > 0 && operatorStack.Peek().TokenType == TokenType.LeftBracket)
-                operatorStack.Pop();
+            if (untillLeftBracket)
+            {
+                if (operatorStack.Count > 0 && operatorStack.Peek().TokenType == TokenType.LeftBracket)
+                    operatorStack.Pop();
+                else
+                    throw new ParseException(string.Format("No matching left bracket found for the right " +
+                        "bracket at position {0}.", currentToken.Value.StartPosition));
+            }
+            else
+            {
+                if (operatorStack.Count > 0 && operatorStack.Peek().TokenType == TokenType.LeftBracket)
+                    throw new ParseException(string.Format("No matching right bracket found for the left " +
+                        "bracket at position {0}.", operatorStack.Peek().StartPosition));
+            }
         }
 
-        private Operation Convert(char operation)
+        private Operation Convert(Token operationToken)
         {
-            DataType dataType;
-            Operation argument1;
-            Operation argument2;
-
-            switch (operation)
+            try
             {
-                case '+':
-                    argument2 = resultStack.Pop();
-                    argument1 = resultStack.Pop();
-                    dataType = RequiredDataType(argument1, argument2);
+                DataType dataType;
+                Operation argument1;
+                Operation argument2;
 
-                    return new Addition(dataType, argument1, argument2);
-                case '-':
-                    argument2 = resultStack.Pop();
-                    argument1 = resultStack.Pop();
-                    dataType = RequiredDataType(argument1, argument2);
+                switch ((char)operationToken.Value)
+                {
+                    case '+':
+                        argument2 = resultStack.Pop();
+                        argument1 = resultStack.Pop();
+                        dataType = RequiredDataType(argument1, argument2);
 
-                    return new Substraction(dataType, argument1, argument2);
-                case '*':
-                    argument2 = resultStack.Pop();
-                    argument1 = resultStack.Pop();
-                    dataType = RequiredDataType(argument1, argument2);
+                        return new Addition(dataType, argument1, argument2);
+                    case '-':
+                        argument2 = resultStack.Pop();
+                        argument1 = resultStack.Pop();
+                        dataType = RequiredDataType(argument1, argument2);
 
-                    return new Multiplication(dataType, argument1, argument2);
-                case '/':
-                    Operation divisor = resultStack.Pop();
-                    Operation divident = resultStack.Pop();
+                        return new Substraction(dataType, argument1, argument2);
+                    case '*':
+                        argument2 = resultStack.Pop();
+                        argument1 = resultStack.Pop();
+                        dataType = RequiredDataType(argument1, argument2);
 
-                    return new Division(DataType.FloatingPoint, divident, divisor);
-                case '^':
-                    Operation exponent = resultStack.Pop();
-                    Operation @base = resultStack.Pop();
+                        return new Multiplication(dataType, argument1, argument2);
+                    case '/':
+                        Operation divisor = resultStack.Pop();
+                        Operation divident = resultStack.Pop();
 
-                    return new Exponentiation(DataType.FloatingPoint, @base, exponent);
-                default:
-                    throw new ArgumentException(string.Format("Unknown operation \"{0}\".", operation), "operation");
+                        return new Division(DataType.FloatingPoint, divident, divisor);
+                    case '^':
+                        Operation exponent = resultStack.Pop();
+                        Operation @base = resultStack.Pop();
+
+                        return new Exponentiation(DataType.FloatingPoint, @base, exponent);
+                    default:
+                        throw new ArgumentException(string.Format("Unknown operation \"{0}\".", operationToken), "operation");
+                }
+            }
+            catch (InvalidOperationException)
+            {
+                // If we encounter a Stack empty issue this means there is a syntax issue in 
+                // the mathematical function
+                throw new ParseException(string.Format("There is a syntax issue for the operation \"{0}\" at position {1}. " +
+                    "The number of arguments does not match with what is expected.", operationToken.Value, operationToken.StartPosition));
             }
         }
 
