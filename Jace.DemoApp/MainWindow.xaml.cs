@@ -29,29 +29,45 @@ namespace Jace.DemoApp
 
         private void calculateButton_Click(object sender, RoutedEventArgs e)
         {
-            string formula = formulaTextBox.Text;
-
-            TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
-            List<Token> tokens = reader.Read(formula);
-
-            ShowTokens(tokens);
-
-            AstBuilder astBuilder = new AstBuilder();
-            Operation operation = astBuilder.Build(tokens);
-
-            ShowAbstractSyntaxTree(operation);
-
-            Dictionary<string, double> variables = new Dictionary<string, double>();
-            foreach (Variable variable in GetVariables(operation))
+            try
             {
-                double value = AskValueOfVariable(variable);
-                variables.Add(variable.Name, value);
+                ClearScreen();
+
+                string formula = formulaTextBox.Text;
+
+                TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
+                List<Token> tokens = reader.Read(formula);
+
+                ShowTokens(tokens);
+
+                AstBuilder astBuilder = new AstBuilder();
+                Operation operation = astBuilder.Build(tokens);
+
+                ShowAbstractSyntaxTree(operation);
+
+                Dictionary<string, double> variables = new Dictionary<string, double>();
+                foreach (Variable variable in GetVariables(operation))
+                {
+                    double value = AskValueOfVariable(variable);
+                    variables.Add(variable.Name, value);
+                }
+
+                IExecutor executor = new Interpreter();
+                double result = executor.Execute(operation, variables);
+
+                resultTextBox.Text = "" + result;
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
 
-            IExecutor executor = new Interpreter();
-            double result = executor.Execute(operation, variables);
-
-            resultTextBox.Text = "" + result;
+        private void ClearScreen()
+        {
+            tokensTextBox.Text = "";
+            astTreeView.Items.Clear();
+            resultTextBox.Text = "";
         }
 
         private void ShowTokens(List<Token> tokens)
