@@ -101,6 +101,8 @@ namespace Jace
 
             PopOperations(false, null);
 
+            VerifyResultStack();
+
             return resultStack.First();
         }
 
@@ -212,6 +214,32 @@ namespace Jace
                     return new Function(DataType.FloatingPoint, FunctionType.Logn, operations);
                 default:
                     throw new ArgumentException(string.Format("Unknown function \"{0}\".", function), "function");
+            }
+        }
+
+        private void VerifyResultStack()
+        {
+            if(resultStack.Count > 1)
+            {
+                Operation[] operations = resultStack.ToArray();
+
+                for (int i = 1; i < operations.Length; i++)
+                {
+                    Operation operation = operations[i];
+
+                    if (operation.GetType() == typeof(IntegerConstant))
+                    {
+                        IntegerConstant constant = (IntegerConstant)operation;
+                        throw new ParseException(string.Format("Unexpected integer constant \"{0}\" found.", constant.Value));
+                    }
+                    else if (operation.GetType() == typeof(FloatingPointConstant))
+                    {
+                        FloatingPointConstant constant = (FloatingPointConstant)operation;
+                        throw new ParseException(string.Format("Unexpected floating point constant \"{0}\" found.", constant.Value)); 
+                    }
+                }
+
+                throw new ParseException("The syntax of the provided function is not valid.");
             }
         }
 

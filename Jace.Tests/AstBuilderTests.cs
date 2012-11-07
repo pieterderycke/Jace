@@ -257,6 +257,7 @@ namespace Jace.Tests
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ParseException))]
         public void TestBuildInvalidFormula3()
         {
             AstBuilder builder = new AstBuilder();
@@ -264,7 +265,33 @@ namespace Jace.Tests
                 new Token() { Value = '(', TokenType = TokenType.LeftBracket, StartPosition = 0 }, 
                 new Token() { Value = 42, TokenType = TokenType.Integer, StartPosition = 1 }, 
                 new Token() { Value = '+', TokenType = TokenType.Operation, StartPosition = 3 }, 
-                new Token() { Value = 8, TokenType = TokenType.Integer, StartPosition = 4 }, 
+                new Token() { Value = 8, TokenType = TokenType.Integer, StartPosition = 4 }
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ParseException))]
+        public void TestBuildInvalidFormula4()
+        {
+            AstBuilder builder = new AstBuilder();
+            Operation operation = builder.Build(new List<Token>() { 
+                new Token() { Value = 5, TokenType = TokenType.Integer, StartPosition = 0 }, 
+                new Token() { Value = 42, TokenType = TokenType.Integer, StartPosition = 1 }, 
+                new Token() { Value = '+', TokenType = TokenType.Operation, StartPosition = 3 }, 
+                new Token() { Value = 8, TokenType = TokenType.Integer, StartPosition = 4 }
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ParseException))]
+        public void TestBuildInvalidFormula5()
+        {
+            AstBuilder builder = new AstBuilder();
+            Operation operation = builder.Build(new List<Token>() { 
+                new Token() { Value = 42, TokenType = TokenType.Integer, StartPosition = 0 }, 
+                new Token() { Value = '+', TokenType = TokenType.Operation, StartPosition = 2 }, 
+                new Token() { Value = 8, TokenType = TokenType.Integer, StartPosition = 3 },
+                new Token() { Value = 5, TokenType = TokenType.Integer, StartPosition = 4 } 
             });
         }
     }
