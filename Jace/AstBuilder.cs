@@ -78,7 +78,7 @@ namespace Jace
                                 {
                                     operatorStack.Pop();
                                     operatorStack.Push(operation1Token);
-                                    resultStack.Push(Convert(operation2Token));
+                                    resultStack.Push(ConvertOperation(operation2Token));
                                 }
                                 else
                                 {
@@ -87,11 +87,9 @@ namespace Jace
                             }
                             else
                             {
-                                string function = (string)operation2Token.Value;
-
                                 operatorStack.Pop();
                                 operatorStack.Push(operation1Token);
-                                resultStack.Push(Convert(function));
+                                resultStack.Push(ConvertFunction(operation2Token));
                             }
                         }
 
@@ -119,11 +117,10 @@ namespace Jace
                 switch (token.TokenType)
                 {
                     case TokenType.Operation:
-                        resultStack.Push(Convert(token));
+                        resultStack.Push(ConvertOperation(token));
                         break;
                     case TokenType.Text:
-                        string function = (string)token.Value;
-                        resultStack.Push(Convert(function));
+                        resultStack.Push(ConvertFunction(token));
                         break;
                 }
             }
@@ -144,7 +141,7 @@ namespace Jace
             }
         }
 
-        private Operation Convert(Token operationToken)
+        private Operation ConvertOperation(Token operationToken)
         {
             try
             {
@@ -195,25 +192,35 @@ namespace Jace
             }
         }
 
-        private Operation Convert(string function)
+        private Operation ConvertFunction(Token functionToken)
         {
-            switch (function)
+            try
             {
-                case "sin":
-                    return new Function(DataType.FloatingPoint, FunctionType.Sine, new Operation[] { resultStack.Pop() });
-                case "cos":
-                    return new Function(DataType.FloatingPoint, FunctionType.Cosine, new Operation[] { resultStack.Pop() });
-                case "loge":
-                    return new Function(DataType.FloatingPoint, FunctionType.Loge, new Operation[] { resultStack.Pop() });
-                case "log10":
-                    return new Function(DataType.FloatingPoint, FunctionType.Log10, new Operation[] { resultStack.Pop() });
-                case "logn":
-                    Operation[] operations = new Operation[2];
-                    operations[1] = resultStack.Pop();
-                    operations[0] = resultStack.Pop();
-                    return new Function(DataType.FloatingPoint, FunctionType.Logn, operations);
-                default:
-                    throw new ArgumentException(string.Format("Unknown function \"{0}\".", function), "function");
+                switch ((string)functionToken.Value)
+                {
+                    case "sin":
+                        return new Function(DataType.FloatingPoint, FunctionType.Sine, new Operation[] { resultStack.Pop() });
+                    case "cos":
+                        return new Function(DataType.FloatingPoint, FunctionType.Cosine, new Operation[] { resultStack.Pop() });
+                    case "loge":
+                        return new Function(DataType.FloatingPoint, FunctionType.Loge, new Operation[] { resultStack.Pop() });
+                    case "log10":
+                        return new Function(DataType.FloatingPoint, FunctionType.Log10, new Operation[] { resultStack.Pop() });
+                    case "logn":
+                        Operation[] operations = new Operation[2];
+                        operations[1] = resultStack.Pop();
+                        operations[0] = resultStack.Pop();
+                        return new Function(DataType.FloatingPoint, FunctionType.Logn, operations);
+                    default:
+                        throw new ArgumentException(string.Format("Unknown function \"{0}\".", functionToken.Value), "function");
+                }
+            }
+            catch (InvalidOperationException)
+            {
+                // If we encounter a Stack empty issue this means there is a syntax issue in 
+                // the mathematical function
+                throw new ParseException(string.Format("There is a syntax issue for the function \"{0}\" at position {1}. " +
+                    "The number of arguments does not match with what is expected.", functionToken.Value, functionToken.StartPosition));
             }
         }
 
