@@ -186,5 +186,26 @@ namespace Jace.Tests
             double result = function(2, 4);
             Assert.AreEqual(26.0, result);
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void TestFunctionBuilderInvalidParameterName()
+        {
+            CalculationEngine engine = new CalculationEngine();
+            Func<int, double, double> function = (Func<int, double, double>)engine.Function("sin+2")
+                .Parameter("sin", DataType.Integer)
+                .Build();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void TestFunctionBuilderDuplicateParameterName()
+        {
+            CalculationEngine engine = new CalculationEngine();
+            Func<int, double, double> function = (Func<int, double, double>)engine.Function("var1+2")
+                .Parameter("var1", DataType.Integer)
+                .Parameter("var1", DataType.FloatingPoint)
+                .Build();
+        }
     }
 }

@@ -41,7 +41,7 @@ namespace Jace
                         resultStack.Push(new FloatingPointConstant((double)token.Value));
                         break;
                     case TokenType.Text:
-                        if (IsFunctionName((string)token.Value))
+                        if (EngineUtil.IsFunctionName((string)token.Value))
                         {
                             operatorStack.Push(token);
                         }
@@ -256,21 +256,6 @@ namespace Jace
         private DataType RequiredDataType(Operation argument1, Operation argument2)
         {
             return (argument1.DataType == DataType.FloatingPoint || argument2.DataType == DataType.FloatingPoint) ? DataType.FloatingPoint : DataType.Integer;
-        }
-
-        private bool IsFunctionName(string text)
-        {
-            switch (text.ToLowerInvariant())
-            {
-                case "sin":
-                case "cos":
-                case "loge":
-                case "log10":
-                case "logn":
-                    return true;
-                default:
-                    return false;
-            }
         }
     }
 }

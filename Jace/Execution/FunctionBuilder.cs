@@ -33,6 +33,15 @@ namespace Jace.Execution
 
         public FunctionBuilder Parameter(string name, DataType dataType)
         {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentNullException("name");
+
+            if (EngineUtil.IsFunctionName(name))
+                throw new ArgumentException(string.Format("The name \"{0}\" is a restricted function name. Parameters cannot have this name.", name), "name");
+
+            if (parameters.Any(p => p.Name == name))
+                throw new ArgumentException(string.Format("A parameter with the name \"{0}\" was already defined.", name), "name");
+
             parameters.Add(new ParameterInfo() {Name = name, DataType = dataType});
             return this;
         }

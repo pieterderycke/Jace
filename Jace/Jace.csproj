@@ -48,6 +48,7 @@
     <Compile Include="CalculationEngine.cs" />
     <Compile Include="DataType.cs" />
     <Compile Include="DynamicCompiler.cs" />
+    <Compile Include="EngineUtil.cs" />
     <Compile Include="ExecutionMode.cs" />
     <Compile Include="Execution\FunctionBuilder.cs" />
     <Compile Include="Execution\ParameterInfo.cs" />
