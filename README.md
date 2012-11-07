@@ -61,3 +61,7 @@ Below you can find the results of Jace.NET benchmark that show its high performa
 
 * Interpreted Mode : 00:00:06.7860119
 * Dynamic Compilation Mode: 00:00:02.5584045
+
+## More Information
+For more information, you can consult the following article:
+http://pieterderycke.wordpress.com/2012/11/04/jace-net-just-another-calculation-engine-for-net/
