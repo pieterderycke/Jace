@@ -160,7 +160,7 @@ namespace Jace.Tests
         }
 
         [TestMethod]
-        public void TestFunctionBuilder()
+        public void TestFormulaBuilder()
         {
             CalculationEngine engine = new CalculationEngine();
             Func<int, double, double> function = (Func<int, double, double>)engine.Formula("var1+2*(3*age)")
@@ -174,7 +174,7 @@ namespace Jace.Tests
         }
 
         [TestMethod]
-        public void TestFunctionBuilderCompiled()
+        public void TestFormulaBuilderCompiled()
         {
             CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);
             Func<int, double, double> function = (Func<int, double, double>)engine.Formula("var1+2*(3*age)")
@@ -189,7 +189,7 @@ namespace Jace.Tests
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void TestFunctionBuilderInvalidParameterName()
+        public void TestFormulaBuilderInvalidParameterName()
         {
             CalculationEngine engine = new CalculationEngine();
             Func<int, double, double> function = (Func<int, double, double>)engine.Formula("sin+2")
@@ -199,7 +199,7 @@ namespace Jace.Tests
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void TestFunctionBuilderDuplicateParameterName()
+        public void TestFormulaBuilderDuplicateParameterName()
         {
             CalculationEngine engine = new CalculationEngine();
             Func<int, double, double> function = (Func<int, double, double>)engine.Formula("var1+2")
