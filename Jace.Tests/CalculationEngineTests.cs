@@ -163,7 +163,7 @@ namespace Jace.Tests
         public void TestFunctionBuilder()
         {
             CalculationEngine engine = new CalculationEngine();
-            Func<int, double, double> function = (Func<int, double, double>)engine.Function("var1+2*(3*age)")
+            Func<int, double, double> function = (Func<int, double, double>)engine.Formula("var1+2*(3*age)")
                 .Parameter("var1", DataType.Integer)
                 .Parameter("age", DataType.FloatingPoint)
                 .Result(DataType.FloatingPoint)
@@ -177,7 +177,7 @@ namespace Jace.Tests
         public void TestFunctionBuilderCompiled()
         {
             CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);
-            Func<int, double, double> function = (Func<int, double, double>)engine.Function("var1+2*(3*age)")
+            Func<int, double, double> function = (Func<int, double, double>)engine.Formula("var1+2*(3*age)")
                 .Parameter("var1", DataType.Integer)
                 .Parameter("age", DataType.FloatingPoint)
                 .Result(DataType.FloatingPoint)
@@ -192,7 +192,7 @@ namespace Jace.Tests
         public void TestFunctionBuilderInvalidParameterName()
         {
             CalculationEngine engine = new CalculationEngine();
-            Func<int, double, double> function = (Func<int, double, double>)engine.Function("sin+2")
+            Func<int, double, double> function = (Func<int, double, double>)engine.Formula("sin+2")
                 .Parameter("sin", DataType.Integer)
                 .Build();
         }
@@ -202,7 +202,7 @@ namespace Jace.Tests
         public void TestFunctionBuilderDuplicateParameterName()
         {
             CalculationEngine engine = new CalculationEngine();
-            Func<int, double, double> function = (Func<int, double, double>)engine.Function("var1+2")
+            Func<int, double, double> function = (Func<int, double, double>)engine.Formula("var1+2")
                 .Parameter("var1", DataType.Integer)
                 .Parameter("var1", DataType.FloatingPoint)
                 .Build();

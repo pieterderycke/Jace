@@ -50,7 +50,7 @@
     <Compile Include="DynamicCompiler.cs" />
     <Compile Include="EngineUtil.cs" />
     <Compile Include="ExecutionMode.cs" />
-    <Compile Include="Execution\FunctionBuilder.cs" />
+    <Compile Include="Execution\FormulaBuilder.cs" />
     <Compile Include="Execution\ParameterInfo.cs" />
     <Compile Include="IExecutor.cs" />
     <Compile Include="Interpreter.cs" />

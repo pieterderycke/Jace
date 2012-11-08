@@ -186,7 +186,7 @@ namespace Jace
             catch (InvalidOperationException)
             {
                 // If we encounter a Stack empty issue this means there is a syntax issue in 
-                // the mathematical function
+                // the mathematical formula
                 throw new ParseException(string.Format("There is a syntax issue for the operation \"{0}\" at position {1}. " +
                     "The number of arguments does not match with what is expected.", operationToken.Value, operationToken.StartPosition));
             }
@@ -218,7 +218,7 @@ namespace Jace
             catch (InvalidOperationException)
             {
                 // If we encounter a Stack empty issue this means there is a syntax issue in 
-                // the mathematical function
+                // the mathematical formula
                 throw new ParseException(string.Format("There is a syntax issue for the function \"{0}\" at position {1}. " +
                     "The number of arguments does not match with what is expected.", functionToken.Value, functionToken.StartPosition));
             }
@@ -246,7 +246,7 @@ namespace Jace
                     }
                 }
 
-                throw new ParseException("The syntax of the provided function is not valid.");
+                throw new ParseException("The syntax of the provided formula is not valid.");
             }
         }
 

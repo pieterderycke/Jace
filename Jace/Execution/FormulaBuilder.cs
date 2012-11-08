@@ -9,29 +9,29 @@ using Jace.Util;
 
 namespace Jace.Execution
 {
-    public class FunctionBuilder
+    public class FormulaBuilder
     {
         private readonly CalculationEngine engine;
 
-        private string functionText;
+        private string formulaText;
         private DataType? resultDataType;
         private List<ParameterInfo> parameters;
 
         /// <summary>
-        /// Creates a new instance of the FunctionBuilder class.
+        /// Creates a new instance of the FormulaBuilder class.
         /// </summary>
-        /// <param name="functionText">
+        /// <param name="formulaText">
         /// A calculation engine instance that can be used for interpreting and executing 
-        /// the function.
+        /// the formula.
         /// </param>
-        internal FunctionBuilder(string functionText, CalculationEngine engine)
+        internal FormulaBuilder(string formulaText, CalculationEngine engine)
         {
             this.parameters = new List<ParameterInfo>();
-            this.functionText = functionText;
+            this.formulaText = formulaText;
             this.engine = engine;
         }
 
-        public FunctionBuilder Parameter(string name, DataType dataType)
+        public FormulaBuilder Parameter(string name, DataType dataType)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException("name");
@@ -46,7 +46,7 @@ namespace Jace.Execution
             return this;
         }
 
-        public FunctionBuilder Result(DataType dataType)
+        public FormulaBuilder Result(DataType dataType)
         {
             resultDataType = dataType;
             return this;
@@ -55,12 +55,12 @@ namespace Jace.Execution
         public Delegate Build()
         {
             if (!resultDataType.HasValue)
-                throw new Exception("Please define a result data type for the function.");
+                throw new Exception("Please define a result data type for the formula.");
 
-            Func<Dictionary<string, double>, double> function = engine.Build(functionText);
+            Func<Dictionary<string, double>, double> formula = engine.Build(formulaText);
 
             FuncAdapter adapter = new FuncAdapter();
-            return adapter.Wrap(parameters, variables => function(variables));
+            return adapter.Wrap(parameters, variables => formula(variables));
         }
     }
 }

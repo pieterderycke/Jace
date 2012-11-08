@@ -82,7 +82,7 @@ namespace Jace.Benchmark
         {
             DateTime start = DateTime.Now;
 
-            Func<int, int, int, double> function = (Func<int, int, int, double>)engine.Function(functionText)
+            Func<int, int, int, double> function = (Func<int, int, int, double>)engine.Formula(functionText)
                 .Parameter("var1", DataType.Integer)
                 .Parameter("var2", DataType.Integer)
                 .Parameter("something", DataType.Integer)
@@ -125,7 +125,7 @@ namespace Jace.Benchmark
             {
                 Task task = new Task(() =>
                 {
-                    Func<int, int, int, double> function = (Func<int, int, int, double>)engine.Function(functionText)
+                    Func<int, int, int, double> function = (Func<int, int, int, double>)engine.Formula(functionText)
                         .Parameter("var1", DataType.Integer)
                         .Parameter("var2", DataType.Integer)
                         .Parameter("var3", DataType.Integer)

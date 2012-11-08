@@ -15,7 +15,7 @@ namespace Jace
         private readonly IExecutor executor;
         private readonly Optimizer optimizer;
         private readonly CultureInfo cultureInfo;
-        private readonly ConcurrentDictionary<string, Func<Dictionary<string, double>, double>> executionFunctionCache;
+        private readonly ConcurrentDictionary<string, Func<Dictionary<string, double>, double>> executionFormulaCache;
         private readonly bool cacheEnabled;
         private readonly bool optimizerEnabled;
 
@@ -36,7 +36,7 @@ namespace Jace
 
         public CalculationEngine(CultureInfo cultureInfo, ExecutionMode executionMode, bool cacheEnabled, bool optimizerEnabled)
         {
-            this.executionFunctionCache = new ConcurrentDictionary<string, Func<Dictionary<string, double>, double>>();
+            this.executionFormulaCache = new ConcurrentDictionary<string, Func<Dictionary<string, double>, double>>();
             this.cultureInfo = cultureInfo;
             this.cacheEnabled = cacheEnabled;
             this.optimizerEnabled = optimizerEnabled;
@@ -52,67 +52,68 @@ namespace Jace
             optimizer = new Optimizer(new Interpreter()); // We run the optimizer with the interpreter 
         }
 
-        public double Calculate(string functionText)
+        public double Calculate(string formulaText)
         {
-            return Calculate(functionText, new Dictionary<string, double>());
+            return Calculate(formulaText, new Dictionary<string, double>());
         }
 
-        public double Calculate(string functionText, Dictionary<string, double> variables)
+        public double Calculate(string formulaText, Dictionary<string, double> variables)
         {
-            if (string.IsNullOrEmpty(functionText))
-                throw new ArgumentNullException("functionText");
+            if (string.IsNullOrEmpty(formulaText))
+                throw new ArgumentNullException("formulaText");
 
             if (variables == null)
                 throw new ArgumentNullException("variables");
 
-            if (IsInFunctionCache(functionText))
+            if (IsInFormulaCache(formulaText))
             {
-                Func<Dictionary<string, double>, double> function = executionFunctionCache[functionText];
-                return function(variables);
+                Func<Dictionary<string, double>, double> formula = executionFormulaCache[formulaText];
+                return formula(variables);
             }
             else
             {
-                Operation operation = BuildAbstractSyntaxTree(functionText);
-                Func<Dictionary<string, double>, double> function = BuildFunction(functionText, operation);
+                Operation operation = BuildAbstractSyntaxTree(formulaText);
+                Func<Dictionary<string, double>, double> function = BuildFormula(formulaText, operation);
 
                 return function(variables);
             }
         }
 
-        public FunctionBuilder Function(string functionText)
+        public FormulaBuilder Formula(string formulaText)
         {
-            if (string.IsNullOrEmpty(functionText))
-                throw new ArgumentNullException("functionText");
+            if (string.IsNullOrEmpty(formulaText))
+                throw new ArgumentNullException("formulaText");
 
-            return new FunctionBuilder(functionText, this);
+            return new FormulaBuilder(formulaText, this);
         }
 
-        public Func<Dictionary<string, double>, double> Build(string functionText)
+        public Func<Dictionary<string, double>, double> Build(string formulaText)
         {
-            if (string.IsNullOrEmpty(functionText))
-                throw new ArgumentNullException("functionText");
+            if (string.IsNullOrEmpty(formulaText))
+                throw new ArgumentNullException("formulaText");
 
-            if (IsInFunctionCache(functionText))
+            if (IsInFormulaCache(formulaText))
             {
-                return executionFunctionCache[functionText];
+                return executionFormulaCache[formulaText];
             }
             else
             {
-                Operation operation = BuildAbstractSyntaxTree(functionText);
-                return BuildFunction(functionText, operation);
+                Operation operation = BuildAbstractSyntaxTree(formulaText);
+                return BuildFormula(formulaText, operation);
             }
         }
 
         /// <summary>
-        /// Build the abstract syntax tree for a given function. The function string will
+        /// Build the abstract syntax tree for a given formula. The formula string will
         /// be first tokenized.
         /// </summary>
-        /// <param name="functionText">A string containing the mathematical formula that must be converted into an abstract syntax tree.</param>
+        /// <param name="formulaText">A string containing the mathematical formula that must be converted 
+        /// into an abstract syntax tree.</param>
         /// <returns>The abstract syntax tree of the formula.</returns>
-        private Operation BuildAbstractSyntaxTree(string functionText)
+        private Operation BuildAbstractSyntaxTree(string formulaText)
         {
             TokenReader tokenReader = new TokenReader(cultureInfo);
-            List<Token> tokens = tokenReader.Read(functionText);
+            List<Token> tokens = tokenReader.Read(formulaText);
 
             AstBuilder astBuilder = new AstBuilder();
             Operation operation = astBuilder.Build(tokens);
@@ -123,14 +124,14 @@ namespace Jace
                 return operation;
         }
 
-        private Func<Dictionary<string, double>, double> BuildFunction(string functionText, Operation operation)
+        private Func<Dictionary<string, double>, double> BuildFormula(string formulaText, Operation operation)
         {
-            return executionFunctionCache.GetOrAdd(functionText, v => executor.BuildFunction(operation));
+            return executionFormulaCache.GetOrAdd(formulaText, v => executor.BuildFunction(operation));
         }
 
-        private bool IsInFunctionCache(string functionText)
+        private bool IsInFormulaCache(string formulaText)
         {
-            return cacheEnabled && executionFunctionCache.ContainsKey(functionText);
+            return cacheEnabled && executionFormulaCache.ContainsKey(formulaText);
         }
     }
 }
