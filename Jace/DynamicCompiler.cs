@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
@@ -8,6 +9,7 @@ using Jace.Operations;
 
 namespace Jace
 {
+#if !NETFX_CORE
     public class DynamicCompiler : IExecutor
     {
         public double Execute(Operation operation)
@@ -177,4 +179,116 @@ namespace Jace
             }
         }
     }
+#else
+    public class DynamicCompiler : IExecutor
+    {
+        public double Execute(Operation operation)
+        {
+            return Execute(operation, new Dictionary<string, double>());
+        }
+
+        public double Execute(Operation operation, Dictionary<string, int> variables)
+        {
+            Dictionary<string, double> doubleVariables = new Dictionary<string, double>();
+            foreach (string key in variables.Keys)
+                doubleVariables.Add(key, variables[key]);
+
+            return Execute(operation, doubleVariables);
+        }
+
+        public double Execute(Operation operation, Dictionary<string, double> variables)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Func<Dictionary<string, double>, double> BuildFunction(Operation operation)
+        {
+            throw new NotImplementedException();
+        }
+
+        private Func<Dictionary<string, double>, double> Test(Operation operation)
+        {
+            ParameterExpression dictionaryParameter = 
+                Expression.Parameter(typeof(Dictionary<string, double>), "dictionary");
+
+            return Expression.Lambda<Func<Dictionary<string, double>, double>>(
+                Expression.Block(
+                    Expression.Return(null, GenerateMethodBody(operation, dictionaryParameter))
+                ),
+                dictionaryParameter
+            ).Compile();
+        }
+
+        private Expression GenerateMethodBody(Operation operation, ParameterExpression dictionaryParameter)
+        {
+            if (operation == null)
+                throw new ArgumentNullException("operation");
+
+            if (operation.GetType() == typeof(IntegerConstant))
+            {
+                IntegerConstant constant = (IntegerConstant)operation;
+
+                return Expression.Convert(Expression.Constant(constant.Value, typeof(int)), typeof(double));
+            }
+            else if (operation.GetType() == typeof(FloatingPointConstant))
+            {
+                FloatingPointConstant constant = (FloatingPointConstant)operation;
+
+                return Expression.Constant(constant.Value, typeof(double));
+            }
+            //else if (operation.GetType() == typeof(Variable))
+            //{
+            //    Type dictionaryType = typeof(Dictionary<string, double>);
+
+            //    Variable variable = (Variable)operation;
+
+            //    Expression.Call(dictionaryParameter, dictionaryType.GetRuntimeMethod
+            //}
+            else if (operation.GetType() == typeof(Multiplication))
+            {
+                Multiplication multiplication = (Multiplication)operation;
+                Expression argument1 = GenerateMethodBody(multiplication.Argument1, dictionaryParameter);
+                Expression argument2 = GenerateMethodBody(multiplication.Argument2, dictionaryParameter);
+
+                return Expression.Multiply(argument1, argument2);
+            }
+            else if (operation.GetType() == typeof(Addition))
+            {
+                Addition addition = (Addition)operation;
+                Expression argument1 = GenerateMethodBody(addition.Argument1, dictionaryParameter);
+                Expression argument2 = GenerateMethodBody(addition.Argument2, dictionaryParameter);
+
+                return Expression.Add(argument1, argument2);
+            }
+            else if (operation.GetType() == typeof(Substraction))
+            {
+                Substraction addition = (Substraction)operation;
+                Expression argument1 = GenerateMethodBody(addition.Argument1, dictionaryParameter);
+                Expression argument2 = GenerateMethodBody(addition.Argument2, dictionaryParameter);
+
+                return Expression.Subtract(argument1, argument2);
+            }
+            else if (operation.GetType() == typeof(Division))
+            {
+                Division division = (Division)operation;
+                Expression dividend = GenerateMethodBody(division.Dividend, dictionaryParameter);
+                Expression divisor = GenerateMethodBody(division.Divisor, dictionaryParameter);
+
+                return Expression.Divide(dividend, divisor);
+            }
+            else if (operation.GetType() == typeof(Exponentiation))
+            {
+                Exponentiation exponentation = (Exponentiation)operation;
+                Expression @base = GenerateMethodBody(exponentation.Base, dictionaryParameter);
+                Expression exponent = GenerateMethodBody(exponentation.Exponent, dictionaryParameter);
+
+                return Expression.Call(null, typeof(Math).GetRuntimeMethod("Pow", new Type[0]), @base, exponent);
+            }
+            else
+            {
+                throw new ArgumentException(string.Format("Unsupported operation \"{0}\".", operation.GetType().FullName), "operation");
+            }
+        }
+    }
+#endif
 }

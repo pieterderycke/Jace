@@ -5,7 +5,12 @@ using System.Text;
 using Jace.Execution;
 using Jace.Operations;
 using Jace.Util;
+
+#if NETFX_CORE
+using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+#else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
 
 namespace Jace.Tests
 {

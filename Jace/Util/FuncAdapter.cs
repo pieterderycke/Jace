@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
@@ -32,24 +33,7 @@ namespace Jace.Util
         {
             Jace.Execution.ParameterInfo[] parameterArray = parameters.ToArray();
 
-            Type[] parameterTypes = GetParameterTypes(parameterArray);
-
-            Type delegateType = GetDelegateType(parameterArray);
-
-            DynamicMethod method = new DynamicMethod("FuncWrapperMethod", typeof(double), 
-                parameterTypes, typeof(FuncAdapterArguments));
-
-            ILGenerator generator = method.GetILGenerator();
-
-            GenerateMethodBody(generator, parameterArray, function);
-
-            for (int i = 0; i < parameterArray.Length; i++)
-            {
-                Jace.Execution.ParameterInfo parameter = parameterArray[i];
-                method.DefineParameter((i + 1), ParameterAttributes.In, parameter.Name);
-            }
-
-            return method.CreateDelegate(delegateType, new FuncAdapterArguments(function));
+            return GenerateDelegate(parameterArray, function);
         }
 
         // Uncomment for debugging purposes
@@ -77,17 +61,28 @@ namespace Jace.Util
         //    assemblyBuilder.Save(@"test.dll");
         //}
 
-        private Type GetDelegateType(Jace.Execution.ParameterInfo[] parameters)
+#if !NETFX_CORE
+        private Delegate GenerateDelegate(Jace.Execution.ParameterInfo[] parameterArray,
+            Func<Dictionary<string, double>, double> function)
         {
-            string funcTypeName = string.Format("System.Func`{0}", parameters.Length + 1);
-            Type funcType = Type.GetType(funcTypeName);
+            Type[] parameterTypes = GetParameterTypes(parameterArray);
 
-            Type[] typeArguments = new Type[parameters.Length + 1];
-            for (int i = 0; i < parameters.Length; i++)
-                typeArguments[i] = (parameters[i].DataType == DataType.FloatingPoint) ? typeof(double) : typeof(int);
-            typeArguments[typeArguments.Length - 1] = typeof(double);
+            Type delegateType = GetDelegateType(parameterArray);
 
-            return funcType.MakeGenericType(typeArguments);
+            DynamicMethod method = new DynamicMethod("FuncWrapperMethod", typeof(double),
+                parameterTypes, typeof(FuncAdapterArguments));
+
+            ILGenerator generator = method.GetILGenerator();
+
+            GenerateMethodBody(generator, parameterArray, function);
+
+            for (int i = 0; i < parameterArray.Length; i++)
+            {
+                Jace.Execution.ParameterInfo parameter = parameterArray[i];
+                method.DefineParameter((i + 1), ParameterAttributes.In, parameter.Name);
+            }
+
+            return method.CreateDelegate(delegateType, new FuncAdapterArguments(function));
         }
 
         private Type[] GetParameterTypes(Jace.Execution.ParameterInfo[] parameters)
@@ -152,6 +147,63 @@ namespace Jace.Util
             generator.Emit(OpCodes.Callvirt, function.GetType().GetMethod("Invoke"));
 
             generator.Emit(OpCodes.Ret);
+        }
+#else
+        private Delegate GenerateDelegate(Jace.Execution.ParameterInfo[] parameterArray,
+            Func<Dictionary<string, double>, double> function)
+        {
+            Type delegateType = GetDelegateType(parameterArray);
+            Type dictionaryType = typeof(Dictionary<string, double>);
+
+            LabelTarget returnLabel = Expression.Label(typeof(double));
+
+            ParameterExpression dictionaryExpression =
+                Expression.Variable(typeof(Dictionary<string, double>), "dictionary");
+            BinaryExpression dictionaryAssignExpression =
+                Expression.Assign(dictionaryExpression, Expression.New(dictionaryType));
+
+            ParameterExpression[] parameterExpressions = new ParameterExpression[parameterArray.Length];
+
+            List<Expression> methodBody = new List<Expression>();
+            methodBody.Add(dictionaryAssignExpression);
+
+            for (int i = 0; i < parameterArray.Length; i++)
+            {
+                // Create parameter expression for each func parameter
+                Type parameterType = parameterArray[i].DataType == DataType.FloatingPoint ? typeof(double) : typeof(int);
+                parameterExpressions[i] = Expression.Parameter(parameterType, parameterArray[i].Name);
+
+                methodBody.Add(Expression.Call(dictionaryExpression,
+                    dictionaryType.GetRuntimeMethod("Add", new Type[] { typeof(string), typeof(double) }),
+                    Expression.Constant(parameterArray[i].Name),
+                    Expression.Convert(parameterExpressions[i], typeof(double)))
+                    );
+            }
+
+            InvocationExpression invokeExpression = Expression.Invoke(Expression.Constant(function), dictionaryExpression);
+            methodBody.Add(invokeExpression);
+            methodBody.Add(Expression.Return(returnLabel, invokeExpression));
+            methodBody.Add(Expression.Label(returnLabel, Expression.Constant(0.0)));
+
+            LambdaExpression lambdaExpression = Expression.Lambda(delegateType,
+                Expression.Block(new[] { dictionaryExpression }, methodBody),
+                parameterExpressions);
+
+            return lambdaExpression.Compile();
+        }
+#endif
+
+        private Type GetDelegateType(Jace.Execution.ParameterInfo[] parameters)
+        {
+            string funcTypeName = string.Format("System.Func`{0}", parameters.Length + 1);
+            Type funcType = Type.GetType(funcTypeName);
+
+            Type[] typeArguments = new Type[parameters.Length + 1];
+            for (int i = 0; i < parameters.Length; i++)
+                typeArguments[i] = (parameters[i].DataType == DataType.FloatingPoint) ? typeof(double) : typeof(int);
+            typeArguments[typeArguments.Length - 1] = typeof(double);
+
+            return funcType.MakeGenericType(typeArguments);
         }
 
         private class FuncAdapterArguments

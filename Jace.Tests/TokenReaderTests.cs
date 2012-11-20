@@ -2,7 +2,12 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Jace.Tokenizer;
+
+#if NETFX_CORE
+using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+#else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
 
 namespace Jace.Tests
 {

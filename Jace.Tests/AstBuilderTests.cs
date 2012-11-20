@@ -4,7 +4,12 @@ using System.Linq;
 using System.Text;
 using Jace.Operations;
 using Jace.Tokenizer;
+
+#if NETFX_CORE
+using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+#else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
 
 namespace Jace.Tests
 {
@@ -227,72 +232,87 @@ namespace Jace.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ParseException))]
         public void TestBuildInvalidFormula1()
         {
             AstBuilder builder = new AstBuilder();
-            Operation operation = builder.Build(new List<Token>() { 
-                new Token() { Value = '(', TokenType = TokenType.LeftBracket, StartPosition = 0 }, 
-                new Token() { Value = 42, TokenType = TokenType.Integer, StartPosition = 1 }, 
-                new Token() { Value = '+', TokenType = TokenType.Operation, StartPosition = 3 }, 
-                new Token() { Value = 8, TokenType = TokenType.Integer, StartPosition = 4 }, 
-                new Token() { Value = ')', TokenType = TokenType.RightBracket, StartPosition = 5 }, 
-                new Token() { Value = '*', TokenType = TokenType.Operation, StartPosition = 6 }, 
-            });
+
+            AssertExtensions.ThrowsException<ParseException>(() =>
+                {
+                    Operation operation = builder.Build(new List<Token>() { 
+                        new Token() { Value = '(', TokenType = TokenType.LeftBracket, StartPosition = 0 }, 
+                        new Token() { Value = 42, TokenType = TokenType.Integer, StartPosition = 1 }, 
+                        new Token() { Value = '+', TokenType = TokenType.Operation, StartPosition = 3 }, 
+                        new Token() { Value = 8, TokenType = TokenType.Integer, StartPosition = 4 }, 
+                        new Token() { Value = ')', TokenType = TokenType.RightBracket, StartPosition = 5 }, 
+                        new Token() { Value = '*', TokenType = TokenType.Operation, StartPosition = 6 }, 
+                    });
+                });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ParseException))]
         public void TestBuildInvalidFormula2()
         {
             AstBuilder builder = new AstBuilder();
-            Operation operation = builder.Build(new List<Token>() { 
-                new Token() { Value = 42, TokenType = TokenType.Integer, StartPosition = 0 }, 
-                new Token() { Value = '+', TokenType = TokenType.Operation, StartPosition = 2 }, 
-                new Token() { Value = 8, TokenType = TokenType.Integer, StartPosition = 3 }, 
-                new Token() { Value = ')', TokenType = TokenType.RightBracket, StartPosition = 4 }, 
-                new Token() { Value = '*', TokenType = TokenType.Operation, StartPosition = 5 }, 
-                new Token() { Value = 2, TokenType = TokenType.Integer, StartPosition = 6 }, 
-            });
+
+            AssertExtensions.ThrowsException<ParseException>(() =>
+                {
+                    Operation operation = builder.Build(new List<Token>() { 
+                        new Token() { Value = 42, TokenType = TokenType.Integer, StartPosition = 0 }, 
+                        new Token() { Value = '+', TokenType = TokenType.Operation, StartPosition = 2 }, 
+                        new Token() { Value = 8, TokenType = TokenType.Integer, StartPosition = 3 }, 
+                        new Token() { Value = ')', TokenType = TokenType.RightBracket, StartPosition = 4 }, 
+                        new Token() { Value = '*', TokenType = TokenType.Operation, StartPosition = 5 }, 
+                        new Token() { Value = 2, TokenType = TokenType.Integer, StartPosition = 6 }, 
+                    });
+                });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ParseException))]
         public void TestBuildInvalidFormula3()
         {
             AstBuilder builder = new AstBuilder();
-            Operation operation = builder.Build(new List<Token>() { 
-                new Token() { Value = '(', TokenType = TokenType.LeftBracket, StartPosition = 0 }, 
-                new Token() { Value = 42, TokenType = TokenType.Integer, StartPosition = 1 }, 
-                new Token() { Value = '+', TokenType = TokenType.Operation, StartPosition = 3 }, 
-                new Token() { Value = 8, TokenType = TokenType.Integer, StartPosition = 4 }
-            });
+
+            AssertExtensions.ThrowsException<ParseException>(() =>
+                {
+                    Operation operation = builder.Build(new List<Token>() { 
+                        new Token() { Value = '(', TokenType = TokenType.LeftBracket, StartPosition = 0 }, 
+                        new Token() { Value = 42, TokenType = TokenType.Integer, StartPosition = 1 }, 
+                        new Token() { Value = '+', TokenType = TokenType.Operation, StartPosition = 3 }, 
+                        new Token() { Value = 8, TokenType = TokenType.Integer, StartPosition = 4 }
+                    });
+                });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ParseException))]
         public void TestBuildInvalidFormula4()
         {
             AstBuilder builder = new AstBuilder();
-            Operation operation = builder.Build(new List<Token>() { 
-                new Token() { Value = 5, TokenType = TokenType.Integer, StartPosition = 0 }, 
-                new Token() { Value = 42, TokenType = TokenType.Integer, StartPosition = 1 }, 
-                new Token() { Value = '+', TokenType = TokenType.Operation, StartPosition = 3 }, 
-                new Token() { Value = 8, TokenType = TokenType.Integer, StartPosition = 4 }
-            });
+
+            AssertExtensions.ThrowsException<ParseException>(() =>
+                {
+                    Operation operation = builder.Build(new List<Token>() { 
+                        new Token() { Value = 5, TokenType = TokenType.Integer, StartPosition = 0 }, 
+                        new Token() { Value = 42, TokenType = TokenType.Integer, StartPosition = 1 }, 
+                        new Token() { Value = '+', TokenType = TokenType.Operation, StartPosition = 3 }, 
+                        new Token() { Value = 8, TokenType = TokenType.Integer, StartPosition = 4 }
+                    });
+                });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ParseException))]
         public void TestBuildInvalidFormula5()
         {
             AstBuilder builder = new AstBuilder();
-            Operation operation = builder.Build(new List<Token>() { 
-                new Token() { Value = 42, TokenType = TokenType.Integer, StartPosition = 0 }, 
-                new Token() { Value = '+', TokenType = TokenType.Operation, StartPosition = 2 }, 
-                new Token() { Value = 8, TokenType = TokenType.Integer, StartPosition = 3 },
-                new Token() { Value = 5, TokenType = TokenType.Integer, StartPosition = 4 } 
-            });
+
+            AssertExtensions.ThrowsException<ParseException>(() =>
+                {
+                    Operation operation = builder.Build(new List<Token>() { 
+                        new Token() { Value = 42, TokenType = TokenType.Integer, StartPosition = 0 }, 
+                        new Token() { Value = '+', TokenType = TokenType.Operation, StartPosition = 2 }, 
+                        new Token() { Value = 8, TokenType = TokenType.Integer, StartPosition = 3 },
+                        new Token() { Value = 5, TokenType = TokenType.Integer, StartPosition = 4 } 
+                    });
+                });
         }
     }
 }

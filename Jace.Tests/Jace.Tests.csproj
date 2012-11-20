@@ -53,6 +53,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="AssertExtensions.cs" />
     <Compile Include="AstBuilderTests.cs" />
     <Compile Include="BasicInterpreterTests.cs" />
     <Compile Include="CalculationEngineTests.cs" />

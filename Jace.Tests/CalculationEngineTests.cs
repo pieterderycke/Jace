@@ -4,7 +4,12 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using Jace.Operations;
+
+#if NETFX_CORE
+using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+#else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
 
 namespace Jace.Tests
 {
@@ -70,25 +75,29 @@ namespace Jace.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(VariableNotDefinedException))]
         public void TestCalculateFormulaVariableNotDefinedInterpreted()
         {
             Dictionary<string, double> variables = new Dictionary<string, double>();
             variables.Add("var1", 2.5);
 
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
-            double result = engine.Calculate("var1*var2", variables);
+            AssertExtensions.ThrowsException<VariableNotDefinedException>(() =>
+                {
+                    CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+                    double result = engine.Calculate("var1*var2", variables);
+                });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(VariableNotDefinedException))]
         public void TestCalculateFormulaVariableNotDefinedCompiled()
         {
             Dictionary<string, double> variables = new Dictionary<string, double>();
             variables.Add("var1", 2.5);
 
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);
-            double result = engine.Calculate("var1*var2", variables);
+            AssertExtensions.ThrowsException<VariableNotDefinedException>(() =>
+                {
+                    CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);
+                    double result = engine.Calculate("var1*var2", variables);
+                });
         }
 
         [TestMethod]
@@ -188,24 +197,28 @@ namespace Jace.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
         public void TestFormulaBuilderInvalidParameterName()
         {
-            CalculationEngine engine = new CalculationEngine();
-            Func<int, double, double> function = (Func<int, double, double>)engine.Formula("sin+2")
-                .Parameter("sin", DataType.Integer)
-                .Build();
+            AssertExtensions.ThrowsException<ArgumentException>(() =>
+                {
+                    CalculationEngine engine = new CalculationEngine();
+                    Func<int, double, double> function = (Func<int, double, double>)engine.Formula("sin+2")
+                        .Parameter("sin", DataType.Integer)
+                        .Build();
+                });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
         public void TestFormulaBuilderDuplicateParameterName()
         {
-            CalculationEngine engine = new CalculationEngine();
-            Func<int, double, double> function = (Func<int, double, double>)engine.Formula("var1+2")
-                .Parameter("var1", DataType.Integer)
-                .Parameter("var1", DataType.FloatingPoint)
-                .Build();
+            AssertExtensions.ThrowsException<ArgumentException>(() =>
+                {
+                    CalculationEngine engine = new CalculationEngine();
+                    Func<int, double, double> function = (Func<int, double, double>)engine.Formula("var1+2")
+                        .Parameter("var1", DataType.Integer)
+                        .Parameter("var1", DataType.FloatingPoint)
+                        .Build();
+                });
         }
     }
 }
