@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using Jace.Operations;
+using Jace.Util;
 
 namespace Jace
 {
@@ -198,22 +199,20 @@ namespace Jace
 
         public double Execute(Operation operation, Dictionary<string, double> variables)
         {
-            throw new NotImplementedException();
+            return BuildFunction(operation)(variables);
         }
 
         public Func<Dictionary<string, double>, double> BuildFunction(Operation operation)
         {
-            throw new NotImplementedException();
-        }
-
-        private Func<Dictionary<string, double>, double> Test(Operation operation)
-        {
             ParameterExpression dictionaryParameter = 
                 Expression.Parameter(typeof(Dictionary<string, double>), "dictionary");
 
+            LabelTarget returnLabel = Expression.Label(typeof(double));
+
             return Expression.Lambda<Func<Dictionary<string, double>, double>>(
                 Expression.Block(
-                    Expression.Return(null, GenerateMethodBody(operation, dictionaryParameter))
+                    Expression.Return(returnLabel, GenerateMethodBody(operation, dictionaryParameter)),
+                    Expression.Label(returnLabel, Expression.Constant(0.0))
                 ),
                 dictionaryParameter
             ).Compile();
@@ -236,14 +235,33 @@ namespace Jace
 
                 return Expression.Constant(constant.Value, typeof(double));
             }
-            //else if (operation.GetType() == typeof(Variable))
-            //{
-            //    Type dictionaryType = typeof(Dictionary<string, double>);
+            else if (operation.GetType() == typeof(Variable))
+            {
+                Type dictionaryType = typeof(Dictionary<string, double>);
 
-            //    Variable variable = (Variable)operation;
+                Variable variable = (Variable)operation;
 
-            //    Expression.Call(dictionaryParameter, dictionaryType.GetRuntimeMethod
-            //}
+                Expression isInDictionaryExpression = Expression.Call(dictionaryParameter, 
+                    dictionaryType.GetRuntimeMethod("ContainsKey", new Type[] { typeof(string) }),
+                    Expression.Constant(variable.Name));
+
+                Expression throwException = Expression.Throw(
+                    Expression.New(typeof(VariableNotDefinedException).GetConstructor(new Type[] { typeof(string) }),
+                        Expression.Constant(string.Format("The variable \"{0}\" used is not defined.", variable.Name))));
+
+                LabelTarget returnLabel = Expression.Label(typeof(double));
+
+                return Expression.Block(
+                    Expression.IfThenElse(
+                        isInDictionaryExpression,
+                        Expression.Return(returnLabel, Expression.Call(dictionaryParameter, 
+                            dictionaryType.GetRuntimeMethod("get_Item", new Type[] { typeof(string) }), 
+                            Expression.Constant(variable.Name))),
+                        throwException
+                    ),
+                    Expression.Label(returnLabel, Expression.Constant(0.0))
+                );
+            }
             else if (operation.GetType() == typeof(Multiplication))
             {
                 Multiplication multiplication = (Multiplication)operation;
@@ -283,6 +301,42 @@ namespace Jace
                 Expression exponent = GenerateMethodBody(exponentation.Exponent, dictionaryParameter);
 
                 return Expression.Call(null, typeof(Math).GetRuntimeMethod("Pow", new Type[0]), @base, exponent);
+            }
+            else if (operation.GetType() == typeof(Function))
+            {
+                Function function = (Function)operation;
+
+                Expression argument1;
+                Expression argument2;
+                switch (function.FunctionType)
+                {
+                    case FunctionType.Sine:
+                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+
+                        return Expression.Call(null, typeof(Math).GetRuntimeMethod("Sin", new Type[] { typeof(double) }), argument1);
+                    case FunctionType.Cosine:
+                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+
+                        return Expression.Call(null, typeof(Math).GetRuntimeMethod("Cos", new Type[] { typeof(double) }), argument1);
+                    case FunctionType.Loge:
+                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+
+                        return Expression.Call(null, typeof(Math).GetRuntimeMethod("Log", new Type[] { typeof(double) }), argument1);
+                    case FunctionType.Log10:
+                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+
+                        return Expression.Call(null, typeof(Math).GetRuntimeMethod("Log10", new Type[] { typeof(double) }), argument1);
+                    case FunctionType.Logn:
+                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+                        argument2 = GenerateMethodBody(function.Arguments[1], dictionaryParameter);
+
+                        return Expression.Call(null, 
+                            typeof(Math).GetRuntimeMethod("Log", new Type[] { typeof(double), typeof(double) }), 
+                            argument1, 
+                            argument2);
+                    default:
+                        throw new ArgumentException(string.Format("Unsupported function \"{0}\".", function.FunctionType), "operation");
+                }
             }
             else
             {

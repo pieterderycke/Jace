@@ -183,6 +183,9 @@
     <Compile Include="..\Jace\Util\FuncAdapter.cs">
       <Link>Util\FuncAdapter.cs</Link>
     </Compile>
+    <Compile Include="..\Jace\Util\TypeExtensions.cs">
+      <Link>Util\TypeExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\Jace\VariableNotDefinedException.cs">
       <Link>VariableNotDefinedException.cs</Link>
     </Compile>

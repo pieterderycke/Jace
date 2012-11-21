@@ -19,12 +19,18 @@ namespace Jace.Tests
             {
                 action();
 
-                Assert.Fail("An exception of type \"{0}\" was expected but no exception was thrown.", typeof(T).Name);
+                Assert.Fail("An exception of type \"{0}\" was expected, but no exception was thrown.", typeof(T).FullName);
                 return null;
             }
             catch (T ex)
             {
                 return ex;
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("An exception of type \"{0}\" was expected, but instead an exception of type \"{1}\" was thrown.",
+                    typeof(T).FullName, ex.GetType().FullName);
+                return null;
             }
         }
     }
