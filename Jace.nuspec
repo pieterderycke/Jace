@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>$id$</id>
+    <id>Jace</id>
     <version>$version$</version>
     <title>Jace.NET</title>
-    <authors>$author$</authors>
+    <authors>Pieter De Rycke</authors>
     <licenseUrl>https://github.com/pieterderycke/Jace/blob/master/LICENSE.md</licenseUrl>
     <projectUrl>https://github.com/pieterderycke/Jace</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
