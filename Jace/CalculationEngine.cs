@@ -6,10 +6,7 @@ using System.Text;
 using Jace.Execution;
 using Jace.Operations;
 using Jace.Tokenizer;
-
-#if !WINDOWS_PHONE
-using System.Collections.Concurrent;
-#endif
+using Jace.Util;
 
 namespace Jace
 {
@@ -18,13 +15,7 @@ namespace Jace
         private readonly IExecutor executor;
         private readonly Optimizer optimizer;
         private readonly CultureInfo cultureInfo;
-
-#if WINDOWS_PHONE
-        private readonly Dictionary<string, Func<Dictionary<string, double>, double>> executionFormulaCache;
-#else
-        private readonly ConcurrentDictionary<string, Func<Dictionary<string, double>, double>> executionFormulaCache;
-#endif
-   
+        private readonly MemoryCache<string, Func<Dictionary<string, double>, double>> executionFormulaCache;
         private readonly bool cacheEnabled;
         private readonly bool optimizerEnabled;
 
@@ -45,12 +36,7 @@ namespace Jace
 
         public CalculationEngine(CultureInfo cultureInfo, ExecutionMode executionMode, bool cacheEnabled, bool optimizerEnabled)
         {
-#if WINDOWS_PHONE
-            this.executionFormulaCache = new Dictionary<string, Func<Dictionary<string, double>, double>>();
-#else
-            this.executionFormulaCache = new ConcurrentDictionary<string, Func<Dictionary<string, double>, double>>();
-#endif
-
+            this.executionFormulaCache = new MemoryCache<string, Func<Dictionary<string, double>, double>>();
             this.cultureInfo = cultureInfo;
             this.cacheEnabled = cacheEnabled;
             this.optimizerEnabled = optimizerEnabled;
@@ -140,23 +126,7 @@ namespace Jace
 
         private Func<Dictionary<string, double>, double> BuildFormula(string formulaText, Operation operation)
         {
-#if WINDOWS_PHONE
-            lock (this)
-            {
-                if (executionFormulaCache.ContainsKey(formulaText))
-                {
-                    return executionFormulaCache[formulaText];
-                }
-                else
-                {
-                    Func<Dictionary<string, double>, double> formula = executor.BuildFunction(operation);
-                    executionFormulaCache.Add(formulaText, formula);
-                    return formula;
-                }
-            }
-#else
             return executionFormulaCache.GetOrAdd(formulaText, v => executor.BuildFunction(operation));
-#endif
         }
 
         private bool IsInFormulaCache(string formulaText)
