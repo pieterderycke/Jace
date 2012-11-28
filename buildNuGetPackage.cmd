@@ -12,6 +12,10 @@ msbuild /p:Configuration=Release Jace.WP8\Jace.WP8.csproj
 MKDIR nuget\lib\wp8
 COPY Jace.WP8\bin\Release\*.dll nuget\lib\wp8\
 
+msbuild /p:Configuration=Release Jace.WP7\Jace.WP7.csproj
+MKDIR nuget\lib\wp7
+COPY Jace.WP7\bin\Release\*.dll nuget\lib\wp7\
+
 COPY Jace.nuspec nuget\
 
 Tools\NuGet\nuget.exe pack nuget\Jace.nuspec -Version %version%
