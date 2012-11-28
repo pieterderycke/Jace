@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jace.WinRT.Tests", "Jace.Wi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jace.WP8", "Jace.WP8\Jace.WP8.csproj", "{EBAD9DA0-DCF4-413C-8847-D7ECFB28AB1F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jace.WP7", "Jace.WP7\Jace.WP7.csproj", "{E0C23BC7-80A4-453A-8A96-E0E1AF525745}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -121,6 +123,16 @@ Global
 		{EBAD9DA0-DCF4-413C-8847-D7ECFB28AB1F}.Release|x64.ActiveCfg = Release|Any CPU
 		{EBAD9DA0-DCF4-413C-8847-D7ECFB28AB1F}.Release|x86.ActiveCfg = Release|x86
 		{EBAD9DA0-DCF4-413C-8847-D7ECFB28AB1F}.Release|x86.Build.0 = Release|x86
+		{E0C23BC7-80A4-453A-8A96-E0E1AF525745}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0C23BC7-80A4-453A-8A96-E0E1AF525745}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0C23BC7-80A4-453A-8A96-E0E1AF525745}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{E0C23BC7-80A4-453A-8A96-E0E1AF525745}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E0C23BC7-80A4-453A-8A96-E0E1AF525745}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E0C23BC7-80A4-453A-8A96-E0E1AF525745}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0C23BC7-80A4-453A-8A96-E0E1AF525745}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0C23BC7-80A4-453A-8A96-E0E1AF525745}.Release|ARM.ActiveCfg = Release|Any CPU
+		{E0C23BC7-80A4-453A-8A96-E0E1AF525745}.Release|x64.ActiveCfg = Release|Any CPU
+		{E0C23BC7-80A4-453A-8A96-E0E1AF525745}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
