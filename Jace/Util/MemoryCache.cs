@@ -5,6 +5,7 @@ using System.Text;
 
 #if !WINDOWS_PHONE
 using System.Collections.Concurrent;
+using System.Threading;
 #endif
 
 namespace Jace.Util
@@ -17,21 +18,38 @@ namespace Jace.Util
     /// <typeparam name="TValue">The type of the values.</typeparam>
     public class MemoryCache<TKey, TValue>
     {
+        private const int DefaultMaximumSize = 500;
+        private const int DefaultReductionSize = 50;
+
+        private readonly int maximumSize;
+        private readonly int reductionSize;
+
+        private long counter; // We cannot use DateTime.Now, because the precission is not high enough.
+
 #if WINDOWS_PHONE
-        private readonly Dictionary<TKey, TValue> dictionary;
+        private readonly Dictionary<TKey, CacheItem> dictionary;
+        private readonly Object counterLock = new Object();
 #else
-        private readonly ConcurrentDictionary<TKey, TValue> dictionary;
+        private readonly ConcurrentDictionary<TKey, CacheItem> dictionary;
 #endif
 
         /// <summary>
         /// Create a new instance of the <see cref="MemoryCache"/>.
         /// </summary>
         public MemoryCache()
+            : this(DefaultMaximumSize, DefaultReductionSize)
         {
+        }
+
+        public MemoryCache(int maximumSize, int reductionSize)
+        {
+            this.maximumSize = maximumSize;
+            this.reductionSize = reductionSize;
+
 #if WINDOWS_PHONE
-            this.dictionary = new Dictionary<TKey, TValue>();
+            this.dictionary = new Dictionary<TKey, CacheItem>();
 #else
-            this.dictionary = new ConcurrentDictionary<TKey, TValue>();
+            this.dictionary = new ConcurrentDictionary<TKey, CacheItem>();
 #endif
         }
 
@@ -44,7 +62,20 @@ namespace Jace.Util
         {
             get
             {
-                return dictionary[key];
+                CacheItem cacheItem = dictionary[key];
+                cacheItem.Accessed();
+                return cacheItem.Value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the number of items in the cache.
+        /// </summary>
+        public int Count
+        {
+            get
+            {
+                return dictionary.Count;
             }
         }
 
@@ -74,18 +105,82 @@ namespace Jace.Util
             {
                 if (dictionary.ContainsKey(key))
                 {
-                    return dictionary[key];
+                    CacheItem cacheItem = dictionary[key];
+                    return cacheItem.Value;
                 }
                 else
                 {
+                    EnsureCacheStorageAvailable();
+
                     TValue value = valueFactory(key);
-                    dictionary.Add(key, value);
+                    dictionary.Add(key, new CacheItem(this, value));
                     return value;
                 }
             }
 #else
-            return dictionary.GetOrAdd(key, valueFactory);
+            CacheItem cacheItem = dictionary.GetOrAdd(key, k => 
+                {
+                    EnsureCacheStorageAvailable();
+
+                    TValue value = valueFactory(k);
+                    return new CacheItem(this, valueFactory(k));
+                });
+            return cacheItem.Value;
 #endif
+        }
+
+        /// <summary>
+        /// Ensure that the cache has room for an additional item.
+        /// If there is not enough room anymore, force a removal of oldest
+        /// accessed items in the cache.
+        /// </summary>
+        private void EnsureCacheStorageAvailable()
+        {
+            if (dictionary.Count >= maximumSize) // >= because we want to add an item after this method
+            {
+                IList<TKey> keysToDelete = (from p in dictionary
+                                            orderby p.Value.LastAccessed ascending
+                                            select p.Key).Take(reductionSize).ToList();
+
+                foreach (TKey key in keysToDelete)
+                {
+#if WINDOWS_PHONE
+                    dictionary.Remove(key);
+#else
+                    CacheItem cacheItem;
+                    dictionary.TryRemove(key, out cacheItem);
+#endif
+                }
+            }
+        }
+
+        private class CacheItem
+        {
+            private MemoryCache<TKey, TValue> cache;
+
+            public CacheItem(MemoryCache<TKey, TValue> cache, TValue value)
+            {
+                this.cache = cache;
+                this.Value = value;
+
+                Accessed();
+            }
+
+            public TValue Value { get; private set; }
+
+            public long LastAccessed { get; private set; }
+
+            public void Accessed()
+            {
+#if WINDOWS_PHONE
+                lock(cache.counterLock)
+                {
+                    this.LastAccessed = cache.counter++;
+                }
+#else
+                this.LastAccessed = Interlocked.Increment(ref cache.counter);
+#endif
+            }
         }
     }
 }

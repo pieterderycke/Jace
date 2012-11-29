@@ -124,6 +124,9 @@
     <Compile Include="..\Jace.Tests\FuncAdapterTests.cs">
       <Link>FuncAdapterTests.cs</Link>
     </Compile>
+    <Compile Include="..\Jace.Tests\MemoryCacheTests.cs">
+      <Link>MemoryCacheTests.cs</Link>
+    </Compile>
     <Compile Include="..\Jace.Tests\TokenReaderTests.cs">
       <Link>TokenReaderTests.cs</Link>
     </Compile>
