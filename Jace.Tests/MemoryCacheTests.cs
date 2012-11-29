@@ -43,5 +43,17 @@ namespace Jace.Tests
             Assert.IsTrue(cache.ContainsKey("test1"));
             Assert.AreEqual(3, cache.Count);
         }
+
+        [TestMethod]
+        public void TestCacheCleanupBiggerThanCacheSize()
+        {
+            MemoryCache<string, int> cache = new MemoryCache<string, int>(1, 3);
+            cache.GetOrAdd("test1", k => 1);
+            cache.GetOrAdd("test2", k => 2);
+            cache.GetOrAdd("test3", k => 3);
+
+            Assert.IsTrue(cache.ContainsKey("test3"));
+            Assert.AreEqual(1, cache.Count);
+        }
     }
 }

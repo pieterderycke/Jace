@@ -41,8 +41,21 @@ namespace Jace.Util
         {
         }
 
+        /// <summary>
+        /// Create a new instance of the <see cref="MemoryCache"/>.
+        /// </summary>
+        /// <param name="maximumSize">The maximum allowed number of items in the cache.</param>
+        /// <param name="reductionSize">The number of items to be deleted per cleanup of the cache.</param>
         public MemoryCache(int maximumSize, int reductionSize)
         {
+            if (maximumSize < 1)
+                throw new ArgumentOutOfRangeException("maximumSize",
+                    "The maximum allowed number of items in the cache must be at least one.");
+
+            if (reductionSize < 1)
+                throw new ArgumentOutOfRangeException("reductionSize",
+                    "The cache reduction size must be at least one.");
+
             this.maximumSize = maximumSize;
             this.reductionSize = reductionSize;
 
@@ -100,6 +113,9 @@ namespace Jace.Util
         /// <returns>The value for the given key.</returns>
         public TValue GetOrAdd(TKey key, Func<TKey, TValue> valueFactory)
         {
+            if (valueFactory == null)
+                throw new ArgumentNullException("valueFactory");
+
 #if WINDOWS_PHONE
             lock (dictionary)
             {
