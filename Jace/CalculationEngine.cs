@@ -19,11 +19,22 @@ namespace Jace
         private readonly bool cacheEnabled;
         private readonly bool optimizerEnabled;
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="CalculationEngine"/> class with
+        /// default parameters.
+        /// </summary>
         public CalculationEngine()
             : this(CultureInfo.CurrentCulture, ExecutionMode.Compiled)
         {
         }
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="CalculationEngine"/> class. The dynamic compiler
+        /// is used for formula execution and the optimizer and cache are enabled.
+        /// </summary>
+        /// <param name="cultureInfo">
+        /// The <see cref="CultureInfo"/> required for correctly reading floating poin numbers.
+        /// </param>
         public CalculationEngine(CultureInfo cultureInfo)
             : this(cultureInfo, ExecutionMode.Compiled)
         {
@@ -46,7 +57,7 @@ namespace Jace
             else if (executionMode == ExecutionMode.Compiled)
                 executor = new DynamicCompiler();
             else
-                throw new ArgumentException(string.Format("Unsupported execution mode \"\".", executionMode), 
+                throw new ArgumentException(string.Format("Unsupported execution mode \"{0}\".", executionMode), 
                     "executionMode");
 
             optimizer = new Optimizer(new Interpreter()); // We run the optimizer with the interpreter 

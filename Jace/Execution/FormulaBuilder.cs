@@ -31,6 +31,13 @@ namespace Jace.Execution
             this.engine = engine;
         }
 
+        /// <summary>
+        /// Add a new parameter to the formula being constructed. Parameters are
+        /// added in the order of which they are defined.
+        /// </summary>
+        /// <param name="name">The name of the parameter.</param>
+        /// <param name="dataType">The date type of the parameter.</param>
+        /// <returns>The <see cref="FormulaBuilder"/> instance.</returns>
         public FormulaBuilder Parameter(string name, DataType dataType)
         {
             if (string.IsNullOrEmpty(name))
@@ -46,12 +53,25 @@ namespace Jace.Execution
             return this;
         }
 
+        /// <summary>
+        /// Define the result data type for the formula.
+        /// </summary>
+        /// <param name="dataType">The result data type for the formula.</param>
+        /// <returns>The <see cref="FormulaBuilder"/> instance.</returns>
         public FormulaBuilder Result(DataType dataType)
         {
+            if (resultDataType.HasValue)
+                throw new InvalidOperationException("The result can only be defined once for a given formula.");
+
             resultDataType = dataType;
             return this;
         }
 
+        /// <summary>
+        /// Build the formula defined. This will create a func delegate matching with the parameters
+        /// and the return type specified.
+        /// </summary>
+        /// <returns>The func delegate for the defined formula.</returns>
         public Delegate Build()
         {
             if (!resultDataType.HasValue)
