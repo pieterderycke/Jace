@@ -85,9 +85,6 @@
     <Compile Include="..\Jace\Operations\Constant.cs">
       <Link>Operations\Constant.cs</Link>
     </Compile>
-    <Compile Include="..\Jace\Operations\ConversionToFloatingPoint.cs">
-      <Link>Operations\ConversionToFloatingPoint.cs</Link>
-    </Compile>
     <Compile Include="..\Jace\Operations\Division.cs">
       <Link>Operations\Division.cs</Link>
     </Compile>
