@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -9,10 +10,17 @@ namespace Jace.Benchmark
     {
         private const int NumberOfVariables = 3;
 
+        private readonly CultureInfo cultureInfo;
         private readonly Random random;
 
         public FunctionGenerator()
+            : this(CultureInfo.CurrentCulture)
         {
+        }
+
+        public FunctionGenerator(CultureInfo cultureInfo)
+        {
+            this.cultureInfo = cultureInfo;
             this.random = new Random();
         }
 
@@ -85,14 +93,14 @@ namespace Jace.Benchmark
                 return '-';
         }
 
-        private object GetRandomValue()
+        private string GetRandomValue()
         {
             double value = random.NextDouble();
 
             if (value < 0.6)
-                return random.Next();
+                return random.Next().ToString(cultureInfo);
             else
-                return random.Next() * random.NextDouble();
+                return (random.Next() * random.NextDouble()).ToString(cultureInfo);
         }
     }
 }
