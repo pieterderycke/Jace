@@ -202,6 +202,18 @@ namespace Jace
                         return new Function(DataType.FloatingPoint, FunctionType.Sine, new Operation[] { resultStack.Pop() });
                     case "cos":
                         return new Function(DataType.FloatingPoint, FunctionType.Cosine, new Operation[] { resultStack.Pop() });
+                    case "asin":
+                        return new Function(DataType.FloatingPoint, FunctionType.Arcsine, new Operation[] { resultStack.Pop() });
+                    case "acos":
+                        return new Function(DataType.FloatingPoint, FunctionType.Arccosine, new Operation[] { resultStack.Pop() });
+                    case "tan":
+                        return new Function(DataType.FloatingPoint, FunctionType.Tangent, new Operation[] { resultStack.Pop() });
+                    case "cot":
+                        return new Function(DataType.FloatingPoint, FunctionType.Cotangent, new Operation[] { resultStack.Pop() });
+                    case "atan":
+                        return new Function(DataType.FloatingPoint, FunctionType.Arctangent, new Operation[] { resultStack.Pop() });
+                    case "acot":
+                        return new Function(DataType.FloatingPoint, FunctionType.Arccotangent, new Operation[] { resultStack.Pop() });
                     case "loge":
                         return new Function(DataType.FloatingPoint, FunctionType.Loge, new Operation[] { resultStack.Pop() });
                     case "log10":
@@ -211,6 +223,8 @@ namespace Jace
                         operations[1] = resultStack.Pop();
                         operations[0] = resultStack.Pop();
                         return new Function(DataType.FloatingPoint, FunctionType.Logn, operations);
+                    case "sqrt":
+                        return new Function(DataType.FloatingPoint, FunctionType.SquareRoot, new Operation[] { resultStack.Pop() });
                     default:
                         throw new ArgumentException(string.Format("Unknown function \"{0}\".", functionToken.Value), "function");
                 }

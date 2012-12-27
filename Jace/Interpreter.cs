@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Jace.Operations;
+using Jace.Util;
 
 namespace Jace
 {
@@ -85,12 +86,26 @@ namespace Jace
                         return Math.Sin(Execute(function.Arguments[0], variables));
                     case FunctionType.Cosine:
                         return Math.Cos(Execute(function.Arguments[0], variables));
+                    case FunctionType.Arcsine:
+                        return Math.Asin(Execute(function.Arguments[0], variables));
+                    case FunctionType.Arccosine:
+                        return Math.Acos(Execute(function.Arguments[0], variables));
+                    case FunctionType.Tangent:
+                        return Math.Tan(Execute(function.Arguments[0], variables));
+                    case FunctionType.Cotangent:
+                        return MathUtil.Cot(Execute(function.Arguments[0], variables));
+                    case FunctionType.Arctangent:
+                        return Math.Atan(Execute(function.Arguments[0], variables));
+                    case FunctionType.Arccotangent:
+                        return MathUtil.Acot(Execute(function.Arguments[0], variables));
                     case FunctionType.Loge:
                         return Math.Log(Execute(function.Arguments[0], variables));
                     case FunctionType.Log10:
                         return Math.Log10(Execute(function.Arguments[0], variables));
                     case FunctionType.Logn:
                         return Math.Log(Execute(function.Arguments[0], variables), Execute(function.Arguments[1], variables));
+                    case FunctionType.SquareRoot:
+                        return Math.Sqrt(Execute(function.Arguments[0], variables));
                     default:
                         throw new ArgumentException(string.Format("Unsupported function \"{0}\".", function.FunctionType), "operation");
                 }

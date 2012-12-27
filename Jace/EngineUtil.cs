@@ -22,9 +22,16 @@ namespace Jace
             {
                 case "sin":
                 case "cos":
+                case "asin":
+                case "acos":
+                case "tan":
+                case "cot":
+                case "atan":
+                case "acot":
                 case "loge":
                 case "log10":
                 case "logn":
+                case "sqrt":
                     return true;
                 default:
                     return false;
