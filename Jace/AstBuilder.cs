@@ -20,6 +20,7 @@ namespace Jace
             operationPrecedence.Add('-', 1);
             operationPrecedence.Add('*', 2);
             operationPrecedence.Add('/', 2);
+            operationPrecedence.Add('%', 2);
             operationPrecedence.Add('^', 3);
         }
 
@@ -148,6 +149,8 @@ namespace Jace
                 DataType dataType;
                 Operation argument1;
                 Operation argument2;
+                Operation divisor;
+                Operation divident;
 
                 switch ((char)operationToken.Value)
                 {
@@ -170,10 +173,15 @@ namespace Jace
 
                         return new Multiplication(dataType, argument1, argument2);
                     case '/':
-                        Operation divisor = resultStack.Pop();
-                        Operation divident = resultStack.Pop();
+                        divisor = resultStack.Pop();
+                        divident = resultStack.Pop();
 
                         return new Division(DataType.FloatingPoint, divident, divisor);
+                    case '%':
+                        divisor = resultStack.Pop();
+                        divident = resultStack.Pop();
+
+                        return new Modulo(DataType.FloatingPoint, divident, divisor);
                     case '^':
                         Operation exponent = resultStack.Pop();
                         Operation @base = resultStack.Pop();

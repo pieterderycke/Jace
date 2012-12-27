@@ -60,6 +60,7 @@
     <Compile Include="Operations\Exponentiation.cs" />
     <Compile Include="Operations\Function.cs" />
     <Compile Include="Operations\FunctionType.cs" />
+    <Compile Include="Operations\Modulo.cs" />
     <Compile Include="Operations\Operation.cs" />
     <Compile Include="Operations\Multiplication.cs" />
     <Compile Include="Operations\Substraction.cs" />

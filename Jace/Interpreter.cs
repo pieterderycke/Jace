@@ -71,6 +71,11 @@ namespace Jace
                 Division division = (Division)operation;
                 return Execute(division.Dividend, variables) / Execute(division.Divisor, variables);
             }
+            else if (operation.GetType() == typeof(Modulo))
+            {
+                Modulo division = (Modulo)operation;
+                return Execute(division.Dividend, variables) % Execute(division.Divisor, variables);
+            }
             else if (operation.GetType() == typeof(Exponentiation))
             {
                 Exponentiation exponentiation = (Exponentiation)operation;
