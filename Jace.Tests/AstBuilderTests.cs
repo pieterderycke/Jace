@@ -129,6 +129,22 @@ namespace Jace.Tests
         }
 
         [TestMethod]
+        public void TestModulo()
+        {
+            AstBuilder builder = new AstBuilder();
+            Operation operation = builder.Build(new List<Token>() { 
+                new Token() { Value = 2.7, TokenType = TokenType.FloatingPoint }, 
+                new Token() { Value = '%', TokenType = TokenType.Operation }, 
+                new Token() { Value = 3, TokenType = TokenType.Integer }
+            });
+
+            Modulo modulo = (Modulo)operation;
+
+            Assert.AreEqual(new FloatingPointConstant(2.7), modulo.Dividend);
+            Assert.AreEqual(new IntegerConstant(3), modulo.Divisor);
+        }
+
+        [TestMethod]
         public void TestVariable()
         {
             AstBuilder builder = new AstBuilder();

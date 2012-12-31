@@ -130,6 +130,14 @@ namespace Jace
 
                 generator.Emit(OpCodes.Div);
             }
+            else if (operation.GetType() == typeof(Modulo))
+            {
+                Modulo modulo = (Modulo)operation;
+                GenerateMethodBody(generator, modulo.Dividend);
+                GenerateMethodBody(generator, modulo.Divisor);
+
+                generator.Emit(OpCodes.Rem);
+            }
             else if (operation.GetType() == typeof(Exponentiation))
             {
                 Exponentiation exponentation = (Exponentiation)operation;
@@ -293,6 +301,14 @@ namespace Jace
                 Expression divisor = GenerateMethodBody(division.Divisor, dictionaryParameter);
 
                 return Expression.Divide(dividend, divisor);
+            }
+            else if (operation.GetType() == typeof(Modulo))
+            {
+                Modulo modulo = (Modulo)operation;
+                Expression dividend = GenerateMethodBody(modulo.Dividend, dictionaryParameter);
+                Expression divisor = GenerateMethodBody(modulo.Divisor, dictionaryParameter);
+
+                return Expression.Modulo(dividend, divisor);
             }
             else if (operation.GetType() == typeof(Exponentiation))
             {
