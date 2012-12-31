@@ -11,6 +11,13 @@ namespace Jace.Operations
         Cosine,
         Loge,
         Log10,
-        Logn
+        Logn,
+        SquareRoot,
+        Tangent,
+        Cotangent,
+        Arcsine,
+        Arccosine,
+        Arctangent,
+        Arccotangent
     }
 }

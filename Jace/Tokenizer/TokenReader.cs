@@ -104,6 +104,7 @@ namespace Jace.Tokenizer
                     case '*':
                     case '/':
                     case '^':
+                    case '%':
                         tokens.Add(new Token() { TokenType = TokenType.Operation, Value = characters[i], StartPosition = i, Length = 1 });
                         break;
                     case '(':

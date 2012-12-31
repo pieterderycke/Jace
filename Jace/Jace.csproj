@@ -60,6 +60,7 @@
     <Compile Include="Operations\Exponentiation.cs" />
     <Compile Include="Operations\Function.cs" />
     <Compile Include="Operations\FunctionType.cs" />
+    <Compile Include="Operations\Modulo.cs" />
     <Compile Include="Operations\Operation.cs" />
     <Compile Include="Operations\Multiplication.cs" />
     <Compile Include="Operations\Substraction.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Tokenizer\TokenReader.cs" />
     <Compile Include="Tokenizer\TokenizerException.cs" />
     <Compile Include="Tokenizer\TokenType.cs" />
+    <Compile Include="Util\MathUtil.cs" />
     <Compile Include="Util\MemoryCache.cs" />
     <Compile Include="Util\FuncAdapter.cs" />
     <Compile Include="Util\TypeExtensions.cs" />

@@ -44,6 +44,26 @@ namespace Jace.Tests
         }
 
         [TestMethod]
+        public void TestCalculateModuloCompiled()
+        {
+            CalculationEngine engine = 
+                new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, false, false);
+            double result = engine.Calculate("5 % 3.0");
+
+            Assert.AreEqual(2.0, result);
+        }
+
+        [TestMethod]
+        public void TestCalculateModuloInterpreted()
+        {
+            CalculationEngine engine = 
+                new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, false, false);
+            double result = engine.Calculate("5 % 3.0");
+
+            Assert.AreEqual(2.0, result);
+        }
+
+        [TestMethod]
         public void TestCalculatePowCompiled()
         {
             CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);

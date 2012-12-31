@@ -97,6 +97,9 @@
     <Compile Include="..\Jace\Operations\FunctionType.cs">
       <Link>Operations\FunctionType.cs</Link>
     </Compile>
+    <Compile Include="..\Jace\Operations\Modulo.cs">
+      <Link>Operations\Modulo.cs</Link>
+    </Compile>
     <Compile Include="..\Jace\Operations\Multiplication.cs">
       <Link>Operations\Multiplication.cs</Link>
     </Compile>
@@ -129,6 +132,9 @@
     </Compile>
     <Compile Include="..\Jace\Util\FuncAdapter.cs">
       <Link>Util\FuncAdapter.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\Util\MathUtil.cs">
+      <Link>Util\MathUtil.cs</Link>
     </Compile>
     <Compile Include="..\Jace\Util\MemoryCache.cs">
       <Link>Util\MemoryCache.cs</Link>
