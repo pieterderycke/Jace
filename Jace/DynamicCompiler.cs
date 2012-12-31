@@ -162,6 +162,30 @@ namespace Jace
                         
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Cos"));
                         break;
+                    case FunctionType.Arcsine:
+                        GenerateMethodBody(generator, function.Arguments[0]);
+
+                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Asin", new Type[] { typeof(double) }));
+                    case FunctionType.Arccosine:
+                        GenerateMethodBody(generator, function.Arguments[0]);
+
+                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Acos", new Type[] { typeof(double) }));
+                    case FunctionType.Tangent:
+                        GenerateMethodBody(generator, function.Arguments[0]);
+
+                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Tan", new Type[] { typeof(double) }));
+                    case FunctionType.Cotangent:
+                        GenerateMethodBody(generator, function.Arguments[0]);
+
+                        generator.Emit(OpCodes.Call, typeof(MathUtil).GetMethod("Cot", new Type[] { typeof(double) }));
+                    case FunctionType.Arctangent:
+                        GenerateMethodBody(generator, function.Arguments[0]);
+
+                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Atan", new Type[] { typeof(double) }));
+                    case FunctionType.Arccotangent:
+                        GenerateMethodBody(generator, function.Arguments[0]);
+
+                        generator.Emit(OpCodes.Call, typeof(MathUtil).GetMethod("Acot", new Type[] { typeof(double) }));
                     case FunctionType.Loge:
                         GenerateMethodBody(generator, function.Arguments[0]);
 
@@ -178,6 +202,10 @@ namespace Jace
 
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Log", new Type[] { typeof(double), typeof(double) }));
                         break;
+                    case FunctionType.SquareRoot:
+                        GenerateMethodBody(generator, function.Arguments[0]);
+
+                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Sqrt", new Type[] { typeof(double) }));
                     default:
                         throw new ArgumentException(string.Format("Unsupported function \"{0}\".", function.FunctionType), "operation");
                 }
@@ -334,6 +362,30 @@ namespace Jace
                         argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
 
                         return Expression.Call(null, typeof(Math).GetRuntimeMethod("Cos", new Type[] { typeof(double) }), argument1);
+                    case FunctionType.Arcsine:
+                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+
+                        return Expression.Call(null, typeof(Math).GetRuntimeMethod("Asin", new Type[] { typeof(double) }), argument1);
+                    case FunctionType.Arccosine:
+                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+
+                        return Expression.Call(null, typeof(Math).GetRuntimeMethod("Acos", new Type[] { typeof(double) }), argument1);
+                    case FunctionType.Tangent:
+                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+
+                        return Expression.Call(null, typeof(Math).GetRuntimeMethod("Tan", new Type[] { typeof(double) }), argument1);
+                    case FunctionType.Cotangent:
+                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+
+                        return Expression.Call(null, typeof(MathUtil).GetRuntimeMethod("Cot", new Type[] { typeof(double) }), argument1);
+                    case FunctionType.Arctangent:
+                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+
+                        return Expression.Call(null, typeof(Math).GetRuntimeMethod("Atan", new Type[] { typeof(double) }), argument1);
+                    case FunctionType.Arccotangent:
+                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+
+                        return Expression.Call(null, typeof(MathUtil).GetRuntimeMethod("Acot", new Type[] { typeof(double) }), argument1);
                     case FunctionType.Loge:
                         argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
 
@@ -350,6 +402,10 @@ namespace Jace
                             typeof(Math).GetRuntimeMethod("Log", new Type[] { typeof(double), typeof(double) }), 
                             argument1, 
                             argument2);
+                    case FunctionType.SquareRoot:
+                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+
+                        return Expression.Call(null, typeof(Math).GetRuntimeMethod("Sqrt", new Type[] { typeof(double) }), argument1);
                     default:
                         throw new ArgumentException(string.Format("Unsupported function \"{0}\".", function.FunctionType), "operation");
                 }
