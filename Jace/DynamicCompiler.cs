@@ -166,26 +166,32 @@ namespace Jace
                         GenerateMethodBody(generator, function.Arguments[0]);
 
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Asin", new Type[] { typeof(double) }));
+                        break;
                     case FunctionType.Arccosine:
                         GenerateMethodBody(generator, function.Arguments[0]);
 
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Acos", new Type[] { typeof(double) }));
+                        break;
                     case FunctionType.Tangent:
                         GenerateMethodBody(generator, function.Arguments[0]);
 
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Tan", new Type[] { typeof(double) }));
+                        break;
                     case FunctionType.Cotangent:
                         GenerateMethodBody(generator, function.Arguments[0]);
 
                         generator.Emit(OpCodes.Call, typeof(MathUtil).GetMethod("Cot", new Type[] { typeof(double) }));
+                        break;
                     case FunctionType.Arctangent:
                         GenerateMethodBody(generator, function.Arguments[0]);
 
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Atan", new Type[] { typeof(double) }));
+                        break;
                     case FunctionType.Arccotangent:
                         GenerateMethodBody(generator, function.Arguments[0]);
 
                         generator.Emit(OpCodes.Call, typeof(MathUtil).GetMethod("Acot", new Type[] { typeof(double) }));
+                        break;
                     case FunctionType.Loge:
                         GenerateMethodBody(generator, function.Arguments[0]);
 
@@ -206,6 +212,7 @@ namespace Jace
                         GenerateMethodBody(generator, function.Arguments[0]);
 
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Sqrt", new Type[] { typeof(double) }));
+                        break;
                     default:
                         throw new ArgumentException(string.Format("Unsupported function \"{0}\".", function.FunctionType), "operation");
                 }
