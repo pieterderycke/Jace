@@ -61,9 +61,9 @@ namespace Jace
                 Addition addition = (Addition)operation;
                 return Execute(addition.Argument1, variables) + Execute(addition.Argument2, variables);
             }
-            else if (operation.GetType() == typeof(Substraction))
+            else if (operation.GetType() == typeof(Subtraction))
             {
-                Substraction addition = (Substraction)operation;
+                Subtraction addition = (Subtraction)operation;
                 return Execute(addition.Argument1, variables) - Execute(addition.Argument2, variables);
             }
             else if (operation.GetType() == typeof(Division))

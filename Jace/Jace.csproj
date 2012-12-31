@@ -63,7 +63,7 @@
     <Compile Include="Operations\Modulo.cs" />
     <Compile Include="Operations\Operation.cs" />
     <Compile Include="Operations\Multiplication.cs" />
-    <Compile Include="Operations\Substraction.cs" />
+    <Compile Include="Operations\Subtraction.cs" />
     <Compile Include="Operations\Variable.cs" />
     <Compile Include="Optimizer.cs" />
     <Compile Include="ParseException.cs" />

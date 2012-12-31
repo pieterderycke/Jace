@@ -165,7 +165,7 @@ namespace Jace
                         argument1 = resultStack.Pop();
                         dataType = RequiredDataType(argument1, argument2);
 
-                        return new Substraction(dataType, argument1, argument2);
+                        return new Subtraction(dataType, argument1, argument2);
                     case '*':
                         argument2 = resultStack.Pop();
                         argument1 = resultStack.Pop();

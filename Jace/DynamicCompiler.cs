@@ -114,9 +114,9 @@ namespace Jace
 
                 generator.Emit(OpCodes.Add);
             }
-            else if (operation.GetType() == typeof(Substraction))
+            else if (operation.GetType() == typeof(Subtraction))
             {
-                Substraction addition = (Substraction)operation;
+                Subtraction addition = (Subtraction)operation;
                 GenerateMethodBody(generator, addition.Argument1);
                 GenerateMethodBody(generator, addition.Argument2);
 
@@ -321,9 +321,9 @@ namespace Jace
 
                 return Expression.Add(argument1, argument2);
             }
-            else if (operation.GetType() == typeof(Substraction))
+            else if (operation.GetType() == typeof(Subtraction))
             {
-                Substraction addition = (Substraction)operation;
+                Subtraction addition = (Subtraction)operation;
                 Expression argument1 = GenerateMethodBody(addition.Argument1, dictionaryParameter);
                 Expression argument2 = GenerateMethodBody(addition.Argument2, dictionaryParameter);
 

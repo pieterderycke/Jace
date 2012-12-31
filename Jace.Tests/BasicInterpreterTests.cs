@@ -19,7 +19,7 @@ namespace Jace.Tests
         public void TestBasicInterpreterSubstraction()
         {
             IExecutor executor = new Interpreter();
-            double result = executor.Execute(new Substraction(
+            double result = executor.Execute(new Subtraction(
                 DataType.Integer,
                 new IntegerConstant(6),
                 new IntegerConstant(9)));

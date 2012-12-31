@@ -121,9 +121,9 @@ namespace Jace.DemoApp
                 item.Items.Add(CreateTreeViewItem(addition.Argument1));
                 item.Items.Add(CreateTreeViewItem(addition.Argument2));
             }
-            else if (operation.GetType() == typeof(Substraction))
+            else if (operation.GetType() == typeof(Subtraction))
             {
-                Substraction addition = (Substraction)operation;
+                Subtraction addition = (Subtraction)operation;
 
                 item.Items.Add(CreateTreeViewItem(addition.Argument1));
                 item.Items.Add(CreateTreeViewItem(addition.Argument2));
@@ -234,9 +234,9 @@ namespace Jace.DemoApp
                     GetVariables(multiplication.Argument1, variables);
                     GetVariables(multiplication.Argument2, variables);
                 }
-                else if (operation.GetType() == typeof(Substraction))
+                else if (operation.GetType() == typeof(Subtraction))
                 {
-                    Substraction substraction = (Substraction)operation;
+                    Subtraction substraction = (Subtraction)operation;
                     GetVariables(substraction.Argument1, variables);
                     GetVariables(substraction.Argument2, variables);
                 }

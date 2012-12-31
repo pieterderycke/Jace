@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Jace.Operations
 {
-    public class Substraction : Operation
+    public class Subtraction : Operation
     {
-        public Substraction(DataType dataType, Operation argument1, Operation argument2)
+        public Subtraction(DataType dataType, Operation argument1, Operation argument2)
             : base(dataType, argument1.DependsOnVariables || argument2.DependsOnVariables)
         {
             this.Argument1 = argument1;

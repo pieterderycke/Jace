@@ -31,9 +31,9 @@ namespace Jace
                     addition.Argument1 = Optimize(addition.Argument1);
                     addition.Argument2 = Optimize(addition.Argument2);
                 }
-                else if (operation.GetType() == typeof(Substraction))
+                else if (operation.GetType() == typeof(Subtraction))
                 {
-                    Substraction substraction = (Substraction)operation;
+                    Subtraction substraction = (Subtraction)operation;
                     substraction.Argument1 = Optimize(substraction.Argument1);
                     substraction.Argument2 = Optimize(substraction.Argument2);
                 }
