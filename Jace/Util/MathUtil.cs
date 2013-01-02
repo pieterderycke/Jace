@@ -16,5 +16,15 @@ namespace Jace.Util
         {
             return Math.Atan(1 / d);
         }
+
+        public static double Csc(double a)
+        {
+            return 1 / Math.Sin(a);
+        }
+
+        public static double Sec(double d)
+        {
+            return 1 / Math.Cos(d);
+        }
     }
 }

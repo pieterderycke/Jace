@@ -212,6 +212,10 @@ namespace Jace
                         return new Function(DataType.FloatingPoint, FunctionType.Sine, new Operation[] { resultStack.Pop() });
                     case "cos":
                         return new Function(DataType.FloatingPoint, FunctionType.Cosine, new Operation[] { resultStack.Pop() });
+                    case "csc":
+                        return new Function(DataType.FloatingPoint, FunctionType.Cosecant, new Operation[] { resultStack.Pop() });
+                    case "sec":
+                        return new Function(DataType.FloatingPoint, FunctionType.Secant, new Operation[] { resultStack.Pop() });
                     case "asin":
                         return new Function(DataType.FloatingPoint, FunctionType.Arcsine, new Operation[] { resultStack.Pop() });
                     case "acos":

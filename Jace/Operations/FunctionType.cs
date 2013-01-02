@@ -9,6 +9,8 @@ namespace Jace.Operations
     {
         Sine,
         Cosine,
+        Secant,
+        Cosecant,
         Loge,
         Log10,
         Logn,

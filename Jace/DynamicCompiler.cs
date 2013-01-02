@@ -162,6 +162,16 @@ namespace Jace
                         
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Cos"));
                         break;
+                    case FunctionType.Cosecant:
+                        GenerateMethodBody(generator, function.Arguments[0]);
+
+                        generator.Emit(OpCodes.Call, typeof(MathUtil).GetMethod("Csc"));
+                        break;
+                    case FunctionType.Secant:
+                        GenerateMethodBody(generator, function.Arguments[0]);
+                        
+                        generator.Emit(OpCodes.Call, typeof(MathUtil).GetMethod("Sec"));
+                        break;
                     case FunctionType.Arcsine:
                         GenerateMethodBody(generator, function.Arguments[0]);
 
@@ -369,6 +379,14 @@ namespace Jace
                         argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
 
                         return Expression.Call(null, typeof(Math).GetRuntimeMethod("Cos", new Type[] { typeof(double) }), argument1);
+                    case FunctionType.Cosecant:
+                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+
+                        return Expression.Call(null, typeof(MathUtil).GetRuntimeMethod("Csc", new Type[] { typeof(double) }), argument1);
+                    case FunctionType.Secant:
+                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+                        
+                        return Expression.Call(null, typeof(MathUtil).GetRuntimeMethod("Sec", new Type[] { typeof(double) }), argument1);
                     case FunctionType.Arcsine:
                         argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
 

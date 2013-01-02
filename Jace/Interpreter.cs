@@ -91,6 +91,10 @@ namespace Jace
                         return Math.Sin(Execute(function.Arguments[0], variables));
                     case FunctionType.Cosine:
                         return Math.Cos(Execute(function.Arguments[0], variables));
+                    case FunctionType.Secant:
+                        return MathUtil.Sec(Execute(function.Arguments[0], variables));
+                    case FunctionType.Cosecant:
+                        return MathUtil.Csc(Execute(function.Arguments[0], variables));
                     case FunctionType.Arcsine:
                         return Math.Asin(Execute(function.Arguments[0], variables));
                     case FunctionType.Arccosine:
