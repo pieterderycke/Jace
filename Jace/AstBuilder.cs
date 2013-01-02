@@ -204,7 +204,9 @@ namespace Jace
         {
             try
             {
-                switch ((string)functionToken.Value)
+                string functionName = ((string)functionToken.Value).ToLowerInvariant();
+
+                switch (functionName)
                 {
                     case "sin":
                         return new Function(DataType.FloatingPoint, FunctionType.Sine, new Operation[] { resultStack.Pop() });
