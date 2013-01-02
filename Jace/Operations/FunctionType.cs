@@ -20,6 +20,7 @@ namespace Jace.Operations
         Arcsine,
         Arccosine,
         Arctangent,
-        Arccotangent
+        Arccotangent,
+        AbsoluteValue
     }
 }

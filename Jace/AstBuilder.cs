@@ -239,6 +239,8 @@ namespace Jace
                         return new Function(DataType.FloatingPoint, FunctionType.Logn, operations);
                     case "sqrt":
                         return new Function(DataType.FloatingPoint, FunctionType.SquareRoot, new Operation[] { resultStack.Pop() });
+                    case "abs":
+                        return new Function(DataType.FloatingPoint, FunctionType.AbsoluteValue, new Operation[] { resultStack.Pop() });
                     default:
                         throw new ArgumentException(string.Format("Unknown function \"{0}\".", functionToken.Value), "function");
                 }

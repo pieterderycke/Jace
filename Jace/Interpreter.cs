@@ -115,6 +115,8 @@ namespace Jace
                         return Math.Log(Execute(function.Arguments[0], variables), Execute(function.Arguments[1], variables));
                     case FunctionType.SquareRoot:
                         return Math.Sqrt(Execute(function.Arguments[0], variables));
+                    case FunctionType.AbsoluteValue:
+                        return Math.Abs(Execute(function.Arguments[0], variables));
                     default:
                         throw new ArgumentException(string.Format("Unsupported function \"{0}\".", function.FunctionType), "operation");
                 }

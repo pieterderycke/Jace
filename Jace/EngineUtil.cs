@@ -22,6 +22,8 @@ namespace Jace
             {
                 case "sin":
                 case "cos":
+                case "csc":
+                case "sec":
                 case "asin":
                 case "acos":
                 case "tan":
@@ -32,6 +34,7 @@ namespace Jace
                 case "log10":
                 case "logn":
                 case "sqrt":
+                case "abs":
                     return true;
                 default:
                     return false;

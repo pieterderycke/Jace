@@ -223,6 +223,11 @@ namespace Jace
 
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Sqrt", new Type[] { typeof(double) }));
                         break;
+                    case FunctionType.AbsoluteValue:
+                        GenerateMethodBody(generator, function.Arguments[0]);
+
+                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Abs", new Type[] { typeof(double) }));
+                        break;
                     default:
                         throw new ArgumentException(string.Format("Unsupported function \"{0}\".", function.FunctionType), "operation");
                 }
@@ -431,6 +436,10 @@ namespace Jace
                         argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
 
                         return Expression.Call(null, typeof(Math).GetRuntimeMethod("Sqrt", new Type[] { typeof(double) }), argument1);
+                    case FunctionType.AbsoluteValue:
+                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+
+                        return Expression.Call(null, typeof(Math).GetRuntimeMethod("Abs", new Type[] { typeof(double) }), argument1);
                     default:
                         throw new ArgumentException(string.Format("Unsupported function \"{0}\".", function.FunctionType), "operation");
                 }
