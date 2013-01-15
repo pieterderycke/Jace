@@ -48,7 +48,7 @@ namespace Jace
                         }
                         else
                         {
-                            resultStack.Push(new Variable((string)token.Value));
+                            resultStack.Push(new Variable(((string)token.Value).ToLowerInvariant()));
                         }
                         break;
                     case TokenType.LeftBracket:

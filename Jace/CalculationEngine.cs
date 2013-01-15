@@ -40,6 +40,14 @@ namespace Jace
         {
         }
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="CalculationEngine"/> class. The optimizer and 
+        /// cache are enabled.
+        /// </summary>
+        /// <param name="cultureInfo">
+        /// The <see cref="CultureInfo"/> required for correctly reading floating poin numbers.
+        /// </param>
+        /// <param name="executionMode">The execution mode that must be used for formula execution.</param>
         public CalculationEngine(CultureInfo cultureInfo, ExecutionMode executionMode)
             : this(cultureInfo, executionMode, true, true) 
         {
@@ -76,6 +84,13 @@ namespace Jace
             if (variables == null)
                 throw new ArgumentNullException("variables");
 
+            variables = ConvertVariableNamesToLowerCase(variables);
+            VerifyVariableNames(variables);
+
+            // Add the reserved variables to the dictionary
+            variables.Add("e", Math.E);
+            variables.Add("pi", Math.PI);
+
             if (IsInFormulaCache(formulaText))
             {
                 Func<Dictionary<string, double>, double> formula = executionFormulaCache[formulaText];
@@ -98,6 +113,11 @@ namespace Jace
             return new FormulaBuilder(formulaText, this);
         }
 
+        /// <summary>
+        /// Build a .NET func for the provided formula.
+        /// </summary>
+        /// <param name="formulaText">The formula that must be converted into a .NET func.</param>
+        /// <returns>A .NET func for the provided formula.</returns>
         public Func<Dictionary<string, double>, double> Build(string formulaText)
         {
             if (string.IsNullOrEmpty(formulaText))
@@ -143,6 +163,35 @@ namespace Jace
         private bool IsInFormulaCache(string formulaText)
         {
             return cacheEnabled && executionFormulaCache.ContainsKey(formulaText);
+        }
+
+        /// <summary>
+        /// Verify a collection of variables to ensure that all the variable names are valid.
+        /// Users are not allowed to overwrite reserved variables or use function names as variables.
+        /// If an invalid variable is detected an exception is thrown.
+        /// </summary>
+        /// <param name="variables">The colletion of variables that must be verified.</param>
+        private void VerifyVariableNames(Dictionary<string, double> variables)
+        {
+            foreach (string variableName in variables.Keys)
+            {
+                if (EngineUtil.IsReservedVariable(variableName))
+                    throw new ArgumentException(string.Format("The name \"{0}\" is a reservered variable name that cannot be overwritten.", variableName), "variables");
+
+                if (EngineUtil.IsFunctionName(variableName))
+                    throw new ArgumentException(string.Format("The name \"{0}\" is a restricted function name. Parameters cannot have this name.", variableName), "variables");
+            }
+        }
+
+        private Dictionary<string, double> ConvertVariableNamesToLowerCase(Dictionary<string, double> variables)
+        {
+            Dictionary<string, double> temp = new Dictionary<string, double>();
+            foreach (KeyValuePair<string, double> keyValuePair in variables)
+            {
+                temp.Add(keyValuePair.Key.ToLowerInvariant(), keyValuePair.Value);
+            }
+
+            return temp;
         }
     }
 }
