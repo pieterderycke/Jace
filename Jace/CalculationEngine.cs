@@ -10,6 +10,11 @@ using Jace.Util;
 
 namespace Jace
 {
+    /// <summary>
+    /// The CalculationEngine class is the main class of Jace.NET to convert strings containing
+    /// mathematical formulas into .NET Delegates and to calculate the result.
+    /// It can be configured to run in a number of modes based on the constructor parameters choosen.
+    /// </summary>
     public class CalculationEngine
     {
         private readonly IExecutor executor;
@@ -53,6 +58,15 @@ namespace Jace
         {
         }
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="CalculationEngine"/> class.
+        /// </summary>
+        /// <param name="cultureInfo">
+        /// The <see cref="CultureInfo"/> required for correctly reading floating poin numbers.
+        /// </param>
+        /// <param name="executionMode">The execution mode that must be used for formula execution.</param>
+        /// <param name="cacheEnabled">Enable or disable caching of mathematical formulas.</param>
+        /// <param name="optimizerEnabled">Enable or disable optimizing of formulas.</param>
         public CalculationEngine(CultureInfo cultureInfo, ExecutionMode executionMode, bool cacheEnabled, bool optimizerEnabled)
         {
             this.executionFormulaCache = new MemoryCache<string, Func<Dictionary<string, double>, double>>();
