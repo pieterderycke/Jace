@@ -240,5 +240,39 @@ namespace Jace.Tests
                         .Build();
                 });
         }
+
+        [TestMethod]
+        public void TestPiMultiplication()
+        {
+            CalculationEngine engine = new CalculationEngine();
+            double result = engine.Calculate("2 * pI");
+
+            Assert.AreEqual(2 * Math.PI, result);
+        }
+
+        [TestMethod]        
+        public void TestReservedVariableName()
+        {
+            AssertExtensions.ThrowsException<ArgumentException>(() =>
+            {
+                Dictionary<string, double> variables = new Dictionary<string, double>();
+                variables.Add("pi", 2.0);
+
+                CalculationEngine engine = new CalculationEngine();
+                double result = engine.Calculate("2 * pI", variables);
+            });
+        }
+
+        [TestMethod]
+        public void TestVariableNameCaseSensitivity()
+        {
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("blabla", 42.5);
+
+            CalculationEngine engine = new CalculationEngine();
+            double result = engine.Calculate("2 * BlAbLa", variables);
+
+            Assert.AreEqual(85.0, result);
+        }
     }
 }

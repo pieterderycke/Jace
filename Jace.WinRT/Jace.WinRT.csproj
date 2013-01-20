@@ -156,8 +156,8 @@
     <Compile Include="..\Jace\Operations\Operation.cs">
       <Link>Operations\Operation.cs</Link>
     </Compile>
-    <Compile Include="..\Jace\Operations\Substraction.cs">
-      <Link>Operations\Substraction.cs</Link>
+    <Compile Include="..\Jace\Operations\Subtraction.cs">
+      <Link>Operations\Subtraction.cs</Link>
     </Compile>
     <Compile Include="..\Jace\Operations\Variable.cs">
       <Link>Operations\Variable.cs</Link>

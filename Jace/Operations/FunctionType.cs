@@ -9,6 +9,8 @@ namespace Jace.Operations
     {
         Sine,
         Cosine,
+        Secant,
+        Cosecant,
         Loge,
         Log10,
         Logn,
@@ -18,6 +20,7 @@ namespace Jace.Operations
         Arcsine,
         Arccosine,
         Arctangent,
-        Arccotangent
+        Arccotangent,
+        AbsoluteValue
     }
 }

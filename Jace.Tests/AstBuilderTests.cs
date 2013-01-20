@@ -70,7 +70,7 @@ namespace Jace.Tests
                 new Token() { Value = 3, TokenType = TokenType.Integer }
             });
 
-            Substraction substraction = (Substraction)operation;
+            Subtraction substraction = (Subtraction)operation;
             Multiplication multiplication = (Multiplication)substraction.Argument1;
 
             Assert.AreEqual(3, ((Constant<int>)substraction.Argument2).Value);

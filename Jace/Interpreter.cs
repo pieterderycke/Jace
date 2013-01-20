@@ -61,9 +61,9 @@ namespace Jace
                 Addition addition = (Addition)operation;
                 return Execute(addition.Argument1, variables) + Execute(addition.Argument2, variables);
             }
-            else if (operation.GetType() == typeof(Substraction))
+            else if (operation.GetType() == typeof(Subtraction))
             {
-                Substraction addition = (Substraction)operation;
+                Subtraction addition = (Subtraction)operation;
                 return Execute(addition.Argument1, variables) - Execute(addition.Argument2, variables);
             }
             else if (operation.GetType() == typeof(Division))
@@ -91,6 +91,10 @@ namespace Jace
                         return Math.Sin(Execute(function.Arguments[0], variables));
                     case FunctionType.Cosine:
                         return Math.Cos(Execute(function.Arguments[0], variables));
+                    case FunctionType.Secant:
+                        return MathUtil.Sec(Execute(function.Arguments[0], variables));
+                    case FunctionType.Cosecant:
+                        return MathUtil.Csc(Execute(function.Arguments[0], variables));
                     case FunctionType.Arcsine:
                         return Math.Asin(Execute(function.Arguments[0], variables));
                     case FunctionType.Arccosine:
@@ -111,6 +115,8 @@ namespace Jace
                         return Math.Log(Execute(function.Arguments[0], variables), Execute(function.Arguments[1], variables));
                     case FunctionType.SquareRoot:
                         return Math.Sqrt(Execute(function.Arguments[0], variables));
+                    case FunctionType.AbsoluteValue:
+                        return Math.Abs(Execute(function.Arguments[0], variables));
                     default:
                         throw new ArgumentException(string.Format("Unsupported function \"{0}\".", function.FunctionType), "operation");
                 }

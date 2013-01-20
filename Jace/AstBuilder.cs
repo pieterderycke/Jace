@@ -48,7 +48,7 @@ namespace Jace
                         }
                         else
                         {
-                            resultStack.Push(new Variable((string)token.Value));
+                            resultStack.Push(new Variable(((string)token.Value).ToLowerInvariant()));
                         }
                         break;
                     case TokenType.LeftBracket:
@@ -165,7 +165,7 @@ namespace Jace
                         argument1 = resultStack.Pop();
                         dataType = RequiredDataType(argument1, argument2);
 
-                        return new Substraction(dataType, argument1, argument2);
+                        return new Subtraction(dataType, argument1, argument2);
                     case '*':
                         argument2 = resultStack.Pop();
                         argument1 = resultStack.Pop();
@@ -204,12 +204,18 @@ namespace Jace
         {
             try
             {
-                switch ((string)functionToken.Value)
+                string functionName = ((string)functionToken.Value).ToLowerInvariant();
+
+                switch (functionName)
                 {
                     case "sin":
                         return new Function(DataType.FloatingPoint, FunctionType.Sine, new Operation[] { resultStack.Pop() });
                     case "cos":
                         return new Function(DataType.FloatingPoint, FunctionType.Cosine, new Operation[] { resultStack.Pop() });
+                    case "csc":
+                        return new Function(DataType.FloatingPoint, FunctionType.Cosecant, new Operation[] { resultStack.Pop() });
+                    case "sec":
+                        return new Function(DataType.FloatingPoint, FunctionType.Secant, new Operation[] { resultStack.Pop() });
                     case "asin":
                         return new Function(DataType.FloatingPoint, FunctionType.Arcsine, new Operation[] { resultStack.Pop() });
                     case "acos":
@@ -233,6 +239,8 @@ namespace Jace
                         return new Function(DataType.FloatingPoint, FunctionType.Logn, operations);
                     case "sqrt":
                         return new Function(DataType.FloatingPoint, FunctionType.SquareRoot, new Operation[] { resultStack.Pop() });
+                    case "abs":
+                        return new Function(DataType.FloatingPoint, FunctionType.AbsoluteValue, new Operation[] { resultStack.Pop() });
                     default:
                         throw new ArgumentException(string.Format("Unknown function \"{0}\".", functionToken.Value), "function");
                 }

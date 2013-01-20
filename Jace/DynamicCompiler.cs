@@ -114,9 +114,9 @@ namespace Jace
 
                 generator.Emit(OpCodes.Add);
             }
-            else if (operation.GetType() == typeof(Substraction))
+            else if (operation.GetType() == typeof(Subtraction))
             {
-                Substraction addition = (Substraction)operation;
+                Subtraction addition = (Subtraction)operation;
                 GenerateMethodBody(generator, addition.Argument1);
                 GenerateMethodBody(generator, addition.Argument2);
 
@@ -161,6 +161,16 @@ namespace Jace
                         GenerateMethodBody(generator, function.Arguments[0]);
                         
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Cos"));
+                        break;
+                    case FunctionType.Cosecant:
+                        GenerateMethodBody(generator, function.Arguments[0]);
+
+                        generator.Emit(OpCodes.Call, typeof(MathUtil).GetMethod("Csc"));
+                        break;
+                    case FunctionType.Secant:
+                        GenerateMethodBody(generator, function.Arguments[0]);
+                        
+                        generator.Emit(OpCodes.Call, typeof(MathUtil).GetMethod("Sec"));
                         break;
                     case FunctionType.Arcsine:
                         GenerateMethodBody(generator, function.Arguments[0]);
@@ -212,6 +222,11 @@ namespace Jace
                         GenerateMethodBody(generator, function.Arguments[0]);
 
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Sqrt", new Type[] { typeof(double) }));
+                        break;
+                    case FunctionType.AbsoluteValue:
+                        GenerateMethodBody(generator, function.Arguments[0]);
+
+                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Abs", new Type[] { typeof(double) }));
                         break;
                     default:
                         throw new ArgumentException(string.Format("Unsupported function \"{0}\".", function.FunctionType), "operation");
@@ -321,9 +336,9 @@ namespace Jace
 
                 return Expression.Add(argument1, argument2);
             }
-            else if (operation.GetType() == typeof(Substraction))
+            else if (operation.GetType() == typeof(Subtraction))
             {
-                Substraction addition = (Substraction)operation;
+                Subtraction addition = (Subtraction)operation;
                 Expression argument1 = GenerateMethodBody(addition.Argument1, dictionaryParameter);
                 Expression argument2 = GenerateMethodBody(addition.Argument2, dictionaryParameter);
 
@@ -369,6 +384,14 @@ namespace Jace
                         argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
 
                         return Expression.Call(null, typeof(Math).GetRuntimeMethod("Cos", new Type[] { typeof(double) }), argument1);
+                    case FunctionType.Cosecant:
+                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+
+                        return Expression.Call(null, typeof(MathUtil).GetRuntimeMethod("Csc", new Type[] { typeof(double) }), argument1);
+                    case FunctionType.Secant:
+                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+                        
+                        return Expression.Call(null, typeof(MathUtil).GetRuntimeMethod("Sec", new Type[] { typeof(double) }), argument1);
                     case FunctionType.Arcsine:
                         argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
 
@@ -413,6 +436,10 @@ namespace Jace
                         argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
 
                         return Expression.Call(null, typeof(Math).GetRuntimeMethod("Sqrt", new Type[] { typeof(double) }), argument1);
+                    case FunctionType.AbsoluteValue:
+                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+
+                        return Expression.Call(null, typeof(Math).GetRuntimeMethod("Abs", new Type[] { typeof(double) }), argument1);
                     default:
                         throw new ArgumentException(string.Format("Unsupported function \"{0}\".", function.FunctionType), "operation");
                 }
