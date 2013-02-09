@@ -21,6 +21,7 @@ namespace Jace
         private readonly Optimizer optimizer;
         private readonly CultureInfo cultureInfo;
         private readonly MemoryCache<string, Func<Dictionary<string, double>, double>> executionFormulaCache;
+        private readonly FunctionRegistry functionRegistry;
         private readonly bool cacheEnabled;
         private readonly bool optimizerEnabled;
 
@@ -70,6 +71,7 @@ namespace Jace
         public CalculationEngine(CultureInfo cultureInfo, ExecutionMode executionMode, bool cacheEnabled, bool optimizerEnabled)
         {
             this.executionFormulaCache = new MemoryCache<string, Func<Dictionary<string, double>, double>>();
+            this.functionRegistry = new FunctionRegistry();
             this.cultureInfo = cultureInfo;
             this.cacheEnabled = cacheEnabled;
             this.optimizerEnabled = optimizerEnabled;
@@ -83,6 +85,9 @@ namespace Jace
                     "executionMode");
 
             optimizer = new Optimizer(new Interpreter()); // We run the optimizer with the interpreter 
+
+            // Register the default functions of Jace.NET into the function registry
+            RegisterDefaultFunctions();
         }
 
         public double Calculate(string formulaText)
@@ -148,6 +153,50 @@ namespace Jace
             }
         }
 
+        public void AddFunction(string functionName, Func<double> function)
+        {
+            functionRegistry.RegisterFunction(functionName, function);
+        }
+        
+        public void AddFunction(string functionName, Func<double, double> function)
+        {
+            functionRegistry.RegisterFunction(functionName, function); 
+        }
+
+        public void AddFunction(string functionName, Func<double, double, double> function)
+        {
+            functionRegistry.RegisterFunction(functionName, function);
+        }
+
+        public void AddFunction(string functionName, Func<double, double, double, double> function)
+        {
+            functionRegistry.RegisterFunction(functionName, function);
+        }
+
+        public void AddFunction(string functionName, Func<double, double, double, double, double> function)
+        {
+            functionRegistry.RegisterFunction(functionName, function);
+        }
+
+        private void RegisterDefaultFunctions()
+        {
+            functionRegistry.RegisterFunction("sin", 1);
+            functionRegistry.RegisterFunction("cos", 1);
+            functionRegistry.RegisterFunction("csc", 1);
+            functionRegistry.RegisterFunction("sec", 1);
+            functionRegistry.RegisterFunction("asin", 1);
+            functionRegistry.RegisterFunction("acos", 1);
+            functionRegistry.RegisterFunction("tan", 1);
+            functionRegistry.RegisterFunction("cot", 1);
+            functionRegistry.RegisterFunction("atan", 1);
+            functionRegistry.RegisterFunction("acot", 1);
+            functionRegistry.RegisterFunction("loge", 1);
+            functionRegistry.RegisterFunction("log10", 1);
+            functionRegistry.RegisterFunction("logn", 2);
+            functionRegistry.RegisterFunction("sqrt", 1);
+            functionRegistry.RegisterFunction("abs", 1);
+        }
+
         /// <summary>
         /// Build the abstract syntax tree for a given formula. The formula string will
         /// be first tokenized.
@@ -160,7 +209,7 @@ namespace Jace
             TokenReader tokenReader = new TokenReader(cultureInfo);
             List<Token> tokens = tokenReader.Read(formulaText);
 
-            AstBuilder astBuilder = new AstBuilder();
+            AstBuilder astBuilder = new AstBuilder(functionRegistry);
             Operation operation = astBuilder.Build(tokens);
 
             if (optimizerEnabled)

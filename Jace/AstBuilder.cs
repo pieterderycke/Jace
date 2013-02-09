@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Jace.Execution;
 using Jace.Operations;
 using Jace.Tokenizer;
 
@@ -9,12 +10,16 @@ namespace Jace
 {
     public class AstBuilder
     {
+        private readonly IFunctionRegistry functionRegistry;
+
         private Dictionary<char, int> operationPrecedence = new Dictionary<char, int>();
         private Stack<Operation> resultStack = new Stack<Operation>();
         private Stack<Token> operatorStack = new Stack<Token>();
 
-        public AstBuilder()
+        public AstBuilder(IFunctionRegistry functionRegistry)
         {
+            this.functionRegistry = functionRegistry;
+
             operationPrecedence.Add('(', 0);
             operationPrecedence.Add('+', 1);
             operationPrecedence.Add('-', 1);
@@ -42,7 +47,7 @@ namespace Jace
                         resultStack.Push(new FloatingPointConstant((double)token.Value));
                         break;
                     case TokenType.Text:
-                        if (EngineUtil.IsFunctionName((string)token.Value))
+                        if (functionRegistry.IsFunctionName((string)token.Value))
                         {
                             operatorStack.Push(token);
                         }
@@ -242,7 +247,20 @@ namespace Jace
                     case "abs":
                         return new Function(DataType.FloatingPoint, FunctionType.AbsoluteValue, new Operation[] { resultStack.Pop() });
                     default:
-                        throw new ArgumentException(string.Format("Unknown function \"{0}\".", functionToken.Value), "function");
+                        if (functionRegistry.IsFunctionName(functionName))
+                        {
+                            FunctionInfo functionInfo = functionRegistry.GetFunctionInfo(functionName);
+                            Stack<Operation> operationsStack = new Stack<Operation>();
+
+                            for (int i = 0; i < functionInfo.NumberOfParameters; i++)
+                                operationsStack.Push(resultStack.Pop());
+
+                            return new Function(DataType.FloatingPoint, functionName, operationsStack.ToList());
+                        }
+                        else
+                        {
+                            throw new ArgumentException(string.Format("Unknown function \"{0}\".", functionToken.Value), "function");
+                        }
                 }
             }
             catch (InvalidOperationException)

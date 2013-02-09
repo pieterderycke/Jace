@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Jace.Execution;
 using Jace.Operations;
 using Jace.Tokenizer;
 
@@ -40,7 +41,9 @@ namespace Jace.DemoApp
 
                 ShowTokens(tokens);
 
-                AstBuilder astBuilder = new AstBuilder();
+                IFunctionRegistry functionRegistry = new FunctionRegistry();
+
+                AstBuilder astBuilder = new AstBuilder(functionRegistry);
                 Operation operation = astBuilder.Build(tokens);
 
                 ShowAbstractSyntaxTree(operation);

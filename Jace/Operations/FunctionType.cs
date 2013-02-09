@@ -21,6 +21,7 @@ namespace Jace.Operations
         Arccosine,
         Arctangent,
         Arccotangent,
-        AbsoluteValue
+        AbsoluteValue,
+        Custom
     }
 }

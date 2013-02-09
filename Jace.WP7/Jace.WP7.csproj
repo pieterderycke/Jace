@@ -70,6 +70,15 @@
     <Compile Include="..\Jace\Execution\FormulaBuilder.cs">
       <Link>Execution\FormulaBuilder.cs</Link>
     </Compile>
+    <Compile Include="..\Jace\Execution\FunctionInfo.cs">
+      <Link>Execution\FunctionInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\Execution\FunctionRegistry.cs">
+      <Link>Execution\FunctionRegistry.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\Execution\IFunctionRegistry.cs">
+      <Link>Execution\IFunctionRegistry.cs</Link>
+    </Compile>
     <Compile Include="..\Jace\Execution\ParameterInfo.cs">
       <Link>Execution\ParameterInfo.cs</Link>
     </Compile>

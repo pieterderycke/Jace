@@ -51,7 +51,10 @@
     <Compile Include="EngineUtil.cs" />
     <Compile Include="ExecutionMode.cs" />
     <Compile Include="Execution\FormulaBuilder.cs" />
+    <Compile Include="Execution\IFunctionRegistry.cs" />
     <Compile Include="Execution\ParameterInfo.cs" />
+    <Compile Include="Execution\FunctionInfo.cs" />
+    <Compile Include="Execution\FunctionRegistry.cs" />
     <Compile Include="IExecutor.cs" />
     <Compile Include="Interpreter.cs" />
     <Compile Include="Operations\Addition.cs" />
