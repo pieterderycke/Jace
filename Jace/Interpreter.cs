@@ -19,15 +19,6 @@ namespace Jace
             return Execute(operation, new Dictionary<string, double>());
         }
 
-        public double Execute(Operation operation, Dictionary<string, int> variables)
-        {
-            Dictionary<string, double> doubleVariables = new Dictionary<string, double>();
-            foreach (string key in variables.Keys)
-                doubleVariables.Add(key, variables[key]);
-
-            return Execute(operation, doubleVariables);
-        }
-
         public double Execute(Operation operation, Dictionary<string, double> variables)
         {
             if (operation == null)
