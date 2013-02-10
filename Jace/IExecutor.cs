@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Jace.Execution;
 using Jace.Operations;
 
 namespace Jace
 {
     public interface IExecutor
     {
-        double Execute(Operation operation);
-        double Execute(Operation operation, Dictionary<string, double> variables);
+        double Execute(Operation operation, IFunctionRegistry functionRegistry);
+        double Execute(Operation operation, IFunctionRegistry functionRegistry, Dictionary<string, double> variables);
 
-        Func<Dictionary<string, double>, double> BuildFunction(Operation operation);
+        Func<Dictionary<string, double>, double> BuildFunction(Operation operation, IFunctionRegistry functionRegistry);
     }
 }

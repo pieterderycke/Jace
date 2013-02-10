@@ -39,5 +39,10 @@ namespace Jace.Tests.Mocks
         {
             throw new NotImplementedException();
         }
+
+        public void RegisterFunction(string functionName, int numberOfParameters)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

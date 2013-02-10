@@ -56,7 +56,7 @@ namespace Jace.DemoApp
                 }
 
                 IExecutor executor = new Interpreter();
-                double result = executor.Execute(operation, variables);
+                double result = executor.Execute(operation, null, variables);
 
                 resultTextBox.Text = "" + result;
             }

@@ -7,27 +7,30 @@ using System.Reflection.Emit;
 using System.Text;
 using Jace.Operations;
 using Jace.Util;
+using Jace.Execution;
 
 namespace Jace
 {
 #if !NETFX_CORE
     public class DynamicCompiler : IExecutor
     {
-        public double Execute(Operation operation)
+        public double Execute(Operation operation, IFunctionRegistry functionRegistry)
         {
-            return Execute(operation, new Dictionary<string, double>());
+            return Execute(operation, functionRegistry, new Dictionary<string, double>());
         }
 
-        public double Execute(Operation operation, Dictionary<string, double> variables)
+        public double Execute(Operation operation, IFunctionRegistry functionRegistry, 
+            Dictionary<string, double> variables)
         {
-            return BuildFunction(operation)(variables);
+            return BuildFunction(operation, functionRegistry)(variables);
         }
 
-        public Func<Dictionary<string, double>, double> BuildFunction(Operation operation)
+        public Func<Dictionary<string, double>, double> BuildFunction(Operation operation, 
+            IFunctionRegistry functionRegistry)
         {
             DynamicMethod method = new DynamicMethod("MyCalcMethod", typeof(double),
                 new Type[] { typeof(Dictionary<string, double>) });
-            GenerateMethodBody(method, operation);
+            GenerateMethodBody(method, operation, functionRegistry);
 
             Func<Dictionary<string, double>, double> function =
                 (Func<Dictionary<string, double>, double>)method.CreateDelegate(typeof(Func<Dictionary<string, double>, double>));
@@ -35,15 +38,17 @@ namespace Jace
             return function;
         }
 
-        private void GenerateMethodBody(DynamicMethod method, Operation operation)
+        private void GenerateMethodBody(DynamicMethod method, Operation operation, 
+            IFunctionRegistry functionRegistry)
         {
             ILGenerator generator = method.GetILGenerator();
             generator.DeclareLocal(typeof(double));
-            GenerateMethodBody(generator, operation);
+            GenerateMethodBody(generator, operation, functionRegistry);
             generator.Emit(OpCodes.Ret);
         }
 
-        private void GenerateMethodBody(ILGenerator generator, Operation operation)
+        private void GenerateMethodBody(ILGenerator generator, Operation operation, 
+            IFunctionRegistry functionRegistry)
         {
             if (operation == null)
                 throw new ArgumentNullException("operation");
@@ -92,48 +97,48 @@ namespace Jace
             else if (operation.GetType() == typeof(Multiplication))
             {
                 Multiplication multiplication = (Multiplication)operation;
-                GenerateMethodBody(generator, multiplication.Argument1);
-                GenerateMethodBody(generator, multiplication.Argument2);
+                GenerateMethodBody(generator, multiplication.Argument1, functionRegistry);
+                GenerateMethodBody(generator, multiplication.Argument2, functionRegistry);
 
                 generator.Emit(OpCodes.Mul);
             }
             else if (operation.GetType() == typeof(Addition))
             {
                 Addition addition = (Addition)operation;
-                GenerateMethodBody(generator, addition.Argument1);
-                GenerateMethodBody(generator, addition.Argument2);
+                GenerateMethodBody(generator, addition.Argument1, functionRegistry);
+                GenerateMethodBody(generator, addition.Argument2, functionRegistry);
 
                 generator.Emit(OpCodes.Add);
             }
             else if (operation.GetType() == typeof(Subtraction))
             {
                 Subtraction addition = (Subtraction)operation;
-                GenerateMethodBody(generator, addition.Argument1);
-                GenerateMethodBody(generator, addition.Argument2);
+                GenerateMethodBody(generator, addition.Argument1, functionRegistry);
+                GenerateMethodBody(generator, addition.Argument2, functionRegistry);
 
                 generator.Emit(OpCodes.Sub);
             }
             else if (operation.GetType() == typeof(Division))
             {
                 Division division = (Division)operation;
-                GenerateMethodBody(generator, division.Dividend);
-                GenerateMethodBody(generator, division.Divisor);
+                GenerateMethodBody(generator, division.Dividend, functionRegistry);
+                GenerateMethodBody(generator, division.Divisor, functionRegistry);
 
                 generator.Emit(OpCodes.Div);
             }
             else if (operation.GetType() == typeof(Modulo))
             {
                 Modulo modulo = (Modulo)operation;
-                GenerateMethodBody(generator, modulo.Dividend);
-                GenerateMethodBody(generator, modulo.Divisor);
+                GenerateMethodBody(generator, modulo.Dividend, functionRegistry);
+                GenerateMethodBody(generator, modulo.Divisor, functionRegistry);
 
                 generator.Emit(OpCodes.Rem);
             }
             else if (operation.GetType() == typeof(Exponentiation))
             {
                 Exponentiation exponentation = (Exponentiation)operation;
-                GenerateMethodBody(generator, exponentation.Base);
-                GenerateMethodBody(generator, exponentation.Exponent);
+                GenerateMethodBody(generator, exponentation.Base, functionRegistry);
+                GenerateMethodBody(generator, exponentation.Exponent, functionRegistry);
 
                 generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Pow"));
             }
@@ -144,78 +149,78 @@ namespace Jace
                 switch (function.FunctionType)
                 {
                     case FunctionType.Sine:
-                        GenerateMethodBody(generator, function.Arguments[0]);
+                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
                         
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Sin"));
                         break;
                     case FunctionType.Cosine:
-                        GenerateMethodBody(generator, function.Arguments[0]);
+                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
                         
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Cos"));
                         break;
                     case FunctionType.Cosecant:
-                        GenerateMethodBody(generator, function.Arguments[0]);
+                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
 
                         generator.Emit(OpCodes.Call, typeof(MathUtil).GetMethod("Csc"));
                         break;
                     case FunctionType.Secant:
-                        GenerateMethodBody(generator, function.Arguments[0]);
+                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
                         
                         generator.Emit(OpCodes.Call, typeof(MathUtil).GetMethod("Sec"));
                         break;
                     case FunctionType.Arcsine:
-                        GenerateMethodBody(generator, function.Arguments[0]);
+                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
 
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Asin", new Type[] { typeof(double) }));
                         break;
                     case FunctionType.Arccosine:
-                        GenerateMethodBody(generator, function.Arguments[0]);
+                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
 
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Acos", new Type[] { typeof(double) }));
                         break;
                     case FunctionType.Tangent:
-                        GenerateMethodBody(generator, function.Arguments[0]);
+                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
 
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Tan", new Type[] { typeof(double) }));
                         break;
                     case FunctionType.Cotangent:
-                        GenerateMethodBody(generator, function.Arguments[0]);
+                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
 
                         generator.Emit(OpCodes.Call, typeof(MathUtil).GetMethod("Cot", new Type[] { typeof(double) }));
                         break;
                     case FunctionType.Arctangent:
-                        GenerateMethodBody(generator, function.Arguments[0]);
+                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
 
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Atan", new Type[] { typeof(double) }));
                         break;
                     case FunctionType.Arccotangent:
-                        GenerateMethodBody(generator, function.Arguments[0]);
+                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
 
                         generator.Emit(OpCodes.Call, typeof(MathUtil).GetMethod("Acot", new Type[] { typeof(double) }));
                         break;
                     case FunctionType.Loge:
-                        GenerateMethodBody(generator, function.Arguments[0]);
+                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
 
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Log", new Type[] { typeof(double) }));
                         break;
                     case FunctionType.Log10:
-                        GenerateMethodBody(generator, function.Arguments[0]);
+                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
                         
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Log10"));
                         break;
                     case FunctionType.Logn:
-                        GenerateMethodBody(generator, function.Arguments[0]);
-                        GenerateMethodBody(generator, function.Arguments[1]);
+                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
+                        GenerateMethodBody(generator, function.Arguments[1], functionRegistry);
 
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Log", new Type[] { typeof(double), typeof(double) }));
                         break;
                     case FunctionType.SquareRoot:
-                        GenerateMethodBody(generator, function.Arguments[0]);
+                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
 
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Sqrt", new Type[] { typeof(double) }));
                         break;
                     case FunctionType.AbsoluteValue:
-                        GenerateMethodBody(generator, function.Arguments[0]);
+                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
 
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Abs", new Type[] { typeof(double) }));
                         break;
@@ -232,17 +237,19 @@ namespace Jace
 #else
     public class DynamicCompiler : IExecutor
     {
-        public double Execute(Operation operation)
+        public double Execute(Operation operation, IFunctionRegistry functionRegistry)
         {
-            return Execute(operation, new Dictionary<string, double>());
+            return Execute(operation, functionRegistry, new Dictionary<string, double>());
         }
 
-        public double Execute(Operation operation, Dictionary<string, double> variables)
+        public double Execute(Operation operation, IFunctionRegistry functionRegistry, 
+            Dictionary<string, double> variables)
         {
-            return BuildFunction(operation)(variables);
+            return BuildFunction(operation, functionRegistry)(variables);
         }
 
-        public Func<Dictionary<string, double>, double> BuildFunction(Operation operation)
+        public Func<Dictionary<string, double>, double> BuildFunction(Operation operation, 
+            IFunctionRegistry functionRegistry)
         {
             ParameterExpression dictionaryParameter = 
                 Expression.Parameter(typeof(Dictionary<string, double>), "dictionary");

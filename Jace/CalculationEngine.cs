@@ -21,7 +21,7 @@ namespace Jace
         private readonly Optimizer optimizer;
         private readonly CultureInfo cultureInfo;
         private readonly MemoryCache<string, Func<Dictionary<string, double>, double>> executionFormulaCache;
-        private readonly FunctionRegistry functionRegistry;
+        private readonly IFunctionRegistry functionRegistry;
         private readonly bool cacheEnabled;
         private readonly bool optimizerEnabled;
 
@@ -213,14 +213,14 @@ namespace Jace
             Operation operation = astBuilder.Build(tokens);
 
             if (optimizerEnabled)
-                return optimizer.Optimize(operation);
+                return optimizer.Optimize(operation, this.functionRegistry);
             else
                 return operation;
         }
 
         private Func<Dictionary<string, double>, double> BuildFormula(string formulaText, Operation operation)
         {
-            return executionFormulaCache.GetOrAdd(formulaText, v => executor.BuildFunction(operation));
+            return executionFormulaCache.GetOrAdd(formulaText, v => executor.BuildFunction(operation, this.functionRegistry));
         }
 
         private bool IsInFormulaCache(string formulaText)
