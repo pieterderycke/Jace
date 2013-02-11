@@ -220,7 +220,7 @@ namespace Jace
 
         private Func<Dictionary<string, double>, double> BuildFormula(string formulaText, Operation operation)
         {
-            return executionFormulaCache.GetOrAdd(formulaText, v => executor.BuildFunction(operation, this.functionRegistry));
+            return executionFormulaCache.GetOrAdd(formulaText, v => executor.BuildFormula(operation, this.functionRegistry));
         }
 
         private bool IsInFormulaCache(string formulaText)

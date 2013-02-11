@@ -132,6 +132,9 @@
     <Compile Include="..\Jace\Execution\ParameterInfo.cs">
       <Link>Execution\ParameterInfo.cs</Link>
     </Compile>
+    <Compile Include="..\Jace\FormulaContext.cs">
+      <Link>FormulaContext.cs</Link>
+    </Compile>
     <Compile Include="..\Jace\IExecutor.cs">
       <Link>IExecutor.cs</Link>
     </Compile>

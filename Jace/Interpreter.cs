@@ -10,7 +10,7 @@ namespace Jace
 {
     public class Interpreter : IExecutor
     {
-        public Func<Dictionary<string, double>, double> BuildFunction(Operation operation, 
+        public Func<Dictionary<string, double>, double> BuildFormula(Operation operation, 
             IFunctionRegistry functionRegistry)
         { 
             return variables => Execute(operation, functionRegistry, variables);
@@ -111,6 +111,14 @@ namespace Jace
                         return Math.Sqrt(Execute(function.Arguments[0], functionRegistry, variables));
                     case FunctionType.AbsoluteValue:
                         return Math.Abs(Execute(function.Arguments[0], functionRegistry, variables));
+                    case FunctionType.Custom:
+                        FunctionInfo functionInfo = functionRegistry.GetFunctionInfo(function.FunctionName);
+
+                        object[] arguments = new object[functionInfo.NumberOfParameters];
+                        for (int i = 0; i < arguments.Length; i++)
+                            arguments[i] = Execute(function.Arguments[i], functionRegistry, variables);
+
+                        return (double)functionInfo.Function.DynamicInvoke(arguments);
                     default:
                         throw new ArgumentException(string.Format("Unsupported function \"{0}\".", function.FunctionType), "operation");
                 }

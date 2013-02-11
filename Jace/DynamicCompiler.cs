@@ -22,18 +22,29 @@ namespace Jace
         public double Execute(Operation operation, IFunctionRegistry functionRegistry, 
             Dictionary<string, double> variables)
         {
-            return BuildFunction(operation, functionRegistry)(variables);
+            return BuildFormula(operation, functionRegistry)(variables);
         }
 
-        public Func<Dictionary<string, double>, double> BuildFunction(Operation operation, 
+        public Func<Dictionary<string, double>, double> BuildFormula(Operation operation,
+            IFunctionRegistry functionRegistry)
+        {
+            Func<FormulaContext, double> func = BuildFormulaInternal(operation, functionRegistry);
+            return a =>
+                {
+                    FormulaContext context = new FormulaContext(a, functionRegistry);
+                    return func(context);
+                };
+        }
+
+        private Func<FormulaContext, double> BuildFormulaInternal(Operation operation,
             IFunctionRegistry functionRegistry)
         {
             DynamicMethod method = new DynamicMethod("MyCalcMethod", typeof(double),
-                new Type[] { typeof(Dictionary<string, double>) });
+                new Type[] { typeof(FormulaContext) });
             GenerateMethodBody(method, operation, functionRegistry);
 
-            Func<Dictionary<string, double>, double> function =
-                (Func<Dictionary<string, double>, double>)method.CreateDelegate(typeof(Func<Dictionary<string, double>, double>));
+            Func<FormulaContext, double> function =
+                (Func<FormulaContext, double>)method.CreateDelegate(typeof(Func<FormulaContext, double>));
 
             return function;
         }
@@ -43,6 +54,7 @@ namespace Jace
         {
             ILGenerator generator = method.GetILGenerator();
             generator.DeclareLocal(typeof(double));
+            generator.DeclareLocal(typeof(object[]));
             GenerateMethodBody(generator, operation, functionRegistry);
             generator.Emit(OpCodes.Ret);
         }
@@ -76,6 +88,7 @@ namespace Jace
                 Label returnLabel = generator.DefineLabel();
 
                 generator.Emit(OpCodes.Ldarg_0);
+                generator.Emit(OpCodes.Callvirt, typeof(FormulaContext).GetProperty("Variables").GetGetMethod());
                 generator.Emit(OpCodes.Ldstr, variable.Name);
                 generator.Emit(OpCodes.Callvirt, dictionaryType.GetMethod("ContainsKey", new Type[] { typeof(string) }));
                 generator.Emit(OpCodes.Ldc_I4_0);
@@ -83,6 +96,7 @@ namespace Jace
                 generator.Emit(OpCodes.Brtrue_S, throwExceptionLabel);
 
                 generator.Emit(OpCodes.Ldarg_0);
+                generator.Emit(OpCodes.Callvirt, typeof(FormulaContext).GetProperty("Variables").GetGetMethod());
                 generator.Emit(OpCodes.Ldstr, variable.Name);
                 generator.Emit(OpCodes.Callvirt, dictionaryType.GetMethod("get_Item", new Type[] { typeof(string) }));
                 generator.Emit(OpCodes.Br_S, returnLabel);
@@ -224,6 +238,23 @@ namespace Jace
 
                         generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Abs", new Type[] { typeof(double) }));
                         break;
+                    case FunctionType.Custom:
+                        FunctionInfo functionInfo = functionRegistry.GetFunctionInfo(function.FunctionName);
+                        Type funcType = GetFuncType(functionInfo.NumberOfParameters);
+
+                        generator.Emit(OpCodes.Ldarg_0);
+                        generator.Emit(OpCodes.Callvirt, typeof(FormulaContext).GetProperty("FunctionRegistry").GetGetMethod());
+                        generator.Emit(OpCodes.Ldstr, function.FunctionName);
+                        generator.Emit(OpCodes.Callvirt, typeof(IFunctionRegistry).GetMethod("GetFunctionInfo", new Type[] { typeof(string) }));
+                        generator.Emit(OpCodes.Callvirt, typeof(FunctionInfo).GetProperty("Function").GetGetMethod());
+                        generator.Emit(OpCodes.Castclass, funcType);
+
+                        for (int i = 0; i < functionInfo.NumberOfParameters; i++)
+                            GenerateMethodBody(generator, function.Arguments[i], functionRegistry);
+
+                        generator.Emit(OpCodes.Call, funcType.GetMethod("Invoke"));
+
+                        break;
                     default:
                         throw new ArgumentException(string.Format("Unsupported function \"{0}\".", function.FunctionType), "operation");
                 }
@@ -232,6 +263,18 @@ namespace Jace
             {
                 throw new ArgumentException(string.Format("Unsupported operation \"{0}\".", operation.GetType().FullName), "operation");
             }
+        }
+
+        private Type GetFuncType(int numberOfParameters)
+        {
+            string funcTypeName = string.Format("System.Func`{0}", numberOfParameters + 1);
+            Type funcType = Type.GetType(funcTypeName);
+
+            Type[] typeArguments = new Type[numberOfParameters + 1];
+            for (int i = 0; i < typeArguments.Length; i++)
+                typeArguments[i] = typeof(double);
+
+            return funcType.MakeGenericType(typeArguments);
         }
     }
 #else
@@ -245,10 +288,10 @@ namespace Jace
         public double Execute(Operation operation, IFunctionRegistry functionRegistry, 
             Dictionary<string, double> variables)
         {
-            return BuildFunction(operation, functionRegistry)(variables);
+            return BuildFormula(operation, functionRegistry)(variables);
         }
 
-        public Func<Dictionary<string, double>, double> BuildFunction(Operation operation, 
+        public Func<Dictionary<string, double>, double> BuildFormula(Operation operation, 
             IFunctionRegistry functionRegistry)
         {
             ParameterExpression dictionaryParameter = 

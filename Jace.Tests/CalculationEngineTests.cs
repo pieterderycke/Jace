@@ -285,9 +285,21 @@ namespace Jace.Tests
         }
 
         [TestMethod]
-        public void TestCustomFunction()
+        public void TestCustomFunctionInterpreted()
         {
-            CalculationEngine engine = new CalculationEngine();
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture,
+                ExecutionMode.Interpreted, false, false);
+            engine.AddFunction("test", (a, b) => a + b);
+
+            double result = engine.Calculate("test(2,3)");
+            Assert.AreEqual(5.0, result);
+        }
+
+        [TestMethod]
+        public void TestCustomFunctionCompiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture,
+                ExecutionMode.Compiled, false, false);
             engine.AddFunction("test", (a, b) => a + b);
 
             double result = engine.Calculate("test(2,3)");

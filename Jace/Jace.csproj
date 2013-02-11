@@ -55,6 +55,7 @@
     <Compile Include="Execution\ParameterInfo.cs" />
     <Compile Include="Execution\FunctionInfo.cs" />
     <Compile Include="Execution\FunctionRegistry.cs" />
+    <Compile Include="FormulaContext.cs" />
     <Compile Include="IExecutor.cs" />
     <Compile Include="Interpreter.cs" />
     <Compile Include="Operations\Addition.cs" />

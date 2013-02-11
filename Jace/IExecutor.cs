@@ -12,6 +12,6 @@ namespace Jace
         double Execute(Operation operation, IFunctionRegistry functionRegistry);
         double Execute(Operation operation, IFunctionRegistry functionRegistry, Dictionary<string, double> variables);
 
-        Func<Dictionary<string, double>, double> BuildFunction(Operation operation, IFunctionRegistry functionRegistry);
+        Func<Dictionary<string, double>, double> BuildFormula(Operation operation, IFunctionRegistry functionRegistry);
     }
 }
