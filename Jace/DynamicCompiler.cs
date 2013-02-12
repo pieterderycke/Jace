@@ -162,82 +162,6 @@ namespace Jace
 
                 switch (function.FunctionType)
                 {
-                    case FunctionType.Sine:
-                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
-                        
-                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Sin"));
-                        break;
-                    case FunctionType.Cosine:
-                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
-                        
-                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Cos"));
-                        break;
-                    case FunctionType.Cosecant:
-                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
-
-                        generator.Emit(OpCodes.Call, typeof(MathUtil).GetMethod("Csc"));
-                        break;
-                    case FunctionType.Secant:
-                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
-                        
-                        generator.Emit(OpCodes.Call, typeof(MathUtil).GetMethod("Sec"));
-                        break;
-                    case FunctionType.Arcsine:
-                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
-
-                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Asin", new Type[] { typeof(double) }));
-                        break;
-                    case FunctionType.Arccosine:
-                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
-
-                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Acos", new Type[] { typeof(double) }));
-                        break;
-                    case FunctionType.Tangent:
-                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
-
-                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Tan", new Type[] { typeof(double) }));
-                        break;
-                    case FunctionType.Cotangent:
-                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
-
-                        generator.Emit(OpCodes.Call, typeof(MathUtil).GetMethod("Cot", new Type[] { typeof(double) }));
-                        break;
-                    case FunctionType.Arctangent:
-                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
-
-                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Atan", new Type[] { typeof(double) }));
-                        break;
-                    case FunctionType.Arccotangent:
-                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
-
-                        generator.Emit(OpCodes.Call, typeof(MathUtil).GetMethod("Acot", new Type[] { typeof(double) }));
-                        break;
-                    case FunctionType.Loge:
-                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
-
-                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Log", new Type[] { typeof(double) }));
-                        break;
-                    case FunctionType.Log10:
-                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
-                        
-                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Log10"));
-                        break;
-                    case FunctionType.Logn:
-                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
-                        GenerateMethodBody(generator, function.Arguments[1], functionRegistry);
-
-                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Log", new Type[] { typeof(double), typeof(double) }));
-                        break;
-                    case FunctionType.SquareRoot:
-                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
-
-                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Sqrt", new Type[] { typeof(double) }));
-                        break;
-                    case FunctionType.AbsoluteValue:
-                        GenerateMethodBody(generator, function.Arguments[0], functionRegistry);
-
-                        generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Abs", new Type[] { typeof(double) }));
-                        break;
                     case FunctionType.Custom:
                         FunctionInfo functionInfo = functionRegistry.GetFunctionInfo(function.FunctionName);
                         Type funcType = GetFuncType(functionInfo.NumberOfParameters);
@@ -418,74 +342,8 @@ namespace Jace
             {
                 Function function = (Function)operation;
 
-                Expression argument1;
-                Expression argument2;
                 switch (function.FunctionType)
                 {
-                    case FunctionType.Sine:
-                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
-
-                        return Expression.Call(null, typeof(Math).GetRuntimeMethod("Sin", new Type[] { typeof(double) }), argument1);
-                    case FunctionType.Cosine:
-                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
-
-                        return Expression.Call(null, typeof(Math).GetRuntimeMethod("Cos", new Type[] { typeof(double) }), argument1);
-                    case FunctionType.Cosecant:
-                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
-
-                        return Expression.Call(null, typeof(MathUtil).GetRuntimeMethod("Csc", new Type[] { typeof(double) }), argument1);
-                    case FunctionType.Secant:
-                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
-                        
-                        return Expression.Call(null, typeof(MathUtil).GetRuntimeMethod("Sec", new Type[] { typeof(double) }), argument1);
-                    case FunctionType.Arcsine:
-                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
-
-                        return Expression.Call(null, typeof(Math).GetRuntimeMethod("Asin", new Type[] { typeof(double) }), argument1);
-                    case FunctionType.Arccosine:
-                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
-
-                        return Expression.Call(null, typeof(Math).GetRuntimeMethod("Acos", new Type[] { typeof(double) }), argument1);
-                    case FunctionType.Tangent:
-                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
-
-                        return Expression.Call(null, typeof(Math).GetRuntimeMethod("Tan", new Type[] { typeof(double) }), argument1);
-                    case FunctionType.Cotangent:
-                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
-
-                        return Expression.Call(null, typeof(MathUtil).GetRuntimeMethod("Cot", new Type[] { typeof(double) }), argument1);
-                    case FunctionType.Arctangent:
-                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
-
-                        return Expression.Call(null, typeof(Math).GetRuntimeMethod("Atan", new Type[] { typeof(double) }), argument1);
-                    case FunctionType.Arccotangent:
-                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
-
-                        return Expression.Call(null, typeof(MathUtil).GetRuntimeMethod("Acot", new Type[] { typeof(double) }), argument1);
-                    case FunctionType.Loge:
-                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
-
-                        return Expression.Call(null, typeof(Math).GetRuntimeMethod("Log", new Type[] { typeof(double) }), argument1);
-                    case FunctionType.Log10:
-                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
-
-                        return Expression.Call(null, typeof(Math).GetRuntimeMethod("Log10", new Type[] { typeof(double) }), argument1);
-                    case FunctionType.Logn:
-                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
-                        argument2 = GenerateMethodBody(function.Arguments[1], contextParameter, functionRegistry);
-
-                        return Expression.Call(null, 
-                            typeof(Math).GetRuntimeMethod("Log", new Type[] { typeof(double), typeof(double) }), 
-                            argument1, 
-                            argument2);
-                    case FunctionType.SquareRoot:
-                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
-
-                        return Expression.Call(null, typeof(Math).GetRuntimeMethod("Sqrt", new Type[] { typeof(double) }), argument1);
-                    case FunctionType.AbsoluteValue:
-                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
-
-                        return Expression.Call(null, typeof(Math).GetRuntimeMethod("Abs", new Type[] { typeof(double) }), argument1);
                     case FunctionType.Custom:
                         FunctionInfo functionInfo = functionRegistry.GetFunctionInfo(function.FunctionName);
                         Type funcType = GetFuncType(functionInfo.NumberOfParameters);

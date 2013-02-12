@@ -54,11 +54,6 @@ namespace Jace.Execution
                 functions.Add(functionName, functionInfo);
         }
 
-        public void RegisterFunction(string functionName, int numberOfParameters)
-        {
-            functions.Add(functionName, new FunctionInfo(functionName, numberOfParameters, false, null));
-        }
-
         public bool IsFunctionName(string functionName)
         {
             return functions.ContainsKey(functionName);

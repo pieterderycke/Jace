@@ -22,7 +22,7 @@ namespace Jace.Tests.Mocks
 
         public FunctionInfo GetFunctionInfo(string functionName)
         {
-            throw new NotImplementedException();
+            return new FunctionInfo(functionName, 1, false, null);
         }
 
         public bool IsFunctionName(string functionName)

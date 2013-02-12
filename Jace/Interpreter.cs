@@ -81,36 +81,6 @@ namespace Jace
 
                 switch (function.FunctionType)
                 { 
-                    case FunctionType.Sine:
-                        return Math.Sin(Execute(function.Arguments[0], functionRegistry, variables));
-                    case FunctionType.Cosine:
-                        return Math.Cos(Execute(function.Arguments[0], functionRegistry, variables));
-                    case FunctionType.Secant:
-                        return MathUtil.Sec(Execute(function.Arguments[0], functionRegistry, variables));
-                    case FunctionType.Cosecant:
-                        return MathUtil.Csc(Execute(function.Arguments[0], functionRegistry, variables));
-                    case FunctionType.Arcsine:
-                        return Math.Asin(Execute(function.Arguments[0], functionRegistry, variables));
-                    case FunctionType.Arccosine:
-                        return Math.Acos(Execute(function.Arguments[0], functionRegistry, variables));
-                    case FunctionType.Tangent:
-                        return Math.Tan(Execute(function.Arguments[0], functionRegistry, variables));
-                    case FunctionType.Cotangent:
-                        return MathUtil.Cot(Execute(function.Arguments[0], functionRegistry, variables));
-                    case FunctionType.Arctangent:
-                        return Math.Atan(Execute(function.Arguments[0], functionRegistry, variables));
-                    case FunctionType.Arccotangent:
-                        return MathUtil.Acot(Execute(function.Arguments[0], functionRegistry, variables));
-                    case FunctionType.Loge:
-                        return Math.Log(Execute(function.Arguments[0], functionRegistry, variables));
-                    case FunctionType.Log10:
-                        return Math.Log10(Execute(function.Arguments[0], functionRegistry, variables));
-                    case FunctionType.Logn:
-                        return Math.Log(Execute(function.Arguments[0], functionRegistry, variables), Execute(function.Arguments[1], functionRegistry, variables));
-                    case FunctionType.SquareRoot:
-                        return Math.Sqrt(Execute(function.Arguments[0], functionRegistry, variables));
-                    case FunctionType.AbsoluteValue:
-                        return Math.Abs(Execute(function.Arguments[0], functionRegistry, variables));
                     case FunctionType.Custom:
                         FunctionInfo functionInfo = functionRegistry.GetFunctionInfo(function.FunctionName);
 

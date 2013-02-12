@@ -180,21 +180,21 @@ namespace Jace
 
         private void RegisterDefaultFunctions()
         {
-            functionRegistry.RegisterFunction("sin", 1);
-            functionRegistry.RegisterFunction("cos", 1);
-            functionRegistry.RegisterFunction("csc", 1);
-            functionRegistry.RegisterFunction("sec", 1);
-            functionRegistry.RegisterFunction("asin", 1);
-            functionRegistry.RegisterFunction("acos", 1);
-            functionRegistry.RegisterFunction("tan", 1);
-            functionRegistry.RegisterFunction("cot", 1);
-            functionRegistry.RegisterFunction("atan", 1);
-            functionRegistry.RegisterFunction("acot", 1);
-            functionRegistry.RegisterFunction("loge", 1);
-            functionRegistry.RegisterFunction("log10", 1);
-            functionRegistry.RegisterFunction("logn", 2);
-            functionRegistry.RegisterFunction("sqrt", 1);
-            functionRegistry.RegisterFunction("abs", 1);
+            functionRegistry.RegisterFunction("sin", (Func<double, double>)((a) => Math.Sin(a)), false);
+            functionRegistry.RegisterFunction("cos", (Func<double, double>)((a) => Math.Cos(a)), false);
+            functionRegistry.RegisterFunction("csc", (Func<double, double>)((a) => MathUtil.Csc(a)), false);
+            functionRegistry.RegisterFunction("sec", (Func<double, double>)((a) => MathUtil.Sec(a)), false);
+            functionRegistry.RegisterFunction("asin", (Func<double, double>)((a) => Math.Asin(a)), false);
+            functionRegistry.RegisterFunction("acos", (Func<double, double>)((a) => Math.Acos(a)), false);
+            functionRegistry.RegisterFunction("tan", (Func<double, double>)((a) => Math.Tan(a)), false);
+            functionRegistry.RegisterFunction("cot", (Func<double, double>)((a) => MathUtil.Cot(a)), false);
+            functionRegistry.RegisterFunction("atan", (Func<double, double>)((a) => Math.Atan(a)), false);
+            functionRegistry.RegisterFunction("acot", (Func<double, double>)((a) => MathUtil.Acot(a)), false);
+            functionRegistry.RegisterFunction("loge", (Func<double, double>)((a) => Math.Log(a)), false);
+            functionRegistry.RegisterFunction("log10", (Func<double, double>)((a) => Math.Log10(a)), false);
+            functionRegistry.RegisterFunction("logn", (Func<double, double, double>)((a, b) => Math.Log(a, b)), false);
+            functionRegistry.RegisterFunction("sqrt", (Func<double, double>)((a) => Math.Sqrt(a)), false);
+            functionRegistry.RegisterFunction("abs", (Func<double, double>)((a) => Math.Abs(a)), false);
         }
 
         /// <summary>
