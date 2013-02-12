@@ -40,6 +40,12 @@ namespace Jace.Execution
             int numberOfParameters = function.Method.GetParameters().Length;
 #endif
 
+            if (functions.ContainsKey(functionName) && functions[functionName].NumberOfParameters != numberOfParameters)
+            {
+                string message = string.Format("The number of parameters cannot be changed when overwriting a method.");
+                throw new Exception(message);
+            }
+
             FunctionInfo functionInfo = new FunctionInfo(functionName, numberOfParameters, isOverWritable, function);
 
             if (functions.ContainsKey(functionName))

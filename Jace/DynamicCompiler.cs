@@ -291,24 +291,35 @@ namespace Jace
             return BuildFormula(operation, functionRegistry)(variables);
         }
 
-        public Func<Dictionary<string, double>, double> BuildFormula(Operation operation, 
+        public Func<Dictionary<string, double>, double> BuildFormula(Operation operation,
             IFunctionRegistry functionRegistry)
         {
-            ParameterExpression dictionaryParameter = 
-                Expression.Parameter(typeof(Dictionary<string, double>), "dictionary");
+            Func<FormulaContext, double> func = BuildFormulaInternal(operation, functionRegistry);
+            return a =>
+            {
+                FormulaContext context = new FormulaContext(a, functionRegistry);
+                return func(context);
+            };
+        }
+
+        private Func<FormulaContext, double> BuildFormulaInternal(Operation operation, 
+            IFunctionRegistry functionRegistry)
+        {
+            ParameterExpression contextParameter = Expression.Parameter(typeof(FormulaContext), "context");
 
             LabelTarget returnLabel = Expression.Label(typeof(double));
 
-            return Expression.Lambda<Func<Dictionary<string, double>, double>>(
+            return Expression.Lambda<Func<FormulaContext, double>>(
                 Expression.Block(
-                    Expression.Return(returnLabel, GenerateMethodBody(operation, dictionaryParameter)),
+                    Expression.Return(returnLabel, GenerateMethodBody(operation, contextParameter, functionRegistry)),
                     Expression.Label(returnLabel, Expression.Constant(0.0))
                 ),
-                dictionaryParameter
+                contextParameter
             ).Compile();
         }
 
-        private Expression GenerateMethodBody(Operation operation, ParameterExpression dictionaryParameter)
+        private Expression GenerateMethodBody(Operation operation, ParameterExpression contextParameter,
+            IFunctionRegistry functionRegistry)
         {
             if (operation == null)
                 throw new ArgumentNullException("operation");
@@ -327,11 +338,14 @@ namespace Jace
             }
             else if (operation.GetType() == typeof(Variable))
             {
+                Type contextType = typeof(FormulaContext);
                 Type dictionaryType = typeof(Dictionary<string, double>);
 
                 Variable variable = (Variable)operation;
 
-                Expression isInDictionaryExpression = Expression.Call(dictionaryParameter, 
+                Expression getVariables = Expression.Property(contextParameter, "Variables");
+
+                Expression isInDictionaryExpression = Expression.Call(getVariables, 
                     dictionaryType.GetRuntimeMethod("ContainsKey", new Type[] { typeof(string) }),
                     Expression.Constant(variable.Name));
 
@@ -344,7 +358,7 @@ namespace Jace
                 return Expression.Block(
                     Expression.IfThenElse(
                         isInDictionaryExpression,
-                        Expression.Return(returnLabel, Expression.Call(dictionaryParameter, 
+                        Expression.Return(returnLabel, Expression.Call(getVariables, 
                             dictionaryType.GetRuntimeMethod("get_Item", new Type[] { typeof(string) }), 
                             Expression.Constant(variable.Name))),
                         throwException
@@ -355,48 +369,48 @@ namespace Jace
             else if (operation.GetType() == typeof(Multiplication))
             {
                 Multiplication multiplication = (Multiplication)operation;
-                Expression argument1 = GenerateMethodBody(multiplication.Argument1, dictionaryParameter);
-                Expression argument2 = GenerateMethodBody(multiplication.Argument2, dictionaryParameter);
+                Expression argument1 = GenerateMethodBody(multiplication.Argument1, contextParameter, functionRegistry);
+                Expression argument2 = GenerateMethodBody(multiplication.Argument2, contextParameter, functionRegistry);
 
                 return Expression.Multiply(argument1, argument2);
             }
             else if (operation.GetType() == typeof(Addition))
             {
                 Addition addition = (Addition)operation;
-                Expression argument1 = GenerateMethodBody(addition.Argument1, dictionaryParameter);
-                Expression argument2 = GenerateMethodBody(addition.Argument2, dictionaryParameter);
+                Expression argument1 = GenerateMethodBody(addition.Argument1, contextParameter, functionRegistry);
+                Expression argument2 = GenerateMethodBody(addition.Argument2, contextParameter, functionRegistry);
 
                 return Expression.Add(argument1, argument2);
             }
             else if (operation.GetType() == typeof(Subtraction))
             {
                 Subtraction addition = (Subtraction)operation;
-                Expression argument1 = GenerateMethodBody(addition.Argument1, dictionaryParameter);
-                Expression argument2 = GenerateMethodBody(addition.Argument2, dictionaryParameter);
+                Expression argument1 = GenerateMethodBody(addition.Argument1, contextParameter, functionRegistry);
+                Expression argument2 = GenerateMethodBody(addition.Argument2, contextParameter, functionRegistry);
 
                 return Expression.Subtract(argument1, argument2);
             }
             else if (operation.GetType() == typeof(Division))
             {
                 Division division = (Division)operation;
-                Expression dividend = GenerateMethodBody(division.Dividend, dictionaryParameter);
-                Expression divisor = GenerateMethodBody(division.Divisor, dictionaryParameter);
+                Expression dividend = GenerateMethodBody(division.Dividend, contextParameter, functionRegistry);
+                Expression divisor = GenerateMethodBody(division.Divisor, contextParameter, functionRegistry);
 
                 return Expression.Divide(dividend, divisor);
             }
             else if (operation.GetType() == typeof(Modulo))
             {
                 Modulo modulo = (Modulo)operation;
-                Expression dividend = GenerateMethodBody(modulo.Dividend, dictionaryParameter);
-                Expression divisor = GenerateMethodBody(modulo.Divisor, dictionaryParameter);
+                Expression dividend = GenerateMethodBody(modulo.Dividend, contextParameter, functionRegistry);
+                Expression divisor = GenerateMethodBody(modulo.Divisor, contextParameter, functionRegistry);
 
                 return Expression.Modulo(dividend, divisor);
             }
             else if (operation.GetType() == typeof(Exponentiation))
             {
                 Exponentiation exponentation = (Exponentiation)operation;
-                Expression @base = GenerateMethodBody(exponentation.Base, dictionaryParameter);
-                Expression exponent = GenerateMethodBody(exponentation.Exponent, dictionaryParameter);
+                Expression @base = GenerateMethodBody(exponentation.Base, contextParameter, functionRegistry);
+                Expression exponent = GenerateMethodBody(exponentation.Exponent, contextParameter, functionRegistry);
 
                 return Expression.Call(null, typeof(Math).GetRuntimeMethod("Pow", new Type[0]), @base, exponent);
             }
@@ -409,69 +423,93 @@ namespace Jace
                 switch (function.FunctionType)
                 {
                     case FunctionType.Sine:
-                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
 
                         return Expression.Call(null, typeof(Math).GetRuntimeMethod("Sin", new Type[] { typeof(double) }), argument1);
                     case FunctionType.Cosine:
-                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
 
                         return Expression.Call(null, typeof(Math).GetRuntimeMethod("Cos", new Type[] { typeof(double) }), argument1);
                     case FunctionType.Cosecant:
-                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
 
                         return Expression.Call(null, typeof(MathUtil).GetRuntimeMethod("Csc", new Type[] { typeof(double) }), argument1);
                     case FunctionType.Secant:
-                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
                         
                         return Expression.Call(null, typeof(MathUtil).GetRuntimeMethod("Sec", new Type[] { typeof(double) }), argument1);
                     case FunctionType.Arcsine:
-                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
 
                         return Expression.Call(null, typeof(Math).GetRuntimeMethod("Asin", new Type[] { typeof(double) }), argument1);
                     case FunctionType.Arccosine:
-                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
 
                         return Expression.Call(null, typeof(Math).GetRuntimeMethod("Acos", new Type[] { typeof(double) }), argument1);
                     case FunctionType.Tangent:
-                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
 
                         return Expression.Call(null, typeof(Math).GetRuntimeMethod("Tan", new Type[] { typeof(double) }), argument1);
                     case FunctionType.Cotangent:
-                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
 
                         return Expression.Call(null, typeof(MathUtil).GetRuntimeMethod("Cot", new Type[] { typeof(double) }), argument1);
                     case FunctionType.Arctangent:
-                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
 
                         return Expression.Call(null, typeof(Math).GetRuntimeMethod("Atan", new Type[] { typeof(double) }), argument1);
                     case FunctionType.Arccotangent:
-                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
 
                         return Expression.Call(null, typeof(MathUtil).GetRuntimeMethod("Acot", new Type[] { typeof(double) }), argument1);
                     case FunctionType.Loge:
-                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
 
                         return Expression.Call(null, typeof(Math).GetRuntimeMethod("Log", new Type[] { typeof(double) }), argument1);
                     case FunctionType.Log10:
-                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
 
                         return Expression.Call(null, typeof(Math).GetRuntimeMethod("Log10", new Type[] { typeof(double) }), argument1);
                     case FunctionType.Logn:
-                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
-                        argument2 = GenerateMethodBody(function.Arguments[1], dictionaryParameter);
+                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
+                        argument2 = GenerateMethodBody(function.Arguments[1], contextParameter, functionRegistry);
 
                         return Expression.Call(null, 
                             typeof(Math).GetRuntimeMethod("Log", new Type[] { typeof(double), typeof(double) }), 
                             argument1, 
                             argument2);
                     case FunctionType.SquareRoot:
-                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
 
                         return Expression.Call(null, typeof(Math).GetRuntimeMethod("Sqrt", new Type[] { typeof(double) }), argument1);
                     case FunctionType.AbsoluteValue:
-                        argument1 = GenerateMethodBody(function.Arguments[0], dictionaryParameter);
+                        argument1 = GenerateMethodBody(function.Arguments[0], contextParameter, functionRegistry);
 
                         return Expression.Call(null, typeof(Math).GetRuntimeMethod("Abs", new Type[] { typeof(double) }), argument1);
+                    case FunctionType.Custom:
+                        FunctionInfo functionInfo = functionRegistry.GetFunctionInfo(function.FunctionName);
+                        Type funcType = GetFuncType(functionInfo.NumberOfParameters);
+                        Type[] parameterTypes = (from i in Enumerable.Range(0, functionInfo.NumberOfParameters)
+                                                 select typeof(double)).ToArray();
+
+                        Expression[] arguments = new Expression[functionInfo.NumberOfParameters];
+                        for (int i = 0; i < functionInfo.NumberOfParameters; i++)
+                            arguments[i] = GenerateMethodBody(function.Arguments[i], contextParameter, functionRegistry);
+
+                        Expression getFunctionRegistry = Expression.Property(contextParameter, "FunctionRegistry");
+
+                        ParameterExpression functionInfoVariable = Expression.Variable(typeof(FunctionInfo));
+
+                        return Expression.Block(
+                            new[] { functionInfoVariable },
+                            Expression.Assign(
+                                functionInfoVariable,
+                                Expression.Call(getFunctionRegistry, typeof(IFunctionRegistry).GetRuntimeMethod("GetFunctionInfo", new Type[] { typeof(string) }), Expression.Constant(function.FunctionName))
+                            ),
+                            Expression.Call(
+                                Expression.Convert(Expression.Property(functionInfoVariable, "Function"), funcType),
+                                funcType.GetRuntimeMethod("Invoke", parameterTypes),
+                                arguments));
                     default:
                         throw new ArgumentException(string.Format("Unsupported function \"{0}\".", function.FunctionType), "operation");
                 }
@@ -480,6 +518,18 @@ namespace Jace
             {
                 throw new ArgumentException(string.Format("Unsupported operation \"{0}\".", operation.GetType().FullName), "operation");
             }
+        }
+
+        private Type GetFuncType(int numberOfParameters)
+        {
+            string funcTypeName = string.Format("System.Func`{0}", numberOfParameters + 1);
+            Type funcType = Type.GetType(funcTypeName);
+
+            Type[] typeArguments = new Type[numberOfParameters + 1];
+            for (int i = 0; i < typeArguments.Length; i++)
+                typeArguments[i] = typeof(double);
+
+            return funcType.MakeGenericType(typeArguments);
         }
     }
 #endif
