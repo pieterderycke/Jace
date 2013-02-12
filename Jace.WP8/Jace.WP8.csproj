@@ -140,9 +140,6 @@
     <Compile Include="..\Jace\Operations\Function.cs">
       <Link>Operations\Function.cs</Link>
     </Compile>
-    <Compile Include="..\Jace\Operations\FunctionType.cs">
-      <Link>Operations\FunctionType.cs</Link>
-    </Compile>
     <Compile Include="..\Jace\Operations\Modulo.cs">
       <Link>Operations\Modulo.cs</Link>
     </Compile>

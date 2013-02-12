@@ -160,28 +160,20 @@ namespace Jace
             {
                 Function function = (Function)operation;
 
-                switch (function.FunctionType)
-                {
-                    case FunctionType.Custom:
-                        FunctionInfo functionInfo = functionRegistry.GetFunctionInfo(function.FunctionName);
-                        Type funcType = GetFuncType(functionInfo.NumberOfParameters);
+                FunctionInfo functionInfo = functionRegistry.GetFunctionInfo(function.FunctionName);
+                Type funcType = GetFuncType(functionInfo.NumberOfParameters);
 
-                        generator.Emit(OpCodes.Ldarg_0);
-                        generator.Emit(OpCodes.Callvirt, typeof(FormulaContext).GetProperty("FunctionRegistry").GetGetMethod());
-                        generator.Emit(OpCodes.Ldstr, function.FunctionName);
-                        generator.Emit(OpCodes.Callvirt, typeof(IFunctionRegistry).GetMethod("GetFunctionInfo", new Type[] { typeof(string) }));
-                        generator.Emit(OpCodes.Callvirt, typeof(FunctionInfo).GetProperty("Function").GetGetMethod());
-                        generator.Emit(OpCodes.Castclass, funcType);
+                generator.Emit(OpCodes.Ldarg_0);
+                generator.Emit(OpCodes.Callvirt, typeof(FormulaContext).GetProperty("FunctionRegistry").GetGetMethod());
+                generator.Emit(OpCodes.Ldstr, function.FunctionName);
+                generator.Emit(OpCodes.Callvirt, typeof(IFunctionRegistry).GetMethod("GetFunctionInfo", new Type[] { typeof(string) }));
+                generator.Emit(OpCodes.Callvirt, typeof(FunctionInfo).GetProperty("Function").GetGetMethod());
+                generator.Emit(OpCodes.Castclass, funcType);
 
-                        for (int i = 0; i < functionInfo.NumberOfParameters; i++)
-                            GenerateMethodBody(generator, function.Arguments[i], functionRegistry);
+                for (int i = 0; i < functionInfo.NumberOfParameters; i++)
+                    GenerateMethodBody(generator, function.Arguments[i], functionRegistry);
 
-                        generator.Emit(OpCodes.Call, funcType.GetMethod("Invoke"));
-
-                        break;
-                    default:
-                        throw new ArgumentException(string.Format("Unsupported function \"{0}\".", function.FunctionType), "operation");
-                }
+                generator.Emit(OpCodes.Call, funcType.GetMethod("Invoke"));
             }
             else
             {
@@ -342,35 +334,29 @@ namespace Jace
             {
                 Function function = (Function)operation;
 
-                switch (function.FunctionType)
-                {
-                    case FunctionType.Custom:
-                        FunctionInfo functionInfo = functionRegistry.GetFunctionInfo(function.FunctionName);
-                        Type funcType = GetFuncType(functionInfo.NumberOfParameters);
-                        Type[] parameterTypes = (from i in Enumerable.Range(0, functionInfo.NumberOfParameters)
-                                                 select typeof(double)).ToArray();
+                FunctionInfo functionInfo = functionRegistry.GetFunctionInfo(function.FunctionName);
+                Type funcType = GetFuncType(functionInfo.NumberOfParameters);
+                Type[] parameterTypes = (from i in Enumerable.Range(0, functionInfo.NumberOfParameters)
+                                            select typeof(double)).ToArray();
 
-                        Expression[] arguments = new Expression[functionInfo.NumberOfParameters];
-                        for (int i = 0; i < functionInfo.NumberOfParameters; i++)
-                            arguments[i] = GenerateMethodBody(function.Arguments[i], contextParameter, functionRegistry);
+                Expression[] arguments = new Expression[functionInfo.NumberOfParameters];
+                for (int i = 0; i < functionInfo.NumberOfParameters; i++)
+                    arguments[i] = GenerateMethodBody(function.Arguments[i], contextParameter, functionRegistry);
 
-                        Expression getFunctionRegistry = Expression.Property(contextParameter, "FunctionRegistry");
+                Expression getFunctionRegistry = Expression.Property(contextParameter, "FunctionRegistry");
 
-                        ParameterExpression functionInfoVariable = Expression.Variable(typeof(FunctionInfo));
+                ParameterExpression functionInfoVariable = Expression.Variable(typeof(FunctionInfo));
 
-                        return Expression.Block(
-                            new[] { functionInfoVariable },
-                            Expression.Assign(
-                                functionInfoVariable,
-                                Expression.Call(getFunctionRegistry, typeof(IFunctionRegistry).GetRuntimeMethod("GetFunctionInfo", new Type[] { typeof(string) }), Expression.Constant(function.FunctionName))
-                            ),
-                            Expression.Call(
-                                Expression.Convert(Expression.Property(functionInfoVariable, "Function"), funcType),
-                                funcType.GetRuntimeMethod("Invoke", parameterTypes),
-                                arguments));
-                    default:
-                        throw new ArgumentException(string.Format("Unsupported function \"{0}\".", function.FunctionType), "operation");
-                }
+                return Expression.Block(
+                    new[] { functionInfoVariable },
+                    Expression.Assign(
+                        functionInfoVariable,
+                        Expression.Call(getFunctionRegistry, typeof(IFunctionRegistry).GetRuntimeMethod("GetFunctionInfo", new Type[] { typeof(string) }), Expression.Constant(function.FunctionName))
+                    ),
+                    Expression.Call(
+                        Expression.Convert(Expression.Property(functionInfoVariable, "Function"), funcType),
+                        funcType.GetRuntimeMethod("Invoke", parameterTypes),
+                        arguments));
             }
             else
             {

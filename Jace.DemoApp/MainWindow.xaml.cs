@@ -188,7 +188,7 @@ namespace Jace.DemoApp
                         Function function = operation as Function;
                         if (function != null)
                         {
-                            value = "(" + function.FunctionType + ")";
+                            value = "(" + function.FunctionName + ")";
                         }
                     }
                 }

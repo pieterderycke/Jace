@@ -79,19 +79,13 @@ namespace Jace
             {
                 Function function = (Function)operation;
 
-                switch (function.FunctionType)
-                { 
-                    case FunctionType.Custom:
-                        FunctionInfo functionInfo = functionRegistry.GetFunctionInfo(function.FunctionName);
+                FunctionInfo functionInfo = functionRegistry.GetFunctionInfo(function.FunctionName);
 
-                        object[] arguments = new object[functionInfo.NumberOfParameters];
-                        for (int i = 0; i < arguments.Length; i++)
-                            arguments[i] = Execute(function.Arguments[i], functionRegistry, variables);
+                object[] arguments = new object[functionInfo.NumberOfParameters];
+                for (int i = 0; i < arguments.Length; i++)
+                    arguments[i] = Execute(function.Arguments[i], functionRegistry, variables);
 
-                        return (double)functionInfo.Function.DynamicInvoke(arguments);
-                    default:
-                        throw new ArgumentException(string.Format("Unsupported function \"{0}\".", function.FunctionType), "operation");
-                }
+                return (double)functionInfo.Function.DynamicInvoke(arguments);
             }
             else
             {
