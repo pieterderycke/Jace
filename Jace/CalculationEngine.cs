@@ -178,6 +178,18 @@ namespace Jace
             functionRegistry.RegisterFunction(functionName, function);
         }
 
+#if !WINDOWS_PHONE_7
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double> function)
+        {
+            functionRegistry.RegisterFunction(functionName, function);
+        }
+
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double> function)
+        {
+            functionRegistry.RegisterFunction(functionName, function);
+        }
+#endif
+
         private void RegisterDefaultFunctions()
         {
             functionRegistry.RegisterFunction("sin", (Func<double, double>)((a) => Math.Sin(a)), false);

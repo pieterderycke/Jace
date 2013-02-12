@@ -81,15 +81,40 @@ namespace Jace
 
                 FunctionInfo functionInfo = functionRegistry.GetFunctionInfo(function.FunctionName);
 
-                object[] arguments = new object[functionInfo.NumberOfParameters];
+                double[] arguments = new double[functionInfo.NumberOfParameters];
                 for (int i = 0; i < arguments.Length; i++)
                     arguments[i] = Execute(function.Arguments[i], functionRegistry, variables);
 
-                return (double)functionInfo.Function.DynamicInvoke(arguments);
+                return Invoke(functionInfo.Function, arguments);
             }
             else
             {
                 throw new ArgumentException(string.Format("Unsupported operation \"{0}\".", operation.GetType().FullName), "operation");
+            }
+        }
+
+        private double Invoke(Delegate function, double[] arguments)
+        {
+            // DynamicInvoke is slow, so we first try to convert it to a Func
+            if (function is Func<double>)
+            {
+                return ((Func<double>)function).Invoke();
+            }
+            else if (function is Func<double, double>)
+            {
+                return ((Func<double, double>)function).Invoke(arguments[0]);
+            }
+            else if (function is Func<double, double, double>)
+            {
+                return ((Func<double, double, double>)function).Invoke(arguments[0], arguments[1]);
+            }
+            else if (function is Func<double, double, double, double>)
+            {
+                return ((Func<double, double, double, double>)function).Invoke(arguments[0], arguments[1], arguments[2]);
+            }
+            else
+            {
+                return (double)function.DynamicInvoke((from s in arguments select (object)s).ToArray());
             }
         }
     }
