@@ -28,6 +28,19 @@ namespace Jace.Execution
 
         public void RegisterFunction(string functionName, Delegate function, bool isOverWritable)
         {
+            Type funcType = function.GetType();
+
+            if (!funcType.FullName.StartsWith("System.Func"))
+                throw new ArgumentException("Only System.Func delegates are permitted.", "function");
+
+#if NETFX_CORE
+            foreach (Type genericArgument in funcType.GenericTypeArguments)
+#else
+            foreach (Type genericArgument in funcType.GetGenericArguments())
+#endif
+                if (genericArgument != typeof(double))
+                    throw new ArgumentException("Only doubles are supported as function arguments", "function");
+
             if (functions.ContainsKey(functionName) && !functions[functionName].IsOverWritable)
             {
                 string message = string.Format("The function \"{0}\" cannot be overwriten.", functionName);
