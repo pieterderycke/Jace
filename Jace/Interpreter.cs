@@ -112,6 +112,20 @@ namespace Jace
             {
                 return ((Func<double, double, double, double>)function).Invoke(arguments[0], arguments[1], arguments[2]);
             }
+            else if (function is Func<double, double, double, double, double>)
+            {
+                return ((Func<double, double, double, double, double>)function).Invoke(arguments[0], arguments[1], arguments[2], arguments[3]);
+            }
+#if !WINDOWS_PHONE_7
+            else if (function is Func<double, double, double, double, double, double>)
+            {
+                return ((Func<double, double, double, double, double, double>)function).Invoke(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4]);
+            }
+            else if (function is Func<double, double, double, double, double, double, double>)
+            {
+                return ((Func<double, double, double, double, double, double, double>)function).Invoke(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5]);
+            }
+#endif
             else
             {
                 return (double)function.DynamicInvoke((from s in arguments select (object)s).ToArray());
