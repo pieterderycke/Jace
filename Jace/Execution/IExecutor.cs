@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Jace.Execution;
 using Jace.Operations;
 
-namespace Jace
+namespace Jace.Execution
 {
     public interface IExecutor
     {

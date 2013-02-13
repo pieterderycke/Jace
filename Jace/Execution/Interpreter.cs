@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using Jace.Operations;
 using Jace.Util;
-using Jace.Execution;
 
-namespace Jace
+namespace Jace.Execution
 {
     public class Interpreter : IExecutor
     {

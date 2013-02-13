@@ -7,9 +7,8 @@ using System.Reflection.Emit;
 using System.Text;
 using Jace.Operations;
 using Jace.Util;
-using Jace.Execution;
 
-namespace Jace
+namespace Jace.Execution
 {
 #if !NETFX_CORE
     public class DynamicCompiler : IExecutor
