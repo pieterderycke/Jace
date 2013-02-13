@@ -95,11 +95,11 @@
     <Compile Include="..\Jace\EngineUtil.cs">
       <Link>EngineUtil.cs</Link>
     </Compile>
-    <Compile Include="..\Jace\ExecutionMode.cs">
-      <Link>ExecutionMode.cs</Link>
-    </Compile>
     <Compile Include="..\Jace\Execution\DynamicCompiler.cs">
       <Link>Execution\DynamicCompiler.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\Execution\ExecutionMode.cs">
+      <Link>Execution\ExecutionMode.cs</Link>
     </Compile>
     <Compile Include="..\Jace\Execution\FormulaBuilder.cs">
       <Link>Execution\FormulaBuilder.cs</Link>

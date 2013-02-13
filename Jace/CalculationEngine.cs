@@ -154,37 +154,72 @@ namespace Jace
             }
         }
 
+        /// <summary>
+        /// Add a function to the calculation engine.
+        /// </summary>
+        /// <param name="functionName">The name of the function. This name can be used in mathematical formulas.</param>
+        /// <param name="function">The implemenation of the function.</param>
         public void AddFunction(string functionName, Func<double> function)
         {
             FunctionRegistry.RegisterFunction(functionName, function);
         }
-        
+
+        /// <summary>
+        /// Add a function to the calculation engine.
+        /// </summary>
+        /// <param name="functionName">The name of the function. This name can be used in mathematical formulas.</param>
+        /// <param name="function">The implemenation of the function.</param>
         public void AddFunction(string functionName, Func<double, double> function)
         {
             FunctionRegistry.RegisterFunction(functionName, function); 
         }
 
+        /// <summary>
+        /// Add a function to the calculation engine.
+        /// </summary>
+        /// <param name="functionName">The name of the function. This name can be used in mathematical formulas.</param>
+        /// <param name="function">The implemenation of the function.</param>
         public void AddFunction(string functionName, Func<double, double, double> function)
         {
             FunctionRegistry.RegisterFunction(functionName, function);
         }
 
+        /// <summary>
+        /// Add a function to the calculation engine.
+        /// </summary>
+        /// <param name="functionName">The name of the function. This name can be used in mathematical formulas.</param>
+        /// <param name="function">The implemenation of the function.</param>
         public void AddFunction(string functionName, Func<double, double, double, double> function)
         {
             FunctionRegistry.RegisterFunction(functionName, function);
         }
 
+        /// <summary>
+        /// Add a function to the calculation engine.
+        /// </summary>
+        /// <param name="functionName">The name of the function. This name can be used in mathematical formulas.</param>
+        /// <param name="function">The implemenation of the function.</param>
         public void AddFunction(string functionName, Func<double, double, double, double, double> function)
         {
             FunctionRegistry.RegisterFunction(functionName, function);
         }
 
 #if !WINDOWS_PHONE_7
+        /// <summary>
+        /// Add a function to the calculation engine.
+        /// </summary>
+        /// <param name="functionName">The name of the function. This name can be used in mathematical formulas.</param>
+        /// <param name="function">The implemenation of the function.</param>
         public void AddFunction(string functionName, Func<double, double, double, double, double, double> function)
         {
             FunctionRegistry.RegisterFunction(functionName, function);
         }
 
+        /// <summary>
+        /// Add a function to the calculation engine.
+        /// </summary>
+        /// <param name="functionName">The name of the function. This name can be used in mathematical formulas.</param>
+        /// <param name="function">The implemenation of the function.</param>
         public void AddFunction(string functionName, Func<double, double, double, double, double, double, double> function)
         {
             FunctionRegistry.RegisterFunction(functionName, function);
