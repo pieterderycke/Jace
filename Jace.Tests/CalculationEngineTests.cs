@@ -185,6 +185,15 @@ namespace Jace.Tests
         }
 
         [TestMethod]
+        public void TestMultiplicationWithNegativeConstant()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            double result = engine.Calculate("5*-100");
+
+            Assert.AreEqual(-500.0, result);
+        }
+
+        [TestMethod]
         public void TestBuild()
         { 
             CalculationEngine engine = new CalculationEngine();

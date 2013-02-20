@@ -40,14 +40,16 @@ namespace Jace.Tokenizer
 
             char[] characters = formula.ToCharArray();
 
+            bool isFormulaSubPart = true;
+
             for(int i = 0; i < characters.Length; i++)
             {
-                if (IsPartOfNumeric(characters[i]))
+                if (IsPartOfNumeric(characters[i], true, isFormulaSubPart))
                 {
                     string buffer = "" + characters[i];
                     int startPosition = i;
 
-                    while (++i < characters.Length && IsPartOfNumeric(characters[i]))
+                    while (++i < characters.Length && IsPartOfNumeric(characters[i], false, isFormulaSubPart))
                     {
                         buffer += characters[i];
                     }
@@ -65,6 +67,7 @@ namespace Jace.Tokenizer
                             cultureInfo, out doubleValue))
                         {
                             tokens.Add(new Token() { TokenType = TokenType.FloatingPoint, Value = doubleValue, StartPosition = startPosition, Length = i - startPosition });
+                            isFormulaSubPart = false;
                         }
                         // Else we skip
                     }
@@ -87,6 +90,7 @@ namespace Jace.Tokenizer
                     }
 
                     tokens.Add(new Token() { TokenType = TokenType.Text, Value = buffer, StartPosition = startPosition, Length = i -startPosition });
+                    isFormulaSubPart = false;
 
                     if (i == characters.Length)
                     {
@@ -106,12 +110,15 @@ namespace Jace.Tokenizer
                     case '^':
                     case '%':
                         tokens.Add(new Token() { TokenType = TokenType.Operation, Value = characters[i], StartPosition = i, Length = 1 });
+                        isFormulaSubPart = true;
                         break;
                     case '(':
                         tokens.Add(new Token() { TokenType = TokenType.LeftBracket, Value = characters[i], StartPosition = i, Length = 1 });
+                        isFormulaSubPart = true;
                         break;
                     case ')':
                         tokens.Add(new Token() { TokenType = TokenType.RightBracket, Value = characters[i], StartPosition = i, Length = 1 });
+                        isFormulaSubPart = false;
                         break;
                     default:
                         break;
@@ -121,9 +128,9 @@ namespace Jace.Tokenizer
             return tokens;
         }
 
-        private bool IsPartOfNumeric(char character)
+        private bool IsPartOfNumeric(char character, bool isFirstCharacter, bool isFormulaSubPart)
         {
-            return character == decimalSeparator || (character >= '0' && character <= '9');
+            return character == decimalSeparator || (character >= '0' && character <= '9') || (isFormulaSubPart && isFirstCharacter && character == '-');
         }
 
         private bool IsPartOfVariable(char character, bool isFirstCharacter)
