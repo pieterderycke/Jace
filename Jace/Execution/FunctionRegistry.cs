@@ -8,7 +8,7 @@ namespace Jace.Execution
 {
     public class FunctionRegistry : IFunctionRegistry
     {
-        Dictionary<string, FunctionInfo> functions;
+        private readonly Dictionary<string, FunctionInfo> functions;
 
         public FunctionRegistry()
         {
