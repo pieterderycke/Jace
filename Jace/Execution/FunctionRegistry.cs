@@ -8,17 +8,22 @@ namespace Jace.Execution
 {
     public class FunctionRegistry : IFunctionRegistry
     {
+        private readonly bool caseSensitive;
         private readonly Dictionary<string, FunctionInfo> functions;
 
-        public FunctionRegistry()
+        public FunctionRegistry(bool caseSensitive)
         {
+            this.caseSensitive = caseSensitive;
             this.functions = new Dictionary<string, FunctionInfo>();
         }
 
         public FunctionInfo GetFunctionInfo(string functionName)
         {
+            if (string.IsNullOrEmpty(functionName))
+                throw new ArgumentNullException("functionName");
+
             FunctionInfo functionInfo = null;
-            return functions.TryGetValue(functionName, out functionInfo) ? functionInfo : null;
+            return functions.TryGetValue(ConvertFunctionName(functionName), out functionInfo) ? functionInfo : null;
         }
 
         public void RegisterFunction(string functionName, Delegate function)
@@ -28,6 +33,12 @@ namespace Jace.Execution
 
         public void RegisterFunction(string functionName, Delegate function, bool isOverWritable)
         {
+            if (string.IsNullOrEmpty(functionName))
+                throw new ArgumentNullException("functionName");
+
+            if (function == null)
+                throw new ArgumentNullException("function");
+
             Type funcType = function.GetType();
 
             if (!funcType.FullName.StartsWith("System.Func"))
@@ -40,6 +51,8 @@ namespace Jace.Execution
 #endif
                 if (genericArgument != typeof(double))
                     throw new ArgumentException("Only doubles are supported as function arguments", "function");
+
+            functionName = ConvertFunctionName(functionName);
 
             if (functions.ContainsKey(functionName) && !functions[functionName].IsOverWritable)
             {
@@ -69,7 +82,15 @@ namespace Jace.Execution
 
         public bool IsFunctionName(string functionName)
         {
-            return functions.ContainsKey(functionName);
+            if (string.IsNullOrEmpty(functionName))
+                throw new ArgumentNullException("functionName");
+
+            return functions.ContainsKey(ConvertFunctionName(functionName));
+        }
+
+        private string ConvertFunctionName(string functionName)
+        {
+            return caseSensitive ? functionName : functionName.ToLowerInvariant();
         }
     }
 }

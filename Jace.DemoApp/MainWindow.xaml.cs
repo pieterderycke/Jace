@@ -41,7 +41,7 @@ namespace Jace.DemoApp
 
                 ShowTokens(tokens);
 
-                IFunctionRegistry functionRegistry = new FunctionRegistry();
+                IFunctionRegistry functionRegistry = new FunctionRegistry(false);
 
                 AstBuilder astBuilder = new AstBuilder(functionRegistry);
                 Operation operation = astBuilder.Build(tokens);
