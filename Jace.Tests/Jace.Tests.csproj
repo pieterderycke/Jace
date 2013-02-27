@@ -35,6 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -58,14 +59,16 @@
     <Compile Include="BasicInterpreterTests.cs" />
     <Compile Include="CalculationEngineTests.cs" />
     <Compile Include="FuncAdapterTests.cs" />
+    <Compile Include="FunctionRegistryTests.cs" />
     <Compile Include="MemoryCacheTests.cs" />
+    <Compile Include="Mocks\MockFunctionRegistry.cs" />
     <Compile Include="TokenReaderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Jace\Jace.csproj">
       <Project>{91cc2c02-72ea-43af-95b0-f45edf91538e}</Project>
-      <Name>Calculator</Name>
+      <Name>Jace</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

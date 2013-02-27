@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Jace.Execution;
 using Jace.Operations;
 using Jace.Tokenizer;
 
@@ -40,7 +41,9 @@ namespace Jace.DemoApp
 
                 ShowTokens(tokens);
 
-                AstBuilder astBuilder = new AstBuilder();
+                IFunctionRegistry functionRegistry = new FunctionRegistry(false);
+
+                AstBuilder astBuilder = new AstBuilder(functionRegistry);
                 Operation operation = astBuilder.Build(tokens);
 
                 ShowAbstractSyntaxTree(operation);
@@ -53,7 +56,7 @@ namespace Jace.DemoApp
                 }
 
                 IExecutor executor = new Interpreter();
-                double result = executor.Execute(operation, variables);
+                double result = executor.Execute(operation, null, variables);
 
                 resultTextBox.Text = "" + result;
             }
@@ -185,7 +188,7 @@ namespace Jace.DemoApp
                         Function function = operation as Function;
                         if (function != null)
                         {
-                            value = "(" + function.FunctionType + ")";
+                            value = "(" + function.FunctionName + ")";
                         }
                     }
                 }

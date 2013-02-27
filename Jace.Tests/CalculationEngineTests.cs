@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using Jace.Operations;
+using Jace.Execution;
 
 #if NETFX_CORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
@@ -175,6 +176,24 @@ namespace Jace.Tests
         }
 
         [TestMethod]
+        public void TestNegativeConstant()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            double result = engine.Calculate("-100");
+
+            Assert.AreEqual(-100.0, result);
+        }
+
+        [TestMethod]
+        public void TestMultiplicationWithNegativeConstant()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            double result = engine.Calculate("5*-100");
+
+            Assert.AreEqual(-500.0, result);
+        }
+
+        [TestMethod]
         public void TestBuild()
         { 
             CalculationEngine engine = new CalculationEngine();
@@ -273,6 +292,28 @@ namespace Jace.Tests
             double result = engine.Calculate("2 * BlAbLa", variables);
 
             Assert.AreEqual(85.0, result);
+        }
+
+        [TestMethod]
+        public void TestCustomFunctionInterpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture,
+                ExecutionMode.Interpreted, false, false);
+            engine.AddFunction("test", (a, b) => a + b);
+
+            double result = engine.Calculate("test(2,3)");
+            Assert.AreEqual(5.0, result);
+        }
+
+        [TestMethod]
+        public void TestCustomFunctionCompiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture,
+                ExecutionMode.Compiled, false, false);
+            engine.AddFunction("test", (a, b) => a + b);
+
+            double result = engine.Calculate("test(2,3)");
+            Assert.AreEqual(5.0, result);
         }
     }
 }

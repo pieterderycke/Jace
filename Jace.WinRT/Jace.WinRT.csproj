@@ -108,26 +108,38 @@
     <Compile Include="..\Jace\DataType.cs">
       <Link>DataType.cs</Link>
     </Compile>
-    <Compile Include="..\Jace\DynamicCompiler.cs">
-      <Link>DynamicCompiler.cs</Link>
-    </Compile>
     <Compile Include="..\Jace\EngineUtil.cs">
       <Link>EngineUtil.cs</Link>
     </Compile>
-    <Compile Include="..\Jace\ExecutionMode.cs">
-      <Link>ExecutionMode.cs</Link>
+    <Compile Include="..\Jace\Execution\DynamicCompiler.cs">
+      <Link>Execution\DynamicCompiler.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\Execution\ExecutionMode.cs">
+      <Link>Execution\ExecutionMode.cs</Link>
     </Compile>
     <Compile Include="..\Jace\Execution\FormulaBuilder.cs">
       <Link>Execution\FormulaBuilder.cs</Link>
     </Compile>
+    <Compile Include="..\Jace\Execution\FunctionInfo.cs">
+      <Link>Execution\FunctionInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\Execution\FunctionRegistry.cs">
+      <Link>Execution\FunctionRegistry.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\Execution\IExecutor.cs">
+      <Link>Execution\IExecutor.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\Execution\IFunctionRegistry.cs">
+      <Link>Execution\IFunctionRegistry.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\Execution\Interpreter.cs">
+      <Link>Execution\Interpreter.cs</Link>
+    </Compile>
     <Compile Include="..\Jace\Execution\ParameterInfo.cs">
       <Link>Execution\ParameterInfo.cs</Link>
     </Compile>
-    <Compile Include="..\Jace\IExecutor.cs">
-      <Link>IExecutor.cs</Link>
-    </Compile>
-    <Compile Include="..\Jace\Interpreter.cs">
-      <Link>Interpreter.cs</Link>
+    <Compile Include="..\Jace\FormulaContext.cs">
+      <Link>FormulaContext.cs</Link>
     </Compile>
     <Compile Include="..\Jace\Operations\Addition.cs">
       <Link>Operations\Addition.cs</Link>
@@ -143,9 +155,6 @@
     </Compile>
     <Compile Include="..\Jace\Operations\Function.cs">
       <Link>Operations\Function.cs</Link>
-    </Compile>
-    <Compile Include="..\Jace\Operations\FunctionType.cs">
-      <Link>Operations\FunctionType.cs</Link>
     </Compile>
     <Compile Include="..\Jace\Operations\Modulo.cs">
       <Link>Operations\Modulo.cs</Link>
