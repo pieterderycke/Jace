@@ -167,10 +167,18 @@ namespace Jace
                         return new Addition(dataType, argument1, argument2);
                     case '-':
                         argument2 = resultStack.Pop();
-                        argument1 = resultStack.Pop();
-                        dataType = RequiredDataType(argument1, argument2);
+                        if (resultStack.Count > 0)
+                        {
+                            argument1 = resultStack.Pop();
+                            dataType = RequiredDataType(argument1, argument2);
 
-                        return new Subtraction(dataType, argument1, argument2);
+                            return new Subtraction(dataType, argument1, argument2);
+                        }
+                        else
+                        {
+                            dataType = (argument2.DataType == DataType.FloatingPoint) ? DataType.FloatingPoint : DataType.Integer;
+                            return new UnaryMinus(dataType, argument2);
+                        }
                     case '*':
                         argument2 = resultStack.Pop();
                         argument1 = resultStack.Pop();

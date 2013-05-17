@@ -74,6 +74,11 @@ namespace Jace.Execution
                 Exponentiation exponentiation = (Exponentiation)operation;
                 return Math.Pow(Execute(exponentiation.Base, functionRegistry, variables), Execute(exponentiation.Exponent, functionRegistry, variables));
             }
+            else if (operation.GetType() == typeof(UnaryMinus))
+            {
+                UnaryMinus unaryMinus = (UnaryMinus)operation;
+                return -Execute(unaryMinus.Argument, functionRegistry, variables);
+            }
             else if (operation.GetType() == typeof(Function))
             {
                 Function function = (Function)operation;

@@ -194,6 +194,24 @@ namespace Jace.Tests
         }
 
         [TestMethod]
+        public void TestUnaryMinusCompiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            double result = engine.Calculate("-(1+2+(3+4))");
+
+            Assert.AreEqual(-10.0, result);
+        }
+
+        [TestMethod]
+        public void TestUnaryMinusInterpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false);
+            double result = engine.Calculate("-(1+2+(3+4))");
+
+            Assert.AreEqual(-10.0, result);
+        }
+
+        [TestMethod]
         public void TestBuild()
         { 
             CalculationEngine engine = new CalculationEngine();

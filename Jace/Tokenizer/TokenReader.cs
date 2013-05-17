@@ -59,6 +59,7 @@ namespace Jace.Tokenizer
                     if (int.TryParse(buffer, out intValue))
                     {
                         tokens.Add(new Token() { TokenType = TokenType.Integer, Value = intValue, StartPosition = startPosition, Length = i - startPosition });
+                        isFormulaSubPart = false;
                     }
                     else
                     {
@@ -68,6 +69,11 @@ namespace Jace.Tokenizer
                         {
                             tokens.Add(new Token() { TokenType = TokenType.FloatingPoint, Value = doubleValue, StartPosition = startPosition, Length = i - startPosition });
                             isFormulaSubPart = false;
+                        }
+                        else if (buffer == "-")
+                        {
+                            // verify if we have a unary minus
+                            tokens.Add(new Token() { TokenType = TokenType.Operation, Value = '-', StartPosition = startPosition, Length = 1 });
                         }
                         // Else we skip
                     }
