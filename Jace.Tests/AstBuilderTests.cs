@@ -274,6 +274,33 @@ namespace Jace.Tests
         }
 
         [TestMethod]
+        public void TestUnaryMinus()
+        {
+            IFunctionRegistry registry = new MockFunctionRegistry();
+
+            AstBuilder builder = new AstBuilder(registry);
+            Operation operation = builder.Build(new List<Token>() { 
+                new Token() { Value = 5.3, TokenType = TokenType.FloatingPoint }, 
+                new Token() { Value = '*', TokenType = TokenType.Operation}, 
+                new Token() { Value = '_', TokenType = TokenType.Operation }, 
+                new Token() { Value = '(', TokenType = TokenType.LeftBracket }, 
+                new Token() { Value = 5, TokenType = TokenType.Integer }, 
+                new Token() { Value = '+', TokenType = TokenType.Operation }, 
+                new Token() { Value = 42, TokenType = TokenType.Integer }, 
+                new Token() { Value = ')', TokenType = TokenType.RightBracket }, 
+            });
+
+            Multiplication multiplication = (Multiplication)operation;
+            Assert.AreEqual(new FloatingPointConstant(5.3), multiplication.Argument1);
+
+            UnaryMinus unaryMinus = (UnaryMinus)multiplication.Argument2;
+
+            Addition addition = (Addition)unaryMinus.Argument;
+            Assert.AreEqual(new IntegerConstant(5), addition.Argument1);
+            Assert.AreEqual(new IntegerConstant(42), addition.Argument2);
+        }
+
+        [TestMethod]
         public void TestBuildInvalidFormula1()
         {
             IFunctionRegistry registry = new MockFunctionRegistry();
