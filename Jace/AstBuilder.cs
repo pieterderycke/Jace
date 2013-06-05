@@ -26,6 +26,7 @@ namespace Jace
             operationPrecedence.Add('*', 2);
             operationPrecedence.Add('/', 2);
             operationPrecedence.Add('%', 2);
+            operationPrecedence.Add('_', 4);
             operationPrecedence.Add('^', 3);
         }
 
@@ -167,18 +168,10 @@ namespace Jace
                         return new Addition(dataType, argument1, argument2);
                     case '-':
                         argument2 = resultStack.Pop();
-                        if (resultStack.Count > 0)
-                        {
-                            argument1 = resultStack.Pop();
-                            dataType = RequiredDataType(argument1, argument2);
+                        argument1 = resultStack.Pop();
+                        dataType = RequiredDataType(argument1, argument2);
 
-                            return new Subtraction(dataType, argument1, argument2);
-                        }
-                        else
-                        {
-                            dataType = (argument2.DataType == DataType.FloatingPoint) ? DataType.FloatingPoint : DataType.Integer;
-                            return new UnaryMinus(dataType, argument2);
-                        }
+                        return new Subtraction(dataType, argument1, argument2);
                     case '*':
                         argument2 = resultStack.Pop();
                         argument1 = resultStack.Pop();
@@ -195,6 +188,10 @@ namespace Jace
                         divident = resultStack.Pop();
 
                         return new Modulo(DataType.FloatingPoint, divident, divisor);
+                    case '_':
+                        argument1 = resultStack.Pop();
+
+                        return new UnaryMinus(argument1.DataType, argument1);
                     case '^':
                         Operation exponent = resultStack.Pop();
                         Operation @base = resultStack.Pop();

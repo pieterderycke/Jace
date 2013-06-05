@@ -72,8 +72,8 @@ namespace Jace.Tokenizer
                         }
                         else if (buffer == "-")
                         {
-                            // verify if we have a unary minus
-                            tokens.Add(new Token() { TokenType = TokenType.Operation, Value = '-', StartPosition = startPosition, Length = 1 });
+                            // Verify if we have a unary minus, we use the token '_' for a unary minus in the AST builder
+                            tokens.Add(new Token() { TokenType = TokenType.Operation, Value = '_', StartPosition = startPosition, Length = 1 });
                         }
                         // Else we skip
                     }
@@ -115,7 +115,15 @@ namespace Jace.Tokenizer
                     case '/':
                     case '^':
                     case '%':
-                        tokens.Add(new Token() { TokenType = TokenType.Operation, Value = characters[i], StartPosition = i, Length = 1 });
+                        if (IsUnaryMinus(characters[i], tokens))
+                        {
+                            // We use the token '_' for a unary minus in the AST builder
+                            tokens.Add(new Token() { TokenType = TokenType.Operation, Value = '_', StartPosition = i, Length = 1 });
+                        }
+                        else
+                        {
+                            tokens.Add(new Token() { TokenType = TokenType.Operation, Value = characters[i], StartPosition = i, Length = 1 });                            
+                        }
                         isFormulaSubPart = true;
                         break;
                     case '(':
@@ -142,6 +150,21 @@ namespace Jace.Tokenizer
         private bool IsPartOfVariable(char character, bool isFirstCharacter)
         {
             return (character >= 'a' && character <= 'z') || (character >= 'A' && character <= 'Z') || (!isFirstCharacter && character >= '0' && character <= '9');
+        }
+
+        private bool IsUnaryMinus(char currentToken, List<Token> tokens)
+        {
+            if (currentToken == '-')
+            {
+                Token previousToken = tokens[tokens.Count - 1];
+
+                return !(previousToken.TokenType == TokenType.FloatingPoint ||
+                         previousToken.TokenType == TokenType.Integer ||
+                         previousToken.TokenType == TokenType.Text ||
+                         previousToken.TokenType == TokenType.RightBracket);
+            }
+            else
+                return false;
         }
     }
 }

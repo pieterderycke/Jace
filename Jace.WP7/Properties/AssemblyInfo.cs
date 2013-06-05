@@ -11,7 +11,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Pieter De Rycke")]
 [assembly: AssemblyProduct("Jace")]
-[assembly: AssemblyCopyright("Copyright © Pieter De Rycke 2012")]
+[assembly: AssemblyCopyright("Copyright © Pieter De Rycke 2012-2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
