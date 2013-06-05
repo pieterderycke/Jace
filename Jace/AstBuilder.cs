@@ -26,6 +26,7 @@ namespace Jace
             operationPrecedence.Add('*', 2);
             operationPrecedence.Add('/', 2);
             operationPrecedence.Add('%', 2);
+            operationPrecedence.Add('_', 4);
             operationPrecedence.Add('^', 3);
         }
 
@@ -187,6 +188,10 @@ namespace Jace
                         divident = resultStack.Pop();
 
                         return new Modulo(DataType.FloatingPoint, divident, divisor);
+                    case '_':
+                        argument1 = resultStack.Pop();
+
+                        return new UnaryMinus(argument1.DataType, argument1);
                     case '^':
                         Operation exponent = resultStack.Pop();
                         Operation @base = resultStack.Pop();

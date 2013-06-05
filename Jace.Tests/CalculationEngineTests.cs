@@ -194,6 +194,96 @@ namespace Jace.Tests
         }
 
         [TestMethod]
+        public void TestUnaryMinus1Compiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            double result = engine.Calculate("-(1+2+(3+4))");
+
+            Assert.AreEqual(-10.0, result);
+        }
+
+        [TestMethod]
+        public void TestUnaryMinus1Interpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false);
+            double result = engine.Calculate("-(1+2+(3+4))");
+
+            Assert.AreEqual(-10.0, result);
+        }
+
+        [TestMethod]
+        public void TestUnaryMinus2Compiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            double result = engine.Calculate("5+(-(1*2))");
+
+            Assert.AreEqual(3.0, result);
+        }
+
+        [TestMethod]
+        public void TestUnaryMinus2Interpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false);
+            double result = engine.Calculate("5+(-(1*2))");
+
+            Assert.AreEqual(3.0, result);
+        }
+
+        [TestMethod]
+        public void TestUnaryMinus3Compiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            double result = engine.Calculate("5*(-(1*2)*3)");
+
+            Assert.AreEqual(-30.0, result);
+        }
+
+        [TestMethod]
+        public void TestUnaryMinus3Interpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false);
+            double result = engine.Calculate("5*(-(1*2)*3)");
+
+            Assert.AreEqual(-30.0, result);
+        }
+
+        [TestMethod]
+        public void TestUnaryMinus4Compiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            double result = engine.Calculate("5* -(1*2)");
+
+            Assert.AreEqual(-10.0, result);
+        }
+
+        [TestMethod]
+        public void TestUnaryMinus4Interpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false);
+            double result = engine.Calculate("5* -(1*2)");
+
+            Assert.AreEqual(-10.0, result);
+        }
+
+        [TestMethod]
+        public void TestUnaryMinus5Compiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            double result = engine.Calculate("-(1*2)^3");
+
+            Assert.AreEqual(-8.0, result);
+        }
+
+        [TestMethod]
+        public void TestUnaryMinus5Interpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false);
+            double result = engine.Calculate("-(1*2)^3");
+
+            Assert.AreEqual(-8.0, result);
+        }
+
+        [TestMethod]
         public void TestBuild()
         { 
             CalculationEngine engine = new CalculationEngine();

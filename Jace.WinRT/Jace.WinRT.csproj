@@ -168,6 +168,9 @@
     <Compile Include="..\Jace\Operations\Subtraction.cs">
       <Link>Operations\Subtraction.cs</Link>
     </Compile>
+    <Compile Include="..\Jace\Operations\UnaryMinus.cs">
+      <Link>Operations\UnaryMinus.cs</Link>
+    </Compile>
     <Compile Include="..\Jace\Operations\Variable.cs">
       <Link>Operations\Variable.cs</Link>
     </Compile>

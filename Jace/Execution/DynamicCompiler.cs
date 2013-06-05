@@ -155,6 +155,13 @@ namespace Jace.Execution
 
                 generator.Emit(OpCodes.Call, typeof(Math).GetMethod("Pow"));
             }
+            else if (operation.GetType() == typeof(UnaryMinus))
+            {
+                UnaryMinus unaryMinus = (UnaryMinus)operation;
+                GenerateMethodBody(generator, unaryMinus.Argument, functionRegistry);
+
+                generator.Emit(OpCodes.Neg);
+            }
             else if (operation.GetType() == typeof(Function))
             {
                 Function function = (Function)operation;
@@ -327,7 +334,13 @@ namespace Jace.Execution
                 Expression @base = GenerateMethodBody(exponentation.Base, contextParameter, functionRegistry);
                 Expression exponent = GenerateMethodBody(exponentation.Exponent, contextParameter, functionRegistry);
 
-                return Expression.Call(null, typeof(Math).GetRuntimeMethod("Pow", new Type[0]), @base, exponent);
+                return Expression.Call(null, typeof(Math).GetRuntimeMethod("Pow", new Type[] { typeof(double), typeof(double) }), @base, exponent);
+            }
+            else if (operation.GetType() == typeof(UnaryMinus))
+            {
+                UnaryMinus unaryMinus = (UnaryMinus)operation;
+                Expression argument = GenerateMethodBody(unaryMinus.Argument, contextParameter, functionRegistry);
+                return Expression.Negate(argument);
             }
             else if (operation.GetType() == typeof(Function))
             {
