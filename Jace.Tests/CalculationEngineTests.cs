@@ -405,5 +405,23 @@ namespace Jace.Tests
             double result = engine.Calculate("test(2,3)");
             Assert.AreEqual(5.0, result);
         }
+
+        [TestMethod]
+        public void TestComplicatedPrecedence1()
+        {
+            CalculationEngine engine = new CalculationEngine();
+
+            double result = engine.Calculate("1+2-3*4/5+6-7*8/9+0");
+            Assert.AreEqual(0.378, Math.Round(result, 3));
+        }
+
+        [TestMethod]
+        public void TestComplicatedPrecedence2()
+        {
+            CalculationEngine engine = new CalculationEngine();
+
+            double result = engine.Calculate("1+2-3*4/sqrt(25)+6-7*8/9+0");
+            Assert.AreEqual(0.378, Math.Round(result, 3));
+        }
     }
 }
