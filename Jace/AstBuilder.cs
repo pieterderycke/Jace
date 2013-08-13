@@ -67,11 +67,8 @@ namespace Jace
                         Token operation1Token = token;
                         char operation1 = (char)operation1Token.Value;
 
-                        if (operatorStack.Count == 0)
-                        {
-                            operatorStack.Push(operation1Token);
-                        }
-                        else
+                        while (operatorStack.Count > 0 && (operatorStack.Peek().TokenType == TokenType.Operation ||
+                            operatorStack.Peek().TokenType == TokenType.Text))
                         {
                             Token operation2Token = operatorStack.Peek();
                             bool isFunctionOnTopOfStack = operation2Token.TokenType == TokenType.Text;
@@ -80,26 +77,26 @@ namespace Jace
                             {
                                 char operation2 = (char)operation2Token.Value;
 
-                                if ((IsLeftAssociativeOperation(operation1) && operationPrecedence[operation1] <= operationPrecedence[operation2]) ||
+                                if ((IsLeftAssociativeOperation(operation1) &&
+                                        operationPrecedence[operation1] <= operationPrecedence[operation2]) ||
                                     (operationPrecedence[operation1] < operationPrecedence[operation2]))
                                 {
                                     operatorStack.Pop();
-                                    operatorStack.Push(operation1Token);
                                     resultStack.Push(ConvertOperation(operation2Token));
                                 }
                                 else
                                 {
-                                    operatorStack.Push(operation1Token);
+                                    break;
                                 }
                             }
                             else
                             {
                                 operatorStack.Pop();
-                                operatorStack.Push(operation1Token);
                                 resultStack.Push(ConvertFunction(operation2Token));
                             }
                         }
 
+                        operatorStack.Push(operation1Token);
                         break;
                 }
             }
