@@ -428,7 +428,6 @@ namespace Jace.Tests
         public void TestExpressionArguments()
         {
             CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture);
-            engine.AddFunction("ifless", (a, b, c, d) => (a < b ? c : d));
 
             double result = engine.Calculate("ifless(0.57, (3000-500)/(1500-500), 10, 20)");
             Assert.AreEqual(10, result);
