@@ -432,5 +432,14 @@ namespace Jace.Tests
             double result = engine.Calculate("ifless(0.57, (3000-500)/(1500-500), 10, 20)");
             Assert.AreEqual(10, result);
         }
+
+        [TestMethod]
+        public void TestNestedFunctions()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture);
+
+            double result = engine.Calculate("max(sin(67), cos(67))");
+            Assert.AreEqual(-0.517769799789505, Math.Round(result, 15));
+        }
     }
 }
