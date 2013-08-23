@@ -423,5 +423,15 @@ namespace Jace.Tests
             double result = engine.Calculate("1+2-3*4/sqrt(25)+6-7*8/9+0");
             Assert.AreEqual(0.378, Math.Round(result, 3));
         }
+
+        [TestMethod]
+        public void TestExpressionArguments()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture);
+            engine.AddFunction("ifless", (a, b, c, d) => (a < b ? c : d));
+
+            double result = engine.Calculate("ifless(0.57, (3000-500)/(1500-500), 10, 20)");
+            Assert.AreEqual(10, result);
+        }
     }
 }

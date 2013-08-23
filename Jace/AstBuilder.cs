@@ -63,6 +63,9 @@ namespace Jace
                     case TokenType.RightBracket:
                         PopOperations(true, token);
                         break;
+                    case TokenType.ArgumentSeparator:
+                        PopOperations(false, token);
+                        break;
                     case TokenType.Operation:
                         Token operation1Token = token;
                         char operation1 = (char)operation1Token.Value;
@@ -139,7 +142,8 @@ namespace Jace
             }
             else
             {
-                if (operatorStack.Count > 0 && operatorStack.Peek().TokenType == TokenType.LeftBracket)
+                if (operatorStack.Count > 0 && operatorStack.Peek().TokenType == TokenType.LeftBracket 
+                    && !(currentToken.HasValue && currentToken.Value.TokenType == TokenType.ArgumentSeparator))
                     throw new ParseException(string.Format("No matching right bracket found for the left " +
                         "bracket at position {0}.", operatorStack.Peek().StartPosition));
             }
@@ -262,11 +266,6 @@ namespace Jace
 
                 throw new ParseException("The syntax of the provided formula is not valid.");
             }
-        }
-
-        private bool IsOperation(char character)
-        {
-            return character == '*' || character == '+' || character == '-' || character == '/' || character == '^';
         }
 
         private bool IsLeftAssociativeOperation(char character)
