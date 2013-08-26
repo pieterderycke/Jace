@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-SET version="0.8.2"
-=======
 SET version="0.8.3"
->>>>>>> dev
 
 msbuild /p:Configuration=Release Jace\Jace.csproj
 MKDIR nuget\lib\net40
