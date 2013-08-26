@@ -393,5 +393,41 @@ namespace Jace.Tests
             Assert.AreEqual(8, tokens[7].StartPosition);
             Assert.AreEqual(1, tokens[7].Length);
         }
+
+        [TestMethod]
+        public void TestTokenReader17()
+        {
+            TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
+            List<Token> tokens = reader.Read("logn(2,5)");
+
+            Assert.AreEqual(6, tokens.Count);
+
+            Assert.AreEqual("logn", tokens[0].Value);
+            Assert.AreEqual(0, tokens[0].StartPosition);
+            Assert.AreEqual(4, tokens[0].Length);
+
+            Assert.AreEqual('(', tokens[1].Value);
+            Assert.AreEqual(4, tokens[1].StartPosition);
+            Assert.AreEqual(1, tokens[1].Length);
+            Assert.AreEqual(TokenType.LeftBracket, tokens[1].TokenType);
+
+            Assert.AreEqual(2, tokens[2].Value);
+            Assert.AreEqual(5, tokens[2].StartPosition);
+            Assert.AreEqual(1, tokens[2].Length);
+
+            Assert.AreEqual(',', tokens[3].Value);
+            Assert.AreEqual(6, tokens[3].StartPosition);
+            Assert.AreEqual(1, tokens[3].Length);
+            Assert.AreEqual(TokenType.ArgumentSeparator, tokens[3].TokenType);
+
+            Assert.AreEqual(5, tokens[4].Value);
+            Assert.AreEqual(7, tokens[4].StartPosition);
+            Assert.AreEqual(1, tokens[4].Length);
+
+            Assert.AreEqual(')', tokens[5].Value);
+            Assert.AreEqual(8, tokens[5].StartPosition);
+            Assert.AreEqual(1, tokens[5].Length);
+            Assert.AreEqual(TokenType.RightBracket, tokens[5].TokenType);
+        }
     }
 }

@@ -12,7 +12,8 @@ namespace Jace.Tokenizer
     public class TokenReader
     {
         private readonly CultureInfo cultureInfo;
-        private readonly char decimalSeparator; 
+        private readonly char decimalSeparator;
+        private readonly char argumentSeparator;
 
         public TokenReader() 
             : this(CultureInfo.CurrentCulture)
@@ -23,6 +24,7 @@ namespace Jace.Tokenizer
         {
             this.cultureInfo = cultureInfo;
             this.decimalSeparator = cultureInfo.NumberFormat.NumberDecimalSeparator[0];
+            this.argumentSeparator = cultureInfo.TextInfo.ListSeparator[0];
         }
 
         /// <summary>
@@ -104,38 +106,45 @@ namespace Jace.Tokenizer
                         continue;
                     }
                 }
-
-                switch (characters[i])
-                { 
-                    case ' ':
-                        continue;
-                    case '+':
-                    case '-':
-                    case '*':
-                    case '/':
-                    case '^':
-                    case '%':
-                        if (IsUnaryMinus(characters[i], tokens))
-                        {
-                            // We use the token '_' for a unary minus in the AST builder
-                            tokens.Add(new Token() { TokenType = TokenType.Operation, Value = '_', StartPosition = i, Length = 1 });
-                        }
-                        else
-                        {
-                            tokens.Add(new Token() { TokenType = TokenType.Operation, Value = characters[i], StartPosition = i, Length = 1 });                            
-                        }
-                        isFormulaSubPart = true;
-                        break;
-                    case '(':
-                        tokens.Add(new Token() { TokenType = TokenType.LeftBracket, Value = characters[i], StartPosition = i, Length = 1 });
-                        isFormulaSubPart = true;
-                        break;
-                    case ')':
-                        tokens.Add(new Token() { TokenType = TokenType.RightBracket, Value = characters[i], StartPosition = i, Length = 1 });
-                        isFormulaSubPart = false;
-                        break;
-                    default:
-                        break;
+                if (characters[i] == this.argumentSeparator)
+                {
+                    tokens.Add(new Token() { TokenType = Tokenizer.TokenType.ArgumentSeparator, Value = characters[i], StartPosition = i, Length = 1 });
+                    isFormulaSubPart = false;
+                }
+                else
+                {
+                    switch (characters[i])
+                    { 
+                        case ' ':
+                            continue;
+                        case '+':
+                        case '-':
+                        case '*':
+                        case '/':
+                        case '^':
+                        case '%':
+                            if (IsUnaryMinus(characters[i], tokens))
+                            {
+                                // We use the token '_' for a unary minus in the AST builder
+                                tokens.Add(new Token() { TokenType = TokenType.Operation, Value = '_', StartPosition = i, Length = 1 });
+                            }
+                            else
+                            {
+                                tokens.Add(new Token() { TokenType = TokenType.Operation, Value = characters[i], StartPosition = i, Length = 1 });                            
+                            }
+                            isFormulaSubPart = true;
+                            break;
+                        case '(':
+                            tokens.Add(new Token() { TokenType = TokenType.LeftBracket, Value = characters[i], StartPosition = i, Length = 1 });
+                            isFormulaSubPart = true;
+                            break;
+                        case ')':
+                            tokens.Add(new Token() { TokenType = TokenType.RightBracket, Value = characters[i], StartPosition = i, Length = 1 });
+                            isFormulaSubPart = false;
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
 
