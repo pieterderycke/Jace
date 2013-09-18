@@ -92,8 +92,11 @@
     <Compile Include="..\Jace\DataType.cs">
       <Link>DataType.cs</Link>
     </Compile>
-    <Compile Include="..\Jace\EngineUtil.cs">
-      <Link>EngineUtil.cs</Link>
+    <Compile Include="..\Jace\Execution\ConstantInfo.cs">
+      <Link>Execution\ConstantInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\Execution\ConstantRegistry.cs">
+      <Link>Execution\ConstantRegistry.cs</Link>
     </Compile>
     <Compile Include="..\Jace\Execution\DynamicCompiler.cs">
       <Link>Execution\DynamicCompiler.cs</Link>
@@ -109,6 +112,9 @@
     </Compile>
     <Compile Include="..\Jace\Execution\FunctionRegistry.cs">
       <Link>Execution\FunctionRegistry.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\Execution\IConstantRegistry.cs">
+      <Link>Execution\IConstantRegistry.cs</Link>
     </Compile>
     <Compile Include="..\Jace\Execution\IExecutor.cs">
       <Link>Execution\IExecutor.cs</Link>

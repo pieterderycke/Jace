@@ -71,6 +71,7 @@ namespace Jace
         {
             this.executionFormulaCache = new MemoryCache<string, Func<Dictionary<string, double>, double>>();
             this.FunctionRegistry = new FunctionRegistry(false);
+            this.ConstantRegistry = new ConstantRegistry(false);
             this.cultureInfo = cultureInfo;
             this.cacheEnabled = cacheEnabled;
             this.optimizerEnabled = optimizerEnabled;
@@ -85,11 +86,16 @@ namespace Jace
 
             optimizer = new Optimizer(new Interpreter()); // We run the optimizer with the interpreter 
 
+            // Register the default constants of Jace.NET into the constant registry
+            RegisterDefaultConstants();
+
             // Register the default functions of Jace.NET into the function registry
             RegisterDefaultFunctions();
         }
 
         internal IFunctionRegistry FunctionRegistry { get; private set; }
+
+        internal IConstantRegistry ConstantRegistry { get; private set; }
 
         public double Calculate(string formulaText)
         {
@@ -108,8 +114,8 @@ namespace Jace
             VerifyVariableNames(variables);
 
             // Add the reserved variables to the dictionary
-            variables.Add("e", Math.E);
-            variables.Add("pi", Math.PI);
+            foreach (ConstantInfo constant in ConstantRegistry)
+                variables.Add(constant.ConstantName, constant.Value);
 
             if (IsInFormulaCache(formulaText))
             {
@@ -226,6 +232,16 @@ namespace Jace
         }
 #endif
 
+        /// <summary>
+        /// Add a constant to the calculation engine.
+        /// </summary>
+        /// <param name="constantName">The name of the constant. This name can be used in mathematical formulas.</param>
+        /// <param name="value">The value of the constant.</param>
+        public void AddConstant(string constantName, double value)
+        {
+            ConstantRegistry.RegisterConstant(constantName, value);
+        }
+
         private void RegisterDefaultFunctions()
         {
             FunctionRegistry.RegisterFunction("sin", (Func<double, double>)((a) => Math.Sin(a)), false);
@@ -253,6 +269,12 @@ namespace Jace
 #if !WINDOWS_PHONE_7
             FunctionRegistry.RegisterFunction("truncate", (Func<double, double>)((a) => Math.Truncate(a)), false);
 #endif
+        }
+
+        private void RegisterDefaultConstants()
+        {
+            ConstantRegistry.RegisterConstant("e", Math.E, false);
+            ConstantRegistry.RegisterConstant("pi", Math.PI, false);
         }
 
         /// <summary>
@@ -296,7 +318,7 @@ namespace Jace
         {
             foreach (string variableName in variables.Keys)
             {
-                if (EngineUtil.IsReservedVariable(variableName))
+                if(ConstantRegistry.IsConstantName(variableName) && !ConstantRegistry.GetConstantInfo(variableName).IsOverWritable)
                     throw new ArgumentException(string.Format("The name \"{0}\" is a reservered variable name that cannot be overwritten.", variableName), "variables");
 
                 if (FunctionRegistry.IsFunctionName(variableName))
