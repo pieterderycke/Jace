@@ -76,3 +76,4 @@ Below you can find the results of Jace.NET benchmark that show its high performa
 ## More Information
 For more information, you can read the following articles:
 * http://pieterderycke.wordpress.com/2012/11/04/jace-net-just-another-calculation-engine-for-net/
+* http://www.codeproject.com/Articles/682589/Jace-NET-Just-another-calculation-engine-for-NET

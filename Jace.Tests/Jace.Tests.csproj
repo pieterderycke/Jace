@@ -58,6 +58,7 @@
     <Compile Include="AstBuilderTests.cs" />
     <Compile Include="BasicInterpreterTests.cs" />
     <Compile Include="CalculationEngineTests.cs" />
+    <Compile Include="ConstantRegistryTests.cs" />
     <Compile Include="FuncAdapterTests.cs" />
     <Compile Include="FunctionRegistryTests.cs" />
     <Compile Include="MemoryCacheTests.cs" />
