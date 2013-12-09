@@ -78,6 +78,7 @@
     <Compile Include="Tokenizer\TokenReader.cs" />
     <Compile Include="Tokenizer\TokenizerException.cs" />
     <Compile Include="Tokenizer\TokenType.cs" />
+    <Compile Include="Util\EngineUtil.cs" />
     <Compile Include="Util\MathUtil.cs" />
     <Compile Include="Util\MemoryCache.cs" />
     <Compile Include="Util\FuncAdapter.cs" />

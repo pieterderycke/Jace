@@ -12,7 +12,11 @@ namespace Jace.Execution
         public Func<Dictionary<string, double>, double> BuildFormula(Operation operation, 
             IFunctionRegistry functionRegistry)
         { 
-            return variables => Execute(operation, functionRegistry, variables);
+            return variables =>
+                {
+                    variables = EngineUtil.ConvertVariableNamesToLowerCase(variables);
+                    return Execute(operation, functionRegistry, variables);
+                };
         }
 
         public double Execute(Operation operation, IFunctionRegistry functionRegistry)

@@ -110,7 +110,7 @@ namespace Jace
             if (variables == null)
                 throw new ArgumentNullException("variables");
 
-            variables = ConvertVariableNamesToLowerCase(variables);
+            variables = EngineUtil.ConvertVariableNamesToLowerCase(variables);
             VerifyVariableNames(variables);
 
             // Add the reserved variables to the dictionary
@@ -324,17 +324,6 @@ namespace Jace
                 if (FunctionRegistry.IsFunctionName(variableName))
                     throw new ArgumentException(string.Format("The name \"{0}\" is a function name. Parameters cannot have this name.", variableName), "variables");
             }
-        }
-
-        private Dictionary<string, double> ConvertVariableNamesToLowerCase(Dictionary<string, double> variables)
-        {
-            Dictionary<string, double> temp = new Dictionary<string, double>();
-            foreach (KeyValuePair<string, double> keyValuePair in variables)
-            {
-                temp.Add(keyValuePair.Key.ToLowerInvariant(), keyValuePair.Value);
-            }
-
-            return temp;
         }
     }
 }

@@ -198,6 +198,9 @@
     <Compile Include="..\Jace\Tokenizer\TokenType.cs">
       <Link>Tokenizer\TokenType.cs</Link>
     </Compile>
+    <Compile Include="..\Jace\Util\EngineUtil.cs">
+      <Link>Util\EngineUtil.cs</Link>
+    </Compile>
     <Compile Include="..\Jace\Util\FuncAdapter.cs">
       <Link>Util\FuncAdapter.cs</Link>
     </Compile>

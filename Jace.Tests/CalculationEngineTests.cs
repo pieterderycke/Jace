@@ -441,5 +441,43 @@ namespace Jace.Tests
             double result = engine.Calculate("max(sin(67), cos(67))");
             Assert.AreEqual(-0.517769799789505, Math.Round(result, 15));
         }
+
+        [TestMethod]
+        public void TestVariableCaseFuncInterpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+            Func<Dictionary<string, double>, double> formula = engine.Build("var1+2/(3*otherVariablE)");
+
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("var1", 2);
+            variables.Add("otherVariable", 4.2);
+
+            double result = formula(variables);
+        }
+
+        [TestMethod]
+        public void TestVariableCaseFuncCompiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);
+            Func<Dictionary<string, double>, double> formula = engine.Build("var1+2/(3*otherVariablE)");
+
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("var1", 2);
+            variables.Add("otherVariable", 4.2);
+
+            double result = formula(variables);
+        }
+
+        [TestMethod]
+        public void TestVariableCaseNonFunc()
+        {
+            CalculationEngine engine = new CalculationEngine();
+
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("var1", 2);
+            variables.Add("otherVariable", 4.2);
+
+            double result = engine.Calculate("var1+2/(3*otherVariablE)", variables);
+        }
     }
 }

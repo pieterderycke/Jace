@@ -28,9 +28,10 @@ namespace Jace.Execution
             IFunctionRegistry functionRegistry)
         {
             Func<FormulaContext, double> func = BuildFormulaInternal(operation, functionRegistry);
-            return a =>
+            return variables =>
                 {
-                    FormulaContext context = new FormulaContext(a, functionRegistry);
+                    variables = EngineUtil.ConvertVariableNamesToLowerCase(variables);
+                    FormulaContext context = new FormulaContext(variables, functionRegistry);
                     return func(context);
                 };
         }
@@ -217,11 +218,12 @@ namespace Jace.Execution
             IFunctionRegistry functionRegistry)
         {
             Func<FormulaContext, double> func = BuildFormulaInternal(operation, functionRegistry);
-            return a =>
-            {
-                FormulaContext context = new FormulaContext(a, functionRegistry);
-                return func(context);
-            };
+            return variables =>
+                {
+                    variables = EngineUtil.ConvertVariableNamesToLowerCase(variables);
+                    FormulaContext context = new FormulaContext(variables, functionRegistry);
+                    return func(context);
+                };
         }
 
         private Func<FormulaContext, double> BuildFormulaInternal(Operation operation, 
