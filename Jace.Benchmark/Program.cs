@@ -120,11 +120,7 @@ namespace Jace.Benchmark
 
             DateTime start = DateTime.Now;
 
-            List<Task> tasks = new List<Task>();
-
-            foreach (string functionText in functions)
-            {
-                Task task = new Task(() =>
+            Parallel.ForEach(functions,(functionText)=>
                 {
                     Func<int, int, int, double> function = (Func<int, int, int, double>)engine.Formula(functionText)
                         .Parameter("var1", DataType.Integer)
@@ -138,12 +134,6 @@ namespace Jace.Benchmark
                         function(random.Next(), random.Next(), random.Next());
                     }
                 });
-
-                tasks.Add(task);
-                task.Start();
-            }
-
-            Task.WaitAll(tasks.ToArray());
 
             DateTime end = DateTime.Now;
 
