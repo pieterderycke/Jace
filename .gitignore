@@ -6,3 +6,4 @@ TestResults/
 *.nupkg
 packages/*
 !packages/repositories.config
+*.zip
