@@ -1,4 +1,4 @@
-SET version=0.8.4
+SET version=0.8.5
 
 msbuild /p:Configuration=Release Jace\Jace.csproj
 MKDIR zip\net40
@@ -15,6 +15,10 @@ COPY Jace.WP8\bin\Release\*.dll zip\wp8\
 msbuild /p:Configuration=Release Jace.WP7\Jace.WP7.csproj
 MKDIR zip\wp7
 COPY Jace.WP7\bin\Release\*.dll zip\wp7\
+
+REM msbuild /p:Configuration=Release Jace.Android\Jace.Android.csproj
+MKDIR zip\xamarin.android
+COPY Jace.Android\bin\Release\*.dll zip\xamarin.android\
 
 COPY LICENSE.md zip\
 COPY README.md zip\

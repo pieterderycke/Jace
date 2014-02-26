@@ -14,7 +14,7 @@
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
-    <AssemblyName>Jace.Android</AssemblyName>
+    <AssemblyName>Jace</AssemblyName>
     <TargetFrameworkVersion>v4.0.3</TargetFrameworkVersion>
     <ReleaseVersion>0.8.5</ReleaseVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
