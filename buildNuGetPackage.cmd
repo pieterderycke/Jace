@@ -16,6 +16,10 @@ msbuild /p:Configuration=Release Jace.WP7\Jace.WP7.csproj
 MKDIR nuget\lib\wp7
 COPY Jace.WP7\bin\Release\*.dll nuget\lib\wp7\
 
+REM msbuild /p:Configuration=Release Jace.Android\Jace.Android.csproj
+MKDIR nuget\lib\monoandroid
+COPY Jace.Android\bin\Release\*.dll nuget\lib\monoandroid\
+
 COPY Jace.nuspec nuget\
 
 Tools\NuGet\nuget.exe pack nuget\Jace.nuspec -Version %version%
