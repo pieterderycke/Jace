@@ -154,7 +154,8 @@ namespace Jace.Util
         {
             if (dictionary.Count >= maximumSize) // >= because we want to add an item after this method
             {
-                IList<TKey> keysToDelete = (from p in dictionary
+                IList<TKey> keysToDelete = (from p in dictionary.ToArray()
+                                            where p.Key != null && p.Value != null
                                             orderby p.Value.LastAccessed ascending
                                             select p.Key).Take(reductionSize).ToList();
 

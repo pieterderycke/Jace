@@ -11,6 +11,8 @@ namespace Jace.Benchmark
     class Program
     {
         private const int NumberOfTests = 1000000;
+        private const int NumberOfFunctionsToGenerate = 10000;
+        private const int NumberExecutionsPerRandomFunction = 1000;
 
         static void Main(string[] args)
         {
@@ -46,20 +48,20 @@ namespace Jace.Benchmark
             BenchMarkCalculationEngineFunctionBuild(compiledEngine, "(var1 + var2 * 3)/(2+3) - something");
 
             Console.WriteLine("--------------------");
-            Console.WriteLine("Random Generated Functions: {0}", 1000.ToString("N0"));
+            Console.WriteLine("Random Generated Functions: {0}", NumberOfFunctionsToGenerate.ToString("N0"));
             Console.WriteLine("Number Of Variables Of Each Function: {0}", 3);
-            Console.WriteLine("Number Of Executions For Each Function: {0}", 10000.ToString("N0"));
-            Console.WriteLine("Total Number Of Executions: {0}", (10000 * 1000).ToString("N0"));
+            Console.WriteLine("Number Of Executions For Each Function: {0}", NumberExecutionsPerRandomFunction.ToString("N0"));
+            Console.WriteLine("Total Number Of Executions: {0}", (NumberExecutionsPerRandomFunction * NumberOfFunctionsToGenerate).ToString("N0"));
             Console.WriteLine("Parallel: {0}", true);
             Console.WriteLine();
 
-            List<string> functions = GenerateRandomFunctions(1000);
+            List<string> functions = GenerateRandomFunctions(NumberOfFunctionsToGenerate);
 
             Console.WriteLine("Interpreted Mode:");
-            BenchMarkCalculationEngineRandomFunctionBuild(interpretedEngine, functions, 10000);
+            BenchMarkCalculationEngineRandomFunctionBuild(interpretedEngine, functions, NumberExecutionsPerRandomFunction);
 
             Console.WriteLine("Compiled Mode:");
-            BenchMarkCalculationEngineRandomFunctionBuild(compiledEngine, functions, 10000);
+            BenchMarkCalculationEngineRandomFunctionBuild(compiledEngine, functions, NumberExecutionsPerRandomFunction);
 
             Console.WriteLine("Press enter to exit...");
             Console.ReadLine();
