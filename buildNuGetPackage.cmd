@@ -7,6 +7,8 @@ COPY Jace\bin\Release\*.dll nuget\lib\net40\
 msbuild /p:Configuration=Release Jace.WinRT\Jace.WinRT.csproj
 MKDIR nuget\lib\windows8
 COPY Jace.WinRT\bin\Release\*.dll nuget\lib\windows8\
+MKDIR nuget\lib\wpa81
+COPY Jace.WinRT\bin\Release\*.dll nuget\lib\wpa81\
 
 msbuild /p:Configuration=Release Jace.WP8\Jace.WP8.csproj
 MKDIR nuget\lib\wp8

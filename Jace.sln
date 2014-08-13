@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jace", "Jace\Jace.csproj", "{91CC2C02-72EA-43AF-95B0-F45EDF91538E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jace.Tests", "Jace.Tests\Jace.Tests.csproj", "{A40B7775-7A62-4E76-928A-346F916B48C7}"
