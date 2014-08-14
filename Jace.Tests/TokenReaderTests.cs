@@ -433,5 +433,26 @@ namespace Jace.Tests
             Assert.AreEqual(1, tokens[5].Length);
             Assert.AreEqual(TokenType.RightBracket, tokens[5].TokenType);
         }
+
+        [TestMethod]
+        public void TestTokenReader18()
+        {
+            TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
+            List<Token> tokens = reader.Read("var_1+2");
+
+            Assert.AreEqual(3, tokens.Count);
+
+            Assert.AreEqual("var_1", tokens[0].Value);
+            Assert.AreEqual(0, tokens[0].StartPosition);
+            Assert.AreEqual(5, tokens[0].Length);
+
+            Assert.AreEqual('+', tokens[1].Value);
+            Assert.AreEqual(5, tokens[1].StartPosition);
+            Assert.AreEqual(1, tokens[1].Length);
+
+            Assert.AreEqual(2, tokens[2].Value);
+            Assert.AreEqual(6, tokens[2].StartPosition);
+            Assert.AreEqual(1, tokens[2].Length);
+        }
     }
 }
