@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{48E5CCD3-FC1A-4BB3-A58E-FB3EC96BF7A5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Jace.Universal</RootNamespace>
+    <AssemblyName>Jace.Universal</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile>Profile32</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- A reference to the entire .NET Framework is automatically included -->
+  </ItemGroup>
+  <ItemGroup>
+    <TargetPlatform Include="WindowsPhoneApp, Version=8.1" />
+    <TargetPlatform Include="Windows, Version=8.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Jace\AstBuilder.cs">
+      <Link>AstBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\CalculationEngine.cs">
+      <Link>CalculationEngine.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\DataType.cs">
+      <Link>DataType.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\execution\ConstantInfo.cs">
+      <Link>Execution\ConstantInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\execution\ConstantRegistry.cs">
+      <Link>Execution\ConstantRegistry.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\execution\DynamicCompiler.cs">
+      <Link>Execution\DynamicCompiler.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\execution\ExecutionMode.cs">
+      <Link>Execution\ExecutionMode.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\execution\FormulaBuilder.cs">
+      <Link>Execution\FormulaBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\execution\FunctionInfo.cs">
+      <Link>Execution\FunctionInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\execution\FunctionRegistry.cs">
+      <Link>Execution\FunctionRegistry.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\execution\IConstantRegistry.cs">
+      <Link>Execution\IConstantRegistry.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\execution\IExecutor.cs">
+      <Link>Execution\IExecutor.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\execution\IFunctionRegistry.cs">
+      <Link>Execution\IFunctionRegistry.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\execution\Interpreter.cs">
+      <Link>Execution\Interpreter.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\execution\ParameterInfo.cs">
+      <Link>Execution\ParameterInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\FormulaContext.cs">
+      <Link>FormulaContext.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\operations\Addition.cs">
+      <Link>Operations\Addition.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\operations\Constant.cs">
+      <Link>Operations\Constant.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\operations\Division.cs">
+      <Link>Operations\Division.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\operations\Exponentiation.cs">
+      <Link>Operations\Exponentiation.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\operations\Function.cs">
+      <Link>Operations\Function.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\operations\Modulo.cs">
+      <Link>Operations\Modulo.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\operations\Multiplication.cs">
+      <Link>Operations\Multiplication.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\operations\Operation.cs">
+      <Link>Operations\Operation.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\operations\Subtraction.cs">
+      <Link>Operations\Subtraction.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\operations\UnaryMinus.cs">
+      <Link>Operations\UnaryMinus.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\operations\Variable.cs">
+      <Link>Operations\Variable.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\Optimizer.cs">
+      <Link>Optimizer.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\ParseException.cs">
+      <Link>ParseException.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\tokenizer\Token.cs">
+      <Link>Tokenizer\Token.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\tokenizer\TokenizerException.cs">
+      <Link>Tokenizer\TokenizerException.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\tokenizer\TokenReader.cs">
+      <Link>Tokenizer\TokenReader.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\tokenizer\TokenType.cs">
+      <Link>Tokenizer\TokenType.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\util\EngineUtil.cs">
+      <Link>Util\EngineUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\util\FuncAdapter.cs">
+      <Link>Util\FuncAdapter.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\util\MathUtil.cs">
+      <Link>Util\MathUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\util\MemoryCache.cs">
+      <Link>Util\MemoryCache.cs</Link>
+    </Compile>
+    <Compile Include="..\jace\util\TypeExtensions.cs">
+      <Link>Util\TypeExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\VariableNotDefinedException.cs">
+      <Link>VariableNotDefinedException.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
