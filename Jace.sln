@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jace", "Jace\Jace.csproj", "{91CC2C02-72EA-43AF-95B0-F45EDF91538E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jace.Tests", "Jace.Tests\Jace.Tests.csproj", "{A40B7775-7A62-4E76-928A-346F916B48C7}"
@@ -16,6 +18,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jace.WP8", "Jace.WP8\Jace.WP8.csproj", "{EBAD9DA0-DCF4-413C-8847-D7ECFB28AB1F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jace.WP7", "Jace.WP7\Jace.WP7.csproj", "{E0C23BC7-80A4-453A-8A96-E0E1AF525745}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jace.Universal", "Jace.Universal\Jace.Universal.csproj", "{48E5CCD3-FC1A-4BB3-A58E-FB3EC96BF7A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -133,6 +137,16 @@ Global
 		{E0C23BC7-80A4-453A-8A96-E0E1AF525745}.Release|ARM.ActiveCfg = Release|Any CPU
 		{E0C23BC7-80A4-453A-8A96-E0E1AF525745}.Release|x64.ActiveCfg = Release|Any CPU
 		{E0C23BC7-80A4-453A-8A96-E0E1AF525745}.Release|x86.ActiveCfg = Release|Any CPU
+		{48E5CCD3-FC1A-4BB3-A58E-FB3EC96BF7A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48E5CCD3-FC1A-4BB3-A58E-FB3EC96BF7A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48E5CCD3-FC1A-4BB3-A58E-FB3EC96BF7A5}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{48E5CCD3-FC1A-4BB3-A58E-FB3EC96BF7A5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{48E5CCD3-FC1A-4BB3-A58E-FB3EC96BF7A5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{48E5CCD3-FC1A-4BB3-A58E-FB3EC96BF7A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48E5CCD3-FC1A-4BB3-A58E-FB3EC96BF7A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48E5CCD3-FC1A-4BB3-A58E-FB3EC96BF7A5}.Release|ARM.ActiveCfg = Release|Any CPU
+		{48E5CCD3-FC1A-4BB3-A58E-FB3EC96BF7A5}.Release|x64.ActiveCfg = Release|Any CPU
+		{48E5CCD3-FC1A-4BB3-A58E-FB3EC96BF7A5}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

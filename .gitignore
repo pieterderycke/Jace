@@ -8,3 +8,7 @@ packages/*
 !packages/repositories.config
 *.zip
 *.userprefs
+/Backup
+/Backup1
+/UpgradeLog.htm
+/UpgradeLog2.htm
