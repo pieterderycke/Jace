@@ -11,6 +11,8 @@ COPY Jace.WinRT\bin\Release\*.dll zip\windows8\
 msbuild /p:Configuration=Release Jace.WP8\Jace.WP8.csproj
 MKDIR zip\wp8
 COPY Jace.WP8\bin\Release\*.dll zip\wp8\
+MKDIR zip\wpa81
+COPY Jace.WinRT\bin\Release\*.dll zip\wpa81\
 
 msbuild /p:Configuration=Release Jace.WP7\Jace.WP7.csproj
 MKDIR zip\wp7
