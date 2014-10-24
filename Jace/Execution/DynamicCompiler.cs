@@ -19,12 +19,12 @@ namespace Jace.Execution
         }
 
         public double Execute(Operation operation, IFunctionRegistry functionRegistry, 
-            Dictionary<string, double> variables)
+            IDictionary<string, double> variables)
         {
             return BuildFormula(operation, functionRegistry)(variables);
         }
 
-        public Func<Dictionary<string, double>, double> BuildFormula(Operation operation,
+        public Func<IDictionary<string, double>, double> BuildFormula(Operation operation,
             IFunctionRegistry functionRegistry)
         {
             Func<FormulaContext, double> func = BuildFormulaInternal(operation, functionRegistry);
@@ -80,7 +80,7 @@ namespace Jace.Execution
             }
             else if (operation.GetType() == typeof(Variable))
             {
-                Type dictionaryType = typeof(Dictionary<string, double>);
+                Type dictionaryType = typeof(IDictionary<string, double>);
 
                 Variable variable = (Variable)operation;
 
@@ -209,12 +209,12 @@ namespace Jace.Execution
         }
 
         public double Execute(Operation operation, IFunctionRegistry functionRegistry, 
-            Dictionary<string, double> variables)
+            IDictionary<string, double> variables)
         {
             return BuildFormula(operation, functionRegistry)(variables);
         }
 
-        public Func<Dictionary<string, double>, double> BuildFormula(Operation operation,
+        public Func<IDictionary<string, double>, double> BuildFormula(Operation operation,
             IFunctionRegistry functionRegistry)
         {
             Func<FormulaContext, double> func = BuildFormulaInternal(operation, functionRegistry);
@@ -263,7 +263,7 @@ namespace Jace.Execution
             else if (operation.GetType() == typeof(Variable))
             {
                 Type contextType = typeof(FormulaContext);
-                Type dictionaryType = typeof(Dictionary<string, double>);
+                Type dictionaryType = typeof(IDictionary<string, double>);
 
                 Variable variable = (Variable)operation;
 

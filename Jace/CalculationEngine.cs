@@ -20,7 +20,7 @@ namespace Jace
         private readonly IExecutor executor;
         private readonly Optimizer optimizer;
         private readonly CultureInfo cultureInfo;
-        private readonly MemoryCache<string, Func<Dictionary<string, double>, double>> executionFormulaCache;
+        private readonly MemoryCache<string, Func<IDictionary<string, double>, double>> executionFormulaCache;
         private readonly bool cacheEnabled;
         private readonly bool optimizerEnabled;
 
@@ -69,7 +69,7 @@ namespace Jace
         /// <param name="optimizerEnabled">Enable or disable optimizing of formulas.</param>
         public CalculationEngine(CultureInfo cultureInfo, ExecutionMode executionMode, bool cacheEnabled, bool optimizerEnabled)
         {
-            this.executionFormulaCache = new MemoryCache<string, Func<Dictionary<string, double>, double>>();
+            this.executionFormulaCache = new MemoryCache<string, Func<IDictionary<string, double>, double>>();
             this.FunctionRegistry = new FunctionRegistry(false);
             this.ConstantRegistry = new ConstantRegistry(false);
             this.cultureInfo = cultureInfo;
@@ -102,7 +102,7 @@ namespace Jace
             return Calculate(formulaText, new Dictionary<string, double>());
         }
 
-        public double Calculate(string formulaText, Dictionary<string, double> variables)
+        public double Calculate(string formulaText, IDictionary<string, double> variables)
         {
             if (string.IsNullOrEmpty(formulaText))
                 throw new ArgumentNullException("formulaText");
@@ -110,6 +110,7 @@ namespace Jace
             if (variables == null)
                 throw new ArgumentNullException("variables");
 
+            
             variables = EngineUtil.ConvertVariableNamesToLowerCase(variables);
             VerifyVariableNames(variables);
 
@@ -119,13 +120,13 @@ namespace Jace
 
             if (IsInFormulaCache(formulaText))
             {
-                Func<Dictionary<string, double>, double> formula = executionFormulaCache[formulaText];
+                Func<IDictionary<string, double>, double> formula = executionFormulaCache[formulaText];
                 return formula(variables);
             }
             else
             {
                 Operation operation = BuildAbstractSyntaxTree(formulaText);
-                Func<Dictionary<string, double>, double> function = BuildFormula(formulaText, operation);
+                Func<IDictionary<string, double>, double> function = BuildFormula(formulaText, operation);
 
                 return function(variables);
             }
@@ -298,7 +299,7 @@ namespace Jace
                 return operation;
         }
 
-        private Func<Dictionary<string, double>, double> BuildFormula(string formulaText, Operation operation)
+        private Func<IDictionary<string, double>, double> BuildFormula(string formulaText, Operation operation)
         {
             return executionFormulaCache.GetOrAdd(formulaText, v => executor.BuildFormula(operation, this.FunctionRegistry));
         }
@@ -314,7 +315,7 @@ namespace Jace
         /// If an invalid variable is detected an exception is thrown.
         /// </summary>
         /// <param name="variables">The colletion of variables that must be verified.</param>
-        private void VerifyVariableNames(Dictionary<string, double> variables)
+        private void VerifyVariableNames(IDictionary<string, double> variables)
         {
             foreach (string variableName in variables.Keys)
             {

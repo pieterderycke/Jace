@@ -9,7 +9,7 @@ namespace Jace.Execution
 {
     public class Interpreter : IExecutor
     {
-        public Func<Dictionary<string, double>, double> BuildFormula(Operation operation, 
+        public Func<IDictionary<string, double>, double> BuildFormula(Operation operation, 
             IFunctionRegistry functionRegistry)
         { 
             return variables =>
@@ -25,7 +25,7 @@ namespace Jace.Execution
         }
 
         public double Execute(Operation operation, IFunctionRegistry functionRegistry, 
-            Dictionary<string, double> variables)
+            IDictionary<string, double> variables)
         {
             if (operation == null)
                 throw new ArgumentNullException("operation");

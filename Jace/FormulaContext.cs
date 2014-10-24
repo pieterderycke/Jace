@@ -8,14 +8,14 @@ namespace Jace
 {
     public class FormulaContext
     {
-        public FormulaContext(Dictionary<string, double> variables,
+        public FormulaContext(IDictionary<string, double> variables,
             IFunctionRegistry functionRegistry)
         {
             this.Variables = variables;
             this.FunctionRegistry = functionRegistry;
         }
 
-        public Dictionary<string, double> Variables { get; private set; }
+        public IDictionary<string, double> Variables { get; private set; }
 
         public IFunctionRegistry FunctionRegistry { get; private set; }
     }

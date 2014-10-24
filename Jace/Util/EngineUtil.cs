@@ -10,7 +10,7 @@ namespace Jace.Util
     /// </summary>
     internal  static class EngineUtil
     {
-        static internal Dictionary<string, double> ConvertVariableNamesToLowerCase(Dictionary<string, double> variables)
+        static internal IDictionary<string, double> ConvertVariableNamesToLowerCase(IDictionary<string, double> variables)
         {
             Dictionary<string, double> temp = new Dictionary<string, double>();
             foreach (KeyValuePair<string, double> keyValuePair in variables)
