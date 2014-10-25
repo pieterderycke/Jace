@@ -43,8 +43,12 @@ namespace Jace.Execution
             else if (operation.GetType() == typeof(Variable))
             {
                 Variable variable = (Variable)operation;
-                if (variables.ContainsKey(variable.Name))
-                    return variables[variable.Name];
+
+                double value;
+                bool variableFound = variables.TryGetValue(variable.Name, out value);
+
+                if (variableFound)
+                    return value;
                 else
                     throw new VariableNotDefinedException(string.Format("The variable \"{0}\" used is not defined.", variable.Name));
             }
