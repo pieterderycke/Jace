@@ -268,10 +268,12 @@ namespace Jace.Execution
                 Variable variable = (Variable)operation;
 
                 Expression getVariables = Expression.Property(contextParameter, "Variables");
+                ParameterExpression value = Expression.Variable(typeof(double), "value");
 
-                Expression isInDictionaryExpression = Expression.Call(getVariables, 
-                    dictionaryType.GetRuntimeMethod("ContainsKey", new Type[] { typeof(string) }),
-                    Expression.Constant(variable.Name));
+                Expression variableFound = Expression.Call(getVariables,
+                    dictionaryType.GetRuntimeMethod("TryGetValue", new Type[] { typeof(string), typeof(double).MakeByRefType() }),
+                    Expression.Constant(variable.Name),
+                    value);
 
                 Expression throwException = Expression.Throw(
                     Expression.New(typeof(VariableNotDefinedException).GetConstructor(new Type[] { typeof(string) }),
@@ -280,11 +282,10 @@ namespace Jace.Execution
                 LabelTarget returnLabel = Expression.Label(typeof(double));
 
                 return Expression.Block(
+                    new[] { value },
                     Expression.IfThenElse(
-                        isInDictionaryExpression,
-                        Expression.Return(returnLabel, Expression.Call(getVariables, 
-                            dictionaryType.GetRuntimeMethod("get_Item", new Type[] { typeof(string) }), 
-                            Expression.Constant(variable.Name))),
+                        variableFound,
+                        Expression.Return(returnLabel, value),
                         throwException
                     ),
                     Expression.Label(returnLabel, Expression.Constant(0.0))
