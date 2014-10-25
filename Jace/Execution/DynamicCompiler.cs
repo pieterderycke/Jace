@@ -90,15 +90,13 @@ namespace Jace.Execution
                 generator.Emit(OpCodes.Ldarg_0);
                 generator.Emit(OpCodes.Callvirt, typeof(FormulaContext).GetProperty("Variables").GetGetMethod());
                 generator.Emit(OpCodes.Ldstr, variable.Name);
-                generator.Emit(OpCodes.Callvirt, dictionaryType.GetMethod("ContainsKey", new Type[] { typeof(string) }));
+                generator.Emit(OpCodes.Ldloca_S);
+                generator.Emit(OpCodes.Callvirt, dictionaryType.GetMethod("TryGetValue", new Type[] { typeof(string), typeof(double).MakeByRefType() }));
                 generator.Emit(OpCodes.Ldc_I4_0);
                 generator.Emit(OpCodes.Ceq);
                 generator.Emit(OpCodes.Brtrue_S, throwExceptionLabel);
 
-                generator.Emit(OpCodes.Ldarg_0);
-                generator.Emit(OpCodes.Callvirt, typeof(FormulaContext).GetProperty("Variables").GetGetMethod());
-                generator.Emit(OpCodes.Ldstr, variable.Name);
-                generator.Emit(OpCodes.Callvirt, dictionaryType.GetMethod("get_Item", new Type[] { typeof(string) }));
+                generator.Emit(OpCodes.Ldloc_0);
                 generator.Emit(OpCodes.Br_S, returnLabel);
 
                 generator.MarkLabel(throwExceptionLabel);
