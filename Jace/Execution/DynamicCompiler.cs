@@ -90,7 +90,7 @@ namespace Jace.Execution
                 generator.Emit(OpCodes.Ldarg_0);
                 generator.Emit(OpCodes.Callvirt, typeof(FormulaContext).GetProperty("Variables").GetGetMethod());
                 generator.Emit(OpCodes.Ldstr, variable.Name);
-                generator.Emit(OpCodes.Ldloca_S);
+                generator.Emit(OpCodes.Ldloca_S, (byte)0);
                 generator.Emit(OpCodes.Callvirt, dictionaryType.GetMethod("TryGetValue", new Type[] { typeof(string), typeof(double).MakeByRefType() }));
                 generator.Emit(OpCodes.Ldc_I4_0);
                 generator.Emit(OpCodes.Ceq);
