@@ -429,11 +429,20 @@ namespace Jace.Tests
         }
 
         [TestMethod]
-        public void TestExpressionArguments()
+        public void TestExpressionArguments1()
         {
             CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture);
 
             double result = engine.Calculate("ifless(0.57, (3000-500)/(1500-500), 10, 20)");
+            Assert.AreEqual(10, result);
+        }
+
+        [TestMethod]
+        public void TestExpressionArguments2()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture);
+
+            double result = engine.Calculate("if(0.57 < (3000-500)/(1500-500), 10, 20)");
             Assert.AreEqual(10, result);
         }
 
