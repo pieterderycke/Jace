@@ -161,6 +161,108 @@ namespace Jace.Execution
 
                 generator.Emit(OpCodes.Neg);
             }
+            else if (operation.GetType() == typeof(LessThan))
+            {
+                LessThan lessThan = (LessThan)operation;
+
+                Label ifLabel = generator.DefineLabel();
+                Label endLabel = generator.DefineLabel();
+
+                GenerateMethodBody(generator, lessThan.Argument1, functionRegistry);
+                GenerateMethodBody(generator, lessThan.Argument2, functionRegistry);
+
+                generator.Emit(OpCodes.Blt_S, ifLabel);
+                generator.Emit(OpCodes.Ldc_R8, 0.0);
+                generator.Emit(OpCodes.Br_S, endLabel);
+                generator.MarkLabel(ifLabel);
+                generator.Emit(OpCodes.Ldc_R8, 1.0);
+                generator.MarkLabel(endLabel);
+            }
+            else if (operation.GetType() == typeof(LessOrEqualThan))
+            {
+                LessOrEqualThan lessOrEqualThan = (LessOrEqualThan)operation;
+
+                Label ifLabel = generator.DefineLabel();
+                Label endLabel = generator.DefineLabel();
+
+                GenerateMethodBody(generator, lessOrEqualThan.Argument1, functionRegistry);
+                GenerateMethodBody(generator, lessOrEqualThan.Argument2, functionRegistry);
+
+                generator.Emit(OpCodes.Ble_S, ifLabel);
+                generator.Emit(OpCodes.Ldc_R8, 0.0);
+                generator.Emit(OpCodes.Br_S, endLabel);
+                generator.MarkLabel(ifLabel);
+                generator.Emit(OpCodes.Ldc_R8, 1.0);
+                generator.MarkLabel(endLabel);
+            }
+            else if (operation.GetType() == typeof(GreaterThan))
+            {
+                GreaterThan greaterThan = (GreaterThan)operation;
+
+                Label ifLabel = generator.DefineLabel();
+                Label endLabel = generator.DefineLabel();
+
+                GenerateMethodBody(generator, greaterThan.Argument1, functionRegistry);
+                GenerateMethodBody(generator, greaterThan.Argument2, functionRegistry);
+
+                generator.Emit(OpCodes.Bgt_S, ifLabel);
+                generator.Emit(OpCodes.Ldc_R8, 0.0);
+                generator.Emit(OpCodes.Br_S, endLabel);
+                generator.MarkLabel(ifLabel);
+                generator.Emit(OpCodes.Ldc_R8, 1.0);
+                generator.MarkLabel(endLabel);
+            }
+            else if (operation.GetType() == typeof(GreaterOrEqualThan))
+            {
+                GreaterOrEqualThan greaterOrEqualThan = (GreaterOrEqualThan)operation;
+
+                Label ifLabel = generator.DefineLabel();
+                Label endLabel = generator.DefineLabel();
+
+                GenerateMethodBody(generator, greaterOrEqualThan.Argument1, functionRegistry);
+                GenerateMethodBody(generator, greaterOrEqualThan.Argument2, functionRegistry);
+
+                generator.Emit(OpCodes.Bge_S, ifLabel);
+                generator.Emit(OpCodes.Ldc_R8, 0.0);
+                generator.Emit(OpCodes.Br_S, endLabel);
+                generator.MarkLabel(ifLabel);
+                generator.Emit(OpCodes.Ldc_R8, 1.0);
+                generator.MarkLabel(endLabel);
+            }
+            else if (operation.GetType() == typeof(Equal))
+            {
+                Equal equal = (Equal)operation;
+
+                Label ifLabel = generator.DefineLabel();
+                Label endLabel = generator.DefineLabel();
+
+                GenerateMethodBody(generator, equal.Argument1, functionRegistry);
+                GenerateMethodBody(generator, equal.Argument2, functionRegistry);
+
+                generator.Emit(OpCodes.Beq_S, ifLabel);
+                generator.Emit(OpCodes.Ldc_R8, 0.0);
+                generator.Emit(OpCodes.Br_S, endLabel);
+                generator.MarkLabel(ifLabel);
+                generator.Emit(OpCodes.Ldc_R8, 1.0);
+                generator.MarkLabel(endLabel);
+            }
+            else if (operation.GetType() == typeof(NotEqual))
+            {
+                NotEqual notEqual = (NotEqual)operation;
+
+                Label ifLabel = generator.DefineLabel();
+                Label endLabel = generator.DefineLabel();
+
+                GenerateMethodBody(generator, notEqual.Argument1, functionRegistry);
+                GenerateMethodBody(generator, notEqual.Argument2, functionRegistry);
+
+                generator.Emit(OpCodes.Beq, ifLabel);
+                generator.Emit(OpCodes.Ldc_R8, 1.0);
+                generator.Emit(OpCodes.Br_S, endLabel);
+                generator.MarkLabel(ifLabel);
+                generator.Emit(OpCodes.Ldc_R8, 0.0);
+                generator.MarkLabel(endLabel);
+            }
             else if (operation.GetType() == typeof(Function))
             {
                 Function function = (Function)operation;
@@ -342,6 +444,66 @@ namespace Jace.Execution
                 UnaryMinus unaryMinus = (UnaryMinus)operation;
                 Expression argument = GenerateMethodBody(unaryMinus.Argument, contextParameter, functionRegistry);
                 return Expression.Negate(argument);
+            }
+            else if (operation.GetType() == typeof(LessThan))
+            {
+                LessThan lessThan = (LessThan)operation;
+                Expression argument1 = GenerateMethodBody(lessThan.Argument1, contextParameter, functionRegistry);
+                Expression argument2 = GenerateMethodBody(lessThan.Argument2, contextParameter, functionRegistry);
+
+                return Expression.Condition(Expression.LessThan(argument1, argument2),
+                    Expression.Constant(1.0),
+                    Expression.Constant(0.0));
+            }
+            else if (operation.GetType() == typeof(LessOrEqualThan))
+            {
+                LessOrEqualThan lessOrEqualThan = (LessOrEqualThan)operation;
+                Expression argument1 = GenerateMethodBody(lessOrEqualThan.Argument1, contextParameter, functionRegistry);
+                Expression argument2 = GenerateMethodBody(lessOrEqualThan.Argument2, contextParameter, functionRegistry);
+
+                return Expression.Condition(Expression.LessThanOrEqual(argument1, argument2),
+                    Expression.Constant(1.0),
+                    Expression.Constant(0.0));
+            }
+            else if (operation.GetType() == typeof(GreaterThan))
+            {
+                GreaterThan greaterThan = (GreaterThan)operation;
+                Expression argument1 = GenerateMethodBody(greaterThan.Argument1, contextParameter, functionRegistry);
+                Expression argument2 = GenerateMethodBody(greaterThan.Argument2, contextParameter, functionRegistry);
+
+                return Expression.Condition(Expression.GreaterThan(argument1, argument2),
+                    Expression.Constant(1.0),
+                    Expression.Constant(0.0));
+            }
+            else if (operation.GetType() == typeof(GreaterOrEqualThan))
+            {
+                GreaterOrEqualThan greaterOrEqualThan = (GreaterOrEqualThan)operation;
+                Expression argument1 = GenerateMethodBody(greaterOrEqualThan.Argument1, contextParameter, functionRegistry);
+                Expression argument2 = GenerateMethodBody(greaterOrEqualThan.Argument2, contextParameter, functionRegistry);
+
+                return Expression.Condition(Expression.GreaterThanOrEqual(argument1, argument2),
+                    Expression.Constant(1.0),
+                    Expression.Constant(0.0));
+            }
+            else if (operation.GetType() == typeof(Equal))
+            {
+                Equal equal = (Equal)operation;
+                Expression argument1 = GenerateMethodBody(equal.Argument1, contextParameter, functionRegistry);
+                Expression argument2 = GenerateMethodBody(equal.Argument2, contextParameter, functionRegistry);
+
+                return Expression.Condition(Expression.Equal(argument1, argument2),
+                    Expression.Constant(1.0),
+                    Expression.Constant(0.0));
+            }
+            else if (operation.GetType() == typeof(NotEqual))
+            {
+                NotEqual notEqual = (NotEqual)operation;
+                Expression argument1 = GenerateMethodBody(notEqual.Argument1, contextParameter, functionRegistry);
+                Expression argument2 = GenerateMethodBody(notEqual.Argument2, contextParameter, functionRegistry);
+
+                return Expression.Condition(Expression.NotEqual(argument1, argument2),
+                    Expression.Constant(1.0),
+                    Expression.Constant(0.0));
             }
             else if (operation.GetType() == typeof(Function))
             {

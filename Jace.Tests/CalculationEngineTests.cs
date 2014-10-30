@@ -483,5 +483,200 @@ namespace Jace.Tests
 
             double result = engine.Calculate("var1+2/(3*otherVariablE)", variables);
         }
+
+        [TestMethod]
+        public void TestLessThanInterpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("var1", 2);
+            variables.Add("var2", 4.2);
+
+            double result = engine.Calculate("var1 < var2", variables);
+            Assert.AreEqual(1.0, result);
+        }
+
+        [TestMethod]
+        public void TestLessThanCompiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);
+
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("var1", 2);
+            variables.Add("var2", 4.2);
+
+            double result = engine.Calculate("var1 < var2", variables);
+            Assert.AreEqual(1.0, result);
+        }
+
+        [TestMethod]
+        public void TestLessOrEqualThan1Interpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("var1", 2);
+            variables.Add("var2", 2);
+
+            double result = engine.Calculate("var1 <= var2", variables);
+            Assert.AreEqual(1.0, result);
+        }
+
+        [TestMethod]
+        public void TestLessOrEqualThan1Compiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);
+
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("var1", 2);
+            variables.Add("var2", 2);
+
+            double result = engine.Calculate("var1 <= var2", variables);
+            Assert.AreEqual(1.0, result);
+        }
+
+        [TestMethod]
+        public void TestLessOrEqualThan2Interpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("var1", 2);
+            variables.Add("var2", 2);
+
+            double result = engine.Calculate("var1 ≤ var2", variables);
+            Assert.AreEqual(1.0, result);
+        }
+
+        [TestMethod]
+        public void TestLessOrEqualThan2Compiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);
+
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("var1", 2);
+            variables.Add("var2", 2);
+
+            double result = engine.Calculate("var1 ≤ var2", variables);
+            Assert.AreEqual(1.0, result);
+        }
+
+        [TestMethod]
+        public void TestGreaterThan1Interpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("var1", 2);
+            variables.Add("var2", 3);
+
+            double result = engine.Calculate("var1 > var2", variables);
+            Assert.AreEqual(0.0, result);
+        }
+
+        [TestMethod]
+        public void TestGreaterThan1Compiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);
+
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("var1", 2);
+            variables.Add("var2", 3);
+
+            double result = engine.Calculate("var1 > var2", variables);
+            Assert.AreEqual(0.0, result);
+        }
+
+        [TestMethod]
+        public void TestGreaterOrEqualThan1Interpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("var1", 2);
+            variables.Add("var2", 2);
+
+            double result = engine.Calculate("var1 >= var2", variables);
+            Assert.AreEqual(1.0, result);
+        }
+
+        [TestMethod]
+        public void TestGreaterOrEqualThan1Compiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);
+
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("var1", 2);
+            variables.Add("var2", 2);
+
+            double result = engine.Calculate("var1 >= var2", variables);
+            Assert.AreEqual(1.0, result);
+        }
+
+        [TestMethod]
+        public void TestNotEqual1Interpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("var1", 2);
+            variables.Add("var2", 2);
+
+            double result = engine.Calculate("var1 != 2", variables);
+            Assert.AreEqual(0.0, result);
+        }
+
+        [TestMethod]
+        public void TestNotEqual2Interpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("var1", 2);
+            variables.Add("var2", 2);
+
+            double result = engine.Calculate("var1 ≠ 2", variables);
+            Assert.AreEqual(0.0, result);
+        }
+
+        [TestMethod]
+        public void TestNotEqual2Compiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);
+
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("var1", 2);
+            variables.Add("var2", 2);
+
+            double result = engine.Calculate("var1 ≠ 2", variables);
+            Assert.AreEqual(0.0, result);
+        }
+
+        [TestMethod]
+        public void TestEqualInterpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("var1", 2);
+            variables.Add("var2", 2);
+
+            double result = engine.Calculate("var1 == 2", variables);
+            Assert.AreEqual(1.0, result);
+        }
+
+        [TestMethod]
+        public void TestEqualCompiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);
+
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("var1", 2);
+            variables.Add("var2", 2);
+
+            double result = engine.Calculate("var1 == 2", variables);
+            Assert.AreEqual(1.0, result);
+        }
     }
 }

@@ -24,7 +24,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT;WINDOWS_PHONE_8</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -140,17 +140,35 @@
     <Compile Include="..\Jace\Operations\Division.cs">
       <Link>Operations\Division.cs</Link>
     </Compile>
+    <Compile Include="..\Jace\Operations\Equal.cs">
+      <Link>Operations\Equal.cs</Link>
+    </Compile>
     <Compile Include="..\Jace\Operations\Exponentiation.cs">
       <Link>Operations\Exponentiation.cs</Link>
     </Compile>
     <Compile Include="..\Jace\Operations\Function.cs">
       <Link>Operations\Function.cs</Link>
     </Compile>
+    <Compile Include="..\Jace\Operations\GreaterOrEqualThan.cs">
+      <Link>Operations\GreaterOrEqualThan.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\Operations\GreaterThan.cs">
+      <Link>Operations\GreaterThan.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\Operations\LessOrEqualThan.cs">
+      <Link>Operations\LessOrEqualThan.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\Operations\LessThan.cs">
+      <Link>Operations\LessThan.cs</Link>
+    </Compile>
     <Compile Include="..\Jace\Operations\Modulo.cs">
       <Link>Operations\Modulo.cs</Link>
     </Compile>
     <Compile Include="..\Jace\Operations\Multiplication.cs">
       <Link>Operations\Multiplication.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\Operations\NotEqual.cs">
+      <Link>Operations\NotEqual.cs</Link>
     </Compile>
     <Compile Include="..\Jace\Operations\Operation.cs">
       <Link>Operations\Operation.cs</Link>
@@ -172,9 +190,6 @@
     </Compile>
     <Compile Include="..\Jace\Tokenizer\Token.cs">
       <Link>Tokenizer\Token.cs</Link>
-    </Compile>
-    <Compile Include="..\Jace\Tokenizer\TokenizerException.cs">
-      <Link>Tokenizer\TokenizerException.cs</Link>
     </Compile>
     <Compile Include="..\Jace\Tokenizer\TokenReader.cs">
       <Link>Tokenizer\TokenReader.cs</Link>
