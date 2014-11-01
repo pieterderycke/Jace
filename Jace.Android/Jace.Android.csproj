@@ -141,9 +141,6 @@
     <Compile Include="..\Jace\Tokenizer\Token.cs">
       <Link>Tokenizer\Token.cs</Link>
     </Compile>
-    <Compile Include="..\Jace\Tokenizer\TokenizerException.cs">
-      <Link>Tokenizer\TokenizerException.cs</Link>
-    </Compile>
     <Compile Include="..\Jace\Tokenizer\TokenReader.cs">
       <Link>Tokenizer\TokenReader.cs</Link>
     </Compile>
@@ -167,6 +164,24 @@
     </Compile>
     <Compile Include="..\Jace\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\Operations\Equal.cs">
+      <Link>Operations\Equal.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\Operations\GreaterOrEqualThan.cs">
+      <Link>Operations\GreaterOrEqualThan.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\Operations\GreaterThan.cs">
+      <Link>Operations\GreaterThan.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\Operations\LessOrEqualThan.cs">
+      <Link>Operations\LessOrEqualThan.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\Operations\LessThan.cs">
+      <Link>Operations\LessThan.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace\Operations\NotEqual.cs">
+      <Link>Operations\NotEqual.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>
