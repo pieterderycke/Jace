@@ -1,4 +1,6 @@
 # Jace.NET
+[![Build status](https://ci.appveyor.com/api/projects/status/0qas60k4tlhi2b1d/branch/master?svg=true)](https://ci.appveyor.com/project/pieterderycke/jace/branch/master)
+
 Jace.NET is a high performance calculation engine for the .NET platform. It stands for "Just Another Calculation Engine".
 
 ## What does it do?
