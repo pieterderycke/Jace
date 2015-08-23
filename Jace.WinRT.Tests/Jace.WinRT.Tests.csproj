@@ -167,9 +167,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Jace.WinRT\Jace.WinRT.csproj">
+    <ProjectReference Include="..\Jace.Portable\Jace.Portable.csproj">
       <Project>{67d42170-0122-4b05-9fa9-191fc44e7c95}</Project>
-      <Name>Jace.WinRT</Name>
+      <Name>Jace.Portable</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
