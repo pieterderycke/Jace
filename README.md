@@ -2,8 +2,8 @@
 Jace.NET is a high performance calculation engine for the .NET platform. It stands for "Just Another Calculation Engine".
 
 ## Build Status
-* __Master:__ [![Build status](https://ci.appveyor.com/api/projects/status/0qas60k4tlhi2b1d/branch/master?svg=true)](https://ci.appveyor.com/project/pieterderycke/jace/branch/master)
-* __Dev:__ [![Build status](https://ci.appveyor.com/api/projects/status/0qas60k4tlhi2b1d/branch/dev?svg=true)](https://ci.appveyor.com/project/pieterderycke/jace/branch/dev)
+* [![Build status](https://ci.appveyor.com/api/projects/status/0qas60k4tlhi2b1d/branch/master?svg=true)](https://ci.appveyor.com/project/pieterderycke/jace/branch/master) (master)
+* [![Build status](https://ci.appveyor.com/api/projects/status/0qas60k4tlhi2b1d/branch/dev?svg=true)](https://ci.appveyor.com/project/pieterderycke/jace/branch/dev) (dev)
 
 ## What does it do?
 Jace.NET can interprete and execute strings containing mathematical formulas. These formulas can rely on variables. If variables are used, values can be provided for these variables at execution time of the mathematical formula.
