@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
-#if !WINDOWS_PHONE_8 && !WINDOWS_PHONE_7
 using System.Collections.Concurrent;
 using System.Threading;
-#endif
 
 namespace Jace.Util
 {
@@ -26,12 +23,7 @@ namespace Jace.Util
 
         private long counter; // We cannot use DateTime.Now, because the precission is not high enough.
 
-#if WINDOWS_PHONE_8 || WINDOWS_PHONE_7
-        private readonly Dictionary<TKey, CacheItem> dictionary;
-        private readonly Object counterLock = new Object();
-#else
         private readonly ConcurrentDictionary<TKey, CacheItem> dictionary;
-#endif
 
         /// <summary>
         /// Create a new instance of the <see cref="MemoryCache"/>.
@@ -59,11 +51,7 @@ namespace Jace.Util
             this.maximumSize = maximumSize;
             this.reductionSize = reductionSize;
 
-#if WINDOWS_PHONE_8 || WINDOWS_PHONE_7
-            this.dictionary = new Dictionary<TKey, CacheItem>();
-#else
             this.dictionary = new ConcurrentDictionary<TKey, CacheItem>();
-#endif
         }
 
         /// <summary>
@@ -116,24 +104,6 @@ namespace Jace.Util
             if (valueFactory == null)
                 throw new ArgumentNullException("valueFactory");
 
-#if WINDOWS_PHONE_8 || WINDOWS_PHONE_7
-            lock (dictionary)
-            {
-                if (dictionary.ContainsKey(key))
-                {
-                    CacheItem cacheItem = dictionary[key];
-                    return cacheItem.Value;
-                }
-                else
-                {
-                    EnsureCacheStorageAvailable();
-
-                    TValue value = valueFactory(key);
-                    dictionary.Add(key, new CacheItem(this, value));
-                    return value;
-                }
-            }
-#else
             CacheItem cacheItem = dictionary.GetOrAdd(key, k => 
                 {
                     EnsureCacheStorageAvailable();
@@ -142,7 +112,6 @@ namespace Jace.Util
                     return new CacheItem(this, valueFactory(k));
                 });
             return cacheItem.Value;
-#endif
         }
 
         /// <summary>
@@ -161,12 +130,8 @@ namespace Jace.Util
 
                 foreach (TKey key in keysToDelete)
                 {
-#if WINDOWS_PHONE_8 || WINDOWS_PHONE_7
-                    dictionary.Remove(key);
-#else
                     CacheItem cacheItem;
                     dictionary.TryRemove(key, out cacheItem);
-#endif
                 }
             }
         }
@@ -189,14 +154,7 @@ namespace Jace.Util
 
             public void Accessed()
             {
-#if WINDOWS_PHONE_8 || WINDOWS_PHONE_7
-                lock(cache.counterLock)
-                {
-                    this.LastAccessed = cache.counter++;
-                }
-#else
                 this.LastAccessed = Interlocked.Increment(ref cache.counter);
-#endif
             }
         }
     }
