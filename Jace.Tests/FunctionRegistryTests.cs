@@ -61,5 +61,17 @@ namespace Jace.Tests
                     registry.RegisterFunction("test", testFunction2, false);
                 });
         }
+
+        [TestMethod]
+        public void TestRemoveFunc()
+        {
+            FunctionRegistry registry = new FunctionRegistry(false);
+
+            Func<double, double, double> testFunction = (a, b) => a * b;
+            registry.RegisterFunction("test", testFunction);
+            bool result = registry.UnregisterFunction("test");
+
+            Assert.IsTrue(result);
+        }
     }
 }
