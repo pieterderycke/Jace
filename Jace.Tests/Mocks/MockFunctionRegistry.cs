@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,16 @@ namespace Jace.Tests.Mocks
         public MockFunctionRegistry(IEnumerable<string> functionNames)
         {
             this.functionNames = new HashSet<string>(functionNames);
+        }
+
+        public IEnumerator<FunctionInfo> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
 
         public FunctionInfo GetFunctionInfo(string functionName)

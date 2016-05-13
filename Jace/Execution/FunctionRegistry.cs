@@ -1,8 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Reflection;
 
 namespace Jace.Execution
 {
@@ -15,6 +14,16 @@ namespace Jace.Execution
         {
             this.caseSensitive = caseSensitive;
             this.functions = new Dictionary<string, FunctionInfo>();
+        }
+
+        public IEnumerator<FunctionInfo> GetEnumerator()
+        {
+            return functions.Select(p => p.Value).ToList().GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
 
         public FunctionInfo GetFunctionInfo(string functionName)
