@@ -88,6 +88,16 @@ namespace Jace.Execution
             return functions.ContainsKey(ConvertFunctionName(functionName));
         }
 
+        public bool UnregisterFunction(string functionName)
+        {
+            if (string.IsNullOrEmpty(functionName))
+                throw new ArgumentNullException("functionName");
+
+            functionName = ConvertFunctionName(functionName);
+
+            return this.functions.Remove(functionName);
+        }
+
         private string ConvertFunctionName(string functionName)
         {
             return caseSensitive ? functionName : functionName.ToLowerInvariant();

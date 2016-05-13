@@ -161,6 +161,7 @@ namespace Jace
             }
         }
 
+        #region Functions & constants
         /// <summary>
         /// Add a function to the calculation engine.
         /// </summary>
@@ -211,6 +212,16 @@ namespace Jace
             FunctionRegistry.RegisterFunction(functionName, function);
         }
 
+        /// <summary>
+        /// Remove a function from the calculation engine.
+        /// </summary>
+        /// <param name="functionName">The name of the function</param>
+        /// <returns>TRUE if the function was successfully removed.</returns>
+        public bool RemoveFunction(string functionName)
+        {
+            return FunctionRegistry.UnregisterFunction(functionName);
+        }
+
 #if !WINDOWS_PHONE_7
         /// <summary>
         /// Add a function to the calculation engine.
@@ -241,6 +252,16 @@ namespace Jace
         public void AddConstant(string constantName, double value)
         {
             ConstantRegistry.RegisterConstant(constantName, value);
+        }
+
+        /// <summary>
+        /// Remove a constant from the calculation engine.
+        /// </summary>
+        /// <param name="constantName">The name of the constant</param>
+        /// <returns>TRUE if the constant was successfully removed.</returns>
+        public bool RemoveConstant(string constantName)
+        {
+            return ConstantRegistry.UnregisterConstant(constantName);
         }
 
         private void RegisterDefaultFunctions()
@@ -278,6 +299,7 @@ namespace Jace
             ConstantRegistry.RegisterConstant("e", Math.E, false);
             ConstantRegistry.RegisterConstant("pi", Math.PI, false);
         }
+        #endregion
 
         /// <summary>
         /// Build the abstract syntax tree for a given formula. The formula string will
