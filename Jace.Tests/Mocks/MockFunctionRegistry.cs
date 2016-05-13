@@ -44,5 +44,10 @@ namespace Jace.Tests.Mocks
         {
             throw new NotImplementedException();
         }
+
+        public bool UnregisterFunction(string functionName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

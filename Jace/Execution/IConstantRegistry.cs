@@ -11,5 +11,6 @@ namespace Jace.Execution
         bool IsConstantName(string constantName);
         void RegisterConstant(string constantName, double value);
         void RegisterConstant(string constantName, double value, bool isOverWritable);
+        bool UnregisterConstant(string constantName);
     }
 }

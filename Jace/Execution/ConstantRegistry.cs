@@ -70,6 +70,16 @@ namespace Jace.Execution
                 constants.Add(constantName, constantInfo);
         }
 
+        public bool UnregisterConstant(string constantName)
+        {
+            if (string.IsNullOrEmpty(constantName))
+                throw new ArgumentNullException("constantName");
+
+            constantName = ConvertConstantName(constantName);
+
+            return this.constants.Remove(constantName);
+        }
+
         private string ConvertConstantName(string constantName)
         {
             return caseSensitive ? constantName : constantName.ToLowerInvariant();

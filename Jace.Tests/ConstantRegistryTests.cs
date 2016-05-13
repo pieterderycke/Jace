@@ -54,5 +54,16 @@ namespace Jace.Tests
                     registry.RegisterConstant("test", 26.3, false);
                 });
         }
+
+        [TestMethod]
+        public void TestRemoveConstant()
+        {
+            ConstantRegistry registry = new ConstantRegistry(false);
+
+            registry.RegisterConstant("test", 42.0);
+            bool result = registry.UnregisterConstant("test");
+
+            Assert.IsTrue(result);
+        }
     }
 }
