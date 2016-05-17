@@ -18,6 +18,9 @@ namespace Jace
 
         public AstBuilder(IFunctionRegistry functionRegistry)
         {
+            if (functionRegistry == null)
+                throw new ArgumentNullException("functionRegistry");
+
             this.functionRegistry = functionRegistry;
 
             operationPrecedence.Add('(', 0);
