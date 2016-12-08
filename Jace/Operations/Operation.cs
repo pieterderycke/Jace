@@ -15,6 +15,6 @@ namespace Jace.Operations
 
         public DataType DataType { get; private set; }
 
-        public bool DependsOnVariables { get; private set; }
+        public bool DependsOnVariables { get; set; }
     }
 }
