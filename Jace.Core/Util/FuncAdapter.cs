@@ -61,7 +61,7 @@ namespace Jace.Util
         //    assemblyBuilder.Save(@"test.dll");
         //}
 
-#if !NETFX_CORE
+#if !NETFX_CORE && !NETCORE
         private Delegate GenerateDelegate(Jace.Execution.ParameterInfo[] parameterArray,
             Func<Dictionary<string, double>, double> function)
         {

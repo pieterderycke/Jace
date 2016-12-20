@@ -60,7 +60,7 @@ namespace Jace.Execution
                 throw new Exception(message);
             }
 
-#if NETFX_CORE
+#if NETFX_CORE || NETCORE
             int numberOfParameters = function.GetMethodInfo().GetParameters().Length;
 #else
             int numberOfParameters = function.Method.GetParameters().Length;
