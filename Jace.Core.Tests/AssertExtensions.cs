@@ -7,6 +7,8 @@ using System.Text;
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #elif __ANDROID__
 using NUnit.Framework;
+#elif NETCORE
+using Xunit;
 #else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #endif
@@ -20,8 +22,9 @@ namespace Jace.Tests
             try
             {
                 action();
-
+#if !NETCORE
                 Assert.Fail("An exception of type \"{0}\" was expected, but no exception was thrown.", typeof(T).FullName);
+#endif
                 return null;
             }
             catch (T ex)
@@ -30,8 +33,10 @@ namespace Jace.Tests
             }
             catch (Exception ex)
             {
+#if !NETCORE
                 Assert.Fail("An exception of type \"{0}\" was expected, but instead an exception of type \"{1}\" was thrown.",
                     typeof(T).FullName, ex.GetType().FullName);
+#endif
                 return null;
             }
         }

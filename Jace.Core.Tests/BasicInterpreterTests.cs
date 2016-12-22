@@ -12,16 +12,24 @@ using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 using NUnit.Framework;
 using TestClass = NUnit.Framework.TestFixtureAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
+#elif NETCORE
+using Xunit;
 #else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #endif
 
 namespace Jace.Tests
 {
+#if !NETCORE
     [TestClass]
+#endif
     public class BasicInterpreterTests
     {
+#if !NETCORE
         [TestMethod]
+#else
+        [Fact]
+#endif
         public void TestBasicInterpreterSubstraction()
         {
             IFunctionRegistry functionRegistry = new MockFunctionRegistry();
@@ -31,11 +39,18 @@ namespace Jace.Tests
                 DataType.Integer,
                 new IntegerConstant(6),
                 new IntegerConstant(9)), functionRegistry);
-
+#if !NETCORE
             Assert.AreEqual(-3.0, result);
+#else
+            Assert.Equal(-3.0, result);
+#endif
         }
 
+#if !NETCORE
         [TestMethod]
+#else
+        [Fact]
+#endif
         public void TestBasicInterpreter1()
         {
             IFunctionRegistry functionRegistry = new MockFunctionRegistry();
@@ -50,11 +65,18 @@ namespace Jace.Tests
                         DataType.Integer, 
                         new IntegerConstant(2), 
                         new IntegerConstant(4))), functionRegistry);
-
+#if !NETCORE
             Assert.AreEqual(14.0, result);
+#else
+            Assert.Equal(14.0, result);
+#endif
         }
 
+#if !NETCORE
         [TestMethod]
+#else
+        [Fact]
+#endif
         public void TestBasicInterpreterWithVariables()
         {
             IFunctionRegistry functionRegistry = new MockFunctionRegistry();
@@ -75,8 +97,11 @@ namespace Jace.Tests
                             DataType.FloatingPoint, 
                             new IntegerConstant(3),
                             new Variable("age")))), functionRegistry, variables);
-
+#if !NETCORE
             Assert.AreEqual(26.0, result);
+#else
+            Assert.Equal(26.0, result);
+#endif
         }
     }
 }

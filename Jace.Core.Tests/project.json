@@ -1,0 +1,28 @@
+{
+    "version": "1.0.0-*",
+    "testRunner": "xunit",
+    "dependencies": {
+        "Jace.Core": "0.8.7",
+        "xunit": "2.2.0-beta4-build3444",
+        "dotnet-test-xunit": "2.2.0-preview2-build1029"
+    },
+    "frameworks": {
+        "netcoreapp1.0": {
+            "imports": [
+                "dnxcore50",
+                "dotnet5.6",
+                "portable-net45+win8"
+            ]
+        }
+    },
+    "buildOptions": {
+        "define": [ "NETCORE" ],
+        "copyToOutput": {
+            "include": [ "xunit.runner.json" ]
+        }
+    },
+    "runtimes": {
+        "win10-x64": {},
+        "win81-x64": {}
+    }
+}

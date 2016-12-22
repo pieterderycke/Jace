@@ -54,16 +54,36 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="AssertExtensions.cs" />
-    <Compile Include="AstBuilderTests.cs" />
-    <Compile Include="BasicInterpreterTests.cs" />
-    <Compile Include="CalculationEngineTests.cs" />
-    <Compile Include="ConstantRegistryTests.cs" />
-    <Compile Include="FuncAdapterTests.cs" />
-    <Compile Include="FunctionRegistryTests.cs" />
-    <Compile Include="MemoryCacheTests.cs" />
-    <Compile Include="Mocks\MockFunctionRegistry.cs" />
-    <Compile Include="TokenReaderTests.cs" />
+    <Compile Include="..\Jace.Core.Tests\AssertExtensions.cs">
+      <Link>AssertExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace.Core.Tests\AstBuilderTests.cs">
+      <Link>AstBuilderTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace.Core.Tests\BasicInterpreterTests.cs">
+      <Link>BasicInterpreterTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace.Core.Tests\CalculationEngineTests.cs">
+      <Link>CalculationEngineTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace.Core.Tests\ConstantRegistryTests.cs">
+      <Link>ConstantRegistryTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace.Core.Tests\FuncAdapterTests.cs">
+      <Link>FuncAdapterTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace.Core.Tests\FunctionRegistryTests.cs">
+      <Link>FunctionRegistryTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace.Core.Tests\MemoryCacheTests.cs">
+      <Link>MemoryCacheTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace.Core.Tests\Mocks\MockFunctionRegistry.cs">
+      <Link>Mocks\MockFunctionRegistry.cs</Link>
+    </Compile>
+    <Compile Include="..\Jace.Core.Tests\TokenReaderTests.cs">
+      <Link>TokenReaderTests.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
