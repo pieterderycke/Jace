@@ -8,3 +8,6 @@ packages/*
 !packages/repositories.config
 *.zip
 *.userprefs
+
+# Visual Studio 2015 cache/options directory
+.vs/

@@ -1,0 +1,44 @@
+{
+    "version": "0.8.7",
+
+    "buildOptions": {
+        "compile": {
+
+            "include": [
+                "../Properties/*.cs",
+                "../Execution/*.cs",
+                "../Operations/*.cs",
+                "../Tokenizer/*.cs",
+                "../Util/*.cs",
+                "../*.cs"
+            ]
+        },
+        "define": [ "NETCORE" ]
+    },
+
+    "dependencies": {
+        "NETStandard.Library": "1.6.1",
+        "System.Reflection": "4.3.0",
+        "System.Reflection.Emit": "4.3.0",
+        "System.Reflection.Emit.ILGeneration": "4.3.0",
+        "System.Reflection.Emit.Lightweight": "4.3.0",
+        "System.Reflection.Extensions": "4.3.0",
+        "System.Reflection.TypeExtensions": "4.3.0"
+    },
+
+    "frameworks": {
+        "netstandard1.6": {
+            "imports": "dnxcore50"
+        }
+    },
+    "scripts": {
+        "postcompile": [
+            "nuget delete -Verbosity detailed -noninteractive -source %USERPROFILE%\\.nuget\\packages %project:name% %project:version%",
+            "nuget delete -Verbosity detailed -noninteractive -source d:\\dev\\nuget\\packages %project:name% %project:version%",
+            "dotnet pack --no-build --configuration %compile:Configuration% -o ../../artifacts/",
+            "nuget add -Verbosity detailed -NonInteractive -source d:\\dev\\nuget\\packages  ../../artifacts/%project:name%.%project:version%.nupkg"
+        ]
+    }
+
+
+}
