@@ -102,6 +102,21 @@ namespace Jace.Util
             return dictionary.ContainsKey(key);
         }
 
+        public bool TryGetValue (TKey key, out TValue result)
+        {
+            if (dictionary.TryGetValue(key, out var cachedItem))
+            {
+                cachedItem.Accessed();
+                result = cachedItem.Value;
+                return true;
+            }
+            else
+            {
+                result = default(TValue);
+                return false;
+            }
+        }
+
         /// <summary>
         /// If for a given key an item is present in the cache, this method will return
         /// the value for the given key. If no item is present in the cache for the given
