@@ -44,11 +44,7 @@ namespace Jace.Execution
             if (!funcType.FullName.StartsWith("System.Func"))
                 throw new ArgumentException("Only System.Func delegates are permitted.", "function");
 
-#if NETFX_CORE
             foreach (Type genericArgument in funcType.GenericTypeArguments)
-#else
-            foreach (Type genericArgument in funcType.GetGenericArguments())
-#endif
                 if (genericArgument != typeof(double))
                     throw new ArgumentException("Only doubles are supported as function arguments", "function");
 
@@ -60,11 +56,7 @@ namespace Jace.Execution
                 throw new Exception(message);
             }
 
-#if NETFX_CORE
             int numberOfParameters = function.GetMethodInfo().GetParameters().Length;
-#else
-            int numberOfParameters = function.Method.GetParameters().Length;
-#endif
 
             if (functions.ContainsKey(functionName) && functions[functionName].NumberOfParameters != numberOfParameters)
             {

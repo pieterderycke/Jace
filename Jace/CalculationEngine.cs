@@ -211,7 +211,6 @@ namespace Jace
             FunctionRegistry.RegisterFunction(functionName, function);
         }
 
-#if !WINDOWS_PHONE_7
         /// <summary>
         /// Add a function to the calculation engine.
         /// </summary>
@@ -261,7 +260,6 @@ namespace Jace
         {
             FunctionRegistry.RegisterFunction(functionName, functionDelegate);
         }
-#endif
 
         /// <summary>
         /// Add a constant to the calculation engine.
@@ -298,9 +296,7 @@ namespace Jace
             FunctionRegistry.RegisterFunction("ifequal", (Func<double, double, double, double, double>)((a, b, c, d) => (a == b ? c : d)), false);
             FunctionRegistry.RegisterFunction("ceiling", (Func<double, double>)((a) => Math.Ceiling(a)), false);
             FunctionRegistry.RegisterFunction("floor", (Func<double, double>)((a) => Math.Floor(a)), false);
-#if !WINDOWS_PHONE_7
             FunctionRegistry.RegisterFunction("truncate", (Func<double, double>)((a) => Math.Truncate(a)), false);
-#endif
         }
 
         private void RegisterDefaultConstants()

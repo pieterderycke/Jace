@@ -4,19 +4,15 @@ msbuild /p:Configuration=Release Jace\Jace.csproj
 MKDIR zip\net40
 COPY Jace\bin\Release\*.dll zip\net40\
 
-msbuild /p:Configuration=Release Jace.WinRT\Jace.WinRT.csproj
+msbuild /p:Configuration=Release Jace.Portable\Jace.Portable.csproj
 MKDIR zip\windows8
-COPY Jace.WinRT\bin\Release\*.dll zip\windows8\
-
-msbuild /p:Configuration=Release Jace.WP8\Jace.WP8.csproj
+COPY Jace.Portable\bin\Release\*.dll zip\windows8\
 MKDIR zip\wp8
-COPY Jace.WP8\bin\Release\*.dll zip\wp8\
+COPY Jace.Portable\bin\Release\*.dll zip\wp8\
 MKDIR zip\wpa81
-COPY Jace.WinRT\bin\Release\*.dll zip\wpa81\
-
-msbuild /p:Configuration=Release Jace.Android\Jace.Android.csproj
+COPY Jace.Portable\bin\Release\*.dll zip\wpa81\
 MKDIR zip\xamarin.android
-COPY Jace.Android\bin\Release\*.dll zip\xamarin.android\
+COPY Jace.Portable\bin\Release\*.dll zip\xamarin.android\
 
 COPY LICENSE.md zip\
 COPY README.md zip\
