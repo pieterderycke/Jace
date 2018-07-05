@@ -24,6 +24,8 @@ namespace Jace
         private readonly bool cacheEnabled;
         private readonly bool optimizerEnabled;
 
+        public delegate double DoubleResultDelegate(params double[] values);
+
         /// <summary>
         /// Creates a new instance of the <see cref="CalculationEngine"/> class with
         /// default parameters.
@@ -118,16 +120,14 @@ namespace Jace
             foreach (ConstantInfo constant in ConstantRegistry)
                 variables.Add(constant.ConstantName, constant.Value);
 
-            if (IsInFormulaCache(formulaText))
+            if (IsInFormulaCache(formulaText, out var function))
             {
-                Func<IDictionary<string, double>, double> formula = executionFormulaCache[formulaText];
-                return formula(variables);
+                return function(variables);
             }
             else
             {
                 Operation operation = BuildAbstractSyntaxTree(formulaText);
-                Func<IDictionary<string, double>, double> function = BuildFormula(formulaText, operation);
-
+                function = BuildFormula(formulaText, operation);
                 return function(variables);
             }
         }
@@ -150,9 +150,9 @@ namespace Jace
             if (string.IsNullOrEmpty(formulaText))
                 throw new ArgumentNullException("formulaText");
 
-            if (IsInFormulaCache(formulaText))
+            if (IsInFormulaCache(formulaText, out var result))
             {
-                return executionFormulaCache[formulaText];
+                return result;
             }
             else
             {
@@ -231,6 +231,36 @@ namespace Jace
             FunctionRegistry.RegisterFunction(functionName, function);
         }
 
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double> function)
+        {
+            FunctionRegistry.RegisterFunction(functionName, function);
+        }
+
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double> function)
+        {
+            FunctionRegistry.RegisterFunction(functionName, function);
+        }
+
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double> function)
+        {
+            FunctionRegistry.RegisterFunction(functionName, function);
+        }
+
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double, double> function)
+        {
+            FunctionRegistry.RegisterFunction(functionName, function);
+        }
+
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double, double, double> function)
+        {
+            FunctionRegistry.RegisterFunction(functionName, function);
+        }
+
+        public void AddFunction(string functionName, DoubleResultDelegate functionDelegate)
+        {
+            FunctionRegistry.RegisterFunction(functionName, functionDelegate);
+        }
+
         /// <summary>
         /// Add a constant to the calculation engine.
         /// </summary>
@@ -301,9 +331,10 @@ namespace Jace
             return executionFormulaCache.GetOrAdd(formulaText, v => executor.BuildFormula(operation, this.FunctionRegistry));
         }
 
-        private bool IsInFormulaCache(string formulaText)
+        private bool IsInFormulaCache(string formulaText, out Func<IDictionary<string, double>, double> function)
         {
-            return cacheEnabled && executionFormulaCache.ContainsKey(formulaText);
+            function = null;
+            return cacheEnabled && executionFormulaCache.TryGetValue(formulaText, out function);
         }
 
         /// <summary>

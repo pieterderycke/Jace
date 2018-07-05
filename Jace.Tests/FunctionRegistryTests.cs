@@ -33,6 +33,8 @@ namespace Jace.Tests
             Assert.AreEqual("test", functionInfo.FunctionName);
             Assert.AreEqual(2, functionInfo.NumberOfParameters);
             Assert.AreEqual(testFunction, functionInfo.Function);
+
+            
         }
 
         [TestMethod]
