@@ -687,5 +687,30 @@ namespace Jace.Tests
             double result = engine.Calculate("var1 == 2", variables);
             Assert.AreEqual(1.0, result);
         }
+
+        public void TestVariableUnderscoreInterpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("var_var_1", 1);
+            variables.Add("var_var_2", 2);
+            
+            double result = engine.Calculate("var_var_1 + var_var_2", variables);
+            Assert.AreEqual(3.0, result);
+        }
+
+        [TestMethod]
+        public void TestVariableUnderscoreCompiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);
+
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("var_var_1", 1);
+            variables.Add("var_var_2", 2);
+
+            double result = engine.Calculate("var_var_1 + var_var_2", variables);
+            Assert.AreEqual(3.0, result);
+        }
     }
 }
