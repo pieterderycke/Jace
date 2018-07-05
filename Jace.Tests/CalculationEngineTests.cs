@@ -26,7 +26,7 @@ namespace Jace.Tests
         {
             CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);
             double result = engine.Calculate("2.0+3.0");
-
+            
             Assert.AreEqual(5.0, result);
         }
 
@@ -397,6 +397,34 @@ namespace Jace.Tests
 
             double result = engine.Calculate("test(2,3)");
             Assert.AreEqual(5.0, result);
+        }
+        [TestMethod]
+        public void TestManyVariablesCustomFunctionInterpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture,
+                ExecutionMode.Interpreted, false, false);
+            engine.AddFunction("test", (a, b, c, d, e, f, g, h, i, j, k) => a + b + c + d + e + f + g + h + i + j + k);
+            double result = engine.Calculate("test(1,2,3,4,5,6,7,8,9,10,11)");
+            double expected = (11 * (11 + 1)) / 2.0;
+            Assert.AreEqual(expected, result);
+        }
+
+
+        [TestMethod]
+        public void TestManyVariablesCustomFunctionInterpretedUsingDelegate()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture,
+                ExecutionMode.Interpreted, false, false);
+
+            double DoSomething(params double[] a)
+            {
+                return a.Sum();
+            }
+
+            engine.AddFunction("test", DoSomething);
+            double result = engine.Calculate("test(1,2,3,4,5,6,7,8,9,10,11)");
+            double expected = (11 * (11 + 1)) / 2.0;
+            Assert.AreEqual(expected, result);
         }
 
         [TestMethod]
