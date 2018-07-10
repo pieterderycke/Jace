@@ -8,6 +8,8 @@ namespace Jace.Execution
 {
     public class FunctionRegistry : IFunctionRegistry
     {
+        private const string DynamicFuncName = "Jace.DynamicFunc";
+
         private readonly bool caseSensitive;
         private readonly Dictionary<string, FunctionInfo> functions;
 
@@ -33,6 +35,16 @@ namespace Jace.Execution
 
         public void RegisterFunction(string functionName, Delegate function, bool isOverWritable)
         {
+            RegisterFunction(functionName, function, -1, isOverWritable);
+        }
+
+        public void RegisterFunction(string functionName, Delegate function, int numberOfParameters)
+        {
+            RegisterFunction(functionName, function, numberOfParameters, true);
+        }
+
+        public void RegisterFunction(string functionName, Delegate function, int numberOfParameters, bool isOverWritable)
+        {
             if (string.IsNullOrEmpty(functionName))
                 throw new ArgumentNullException("functionName");
 
@@ -41,12 +53,24 @@ namespace Jace.Execution
 
             Type funcType = function.GetType();
 
-            if (!funcType.FullName.StartsWith("System.Func"))
-                throw new ArgumentException("Only System.Func delegates are permitted.", "function");
+            if (funcType.FullName.StartsWith("System.Func"))
+            {
+                foreach (Type genericArgument in funcType.GenericTypeArguments)
+                    if (genericArgument != typeof(double))
+                        throw new ArgumentException("Only doubles are supported as function arguments.", "function");
 
-            foreach (Type genericArgument in funcType.GenericTypeArguments)
-                if (genericArgument != typeof(double))
-                    throw new ArgumentException("Only doubles are supported as function arguments", "function");
+                if (numberOfParameters == -1)
+                    numberOfParameters = function.GetMethodInfo().GetParameters().Length;
+                else if (numberOfParameters != function.GetMethodInfo().GetParameters().Length)
+                    throw new ArgumentException("The number of parameters provided does not match with the number of parameters from the function", "numberOfParameters");
+            }
+            else if (funcType.FullName.StartsWith(DynamicFuncName))
+            {
+                if (numberOfParameters == -1)
+                    throw new ArgumentException("Please provide an explicit number of parameters for a " + DynamicFuncName + " delegate.", "numberOfParameters");
+            }
+            else
+                throw new ArgumentException("Only System.Func and " + DynamicFuncName + " delegates are permitted.", "function");
 
             functionName = ConvertFunctionName(functionName);
 
@@ -55,8 +79,6 @@ namespace Jace.Execution
                 string message = string.Format("The function \"{0}\" cannot be overwriten.", functionName);
                 throw new Exception(message);
             }
-
-            int numberOfParameters = function.GetMethodInfo().GetParameters().Length;
 
             if (functions.ContainsKey(functionName) && functions[functionName].NumberOfParameters != numberOfParameters)
             {
@@ -72,7 +94,7 @@ namespace Jace.Execution
                 functions.Add(functionName, functionInfo);
         }
 
-        public bool IsFunctionName(string functionName)
+            public bool IsFunctionName(string functionName)
         {
             if (string.IsNullOrEmpty(functionName))
                 throw new ArgumentNullException("functionName");

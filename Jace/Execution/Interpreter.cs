@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Jace.Operations;
 using Jace.Util;
@@ -158,7 +159,6 @@ namespace Jace.Execution
             {
                 return ((Func<double, double, double, double, double>)function).Invoke(arguments[0], arguments[1], arguments[2], arguments[3]);
             }
-#if !WINDOWS_PHONE_7
             else if (function is Func<double, double, double, double, double, double>)
             {
                 return ((Func<double, double, double, double, double, double>)function).Invoke(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4]);
@@ -167,7 +167,50 @@ namespace Jace.Execution
             {
                 return ((Func<double, double, double, double, double, double, double>)function).Invoke(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5]);
             }
-#endif
+            else if (function is Func<double, double, double, double, double, double, double, double>)
+            {
+                return ((Func<double, double, double, double, double, double, double, double>)function).Invoke(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6]);
+            }
+            else if (function is Func<double, double, double, double, double, double, double, double, double>)
+            {
+                return ((Func<double, double, double, double, double, double, double, double, double>)function).Invoke(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7]);
+            }
+            else if (function is Func<double, double, double, double, double, double, double, double, double, double>)
+            {
+                return ((Func<double, double, double, double, double, double, double, double, double, double>)function).Invoke(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8]);
+            }
+            else if (function is Func<double, double, double, double, double, double, double, double, double, double, double>)
+            {
+                return ((Func<double, double, double, double, double, double, double, double, double, double, double>)function).Invoke(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9]);
+            }
+            else if (function is Func<double, double, double, double, double, double, double, double, double, double, double, double>)
+            {
+                return ((Func<double, double, double, double, double, double, double, double, double, double, double, double>)function).Invoke(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], arguments[10]);
+            }
+            else if (function is Func<double, double, double, double, double, double, double, double, double, double, double, double, double>)
+            {
+                return ((Func<double, double, double, double, double, double, double, double, double, double, double, double, double>)function).Invoke(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], arguments[10], arguments[11]);
+            }
+            else if (function is Func<double, double, double, double, double, double, double, double, double, double, double, double, double, double>)
+            {
+                return ((Func<double, double, double, double, double, double, double, double, double, double, double, double, double, double>)function).Invoke(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], arguments[10], arguments[11], arguments[12]);
+            }
+            else if (function is Func<double, double, double, double, double, double, double, double, double, double, double, double, double, double, double>)
+            {
+                return ((Func<double, double, double, double, double, double, double, double, double, double, double, double, double, double, double>)function).Invoke(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], arguments[10], arguments[11], arguments[12], arguments[13]);
+            }
+            else if (function is Func<double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double>)
+            {
+                return ((Func<double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double>)function).Invoke(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], arguments[10], arguments[11], arguments[12], arguments[13], arguments[14]);
+            }
+            else if (function is Func<double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double>)
+            {
+                return ((Func<double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double>)function).Invoke(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], arguments[10], arguments[11], arguments[12], arguments[13], arguments[14], arguments[15]);
+            }
+            else if (function is DynamicFunc<double>)
+            {
+                return ((DynamicFunc<double>)function).Invoke(arguments);
+            }
             else
             {
                 return (double)function.DynamicInvoke((from s in arguments select (object)s).ToArray());

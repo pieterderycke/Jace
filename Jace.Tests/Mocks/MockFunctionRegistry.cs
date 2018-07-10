@@ -44,5 +44,15 @@ namespace Jace.Tests.Mocks
         {
             throw new NotImplementedException();
         }
+
+        public void RegisterFunction(string functionName, Delegate function, int numberOfParameters)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RegisterFunction(string functionName, Delegate function, int numberOfParameters, bool isOverWritable)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

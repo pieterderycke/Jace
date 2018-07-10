@@ -10,6 +10,8 @@ using Jace.Util;
 
 namespace Jace
 {
+    public delegate T DynamicFunc<T>(params T[] values);
+
     /// <summary>
     /// The CalculationEngine class is the main class of Jace.NET to convert strings containing
     /// mathematical formulas into .NET Delegates and to calculate the result.
@@ -23,8 +25,6 @@ namespace Jace
         private readonly MemoryCache<string, Func<IDictionary<string, double>, double>> executionFormulaCache;
         private readonly bool cacheEnabled;
         private readonly bool optimizerEnabled;
-
-        public delegate double DoubleResultDelegate(params double[] values);
 
         /// <summary>
         /// Creates a new instance of the <see cref="CalculationEngine"/> class with
@@ -256,9 +256,9 @@ namespace Jace
             FunctionRegistry.RegisterFunction(functionName, function);
         }
 
-        public void AddFunction(string functionName, DoubleResultDelegate functionDelegate)
+        public void AddFunction(string functionName, DynamicFunc<double> functionDelegate, int numberOfParameters)
         {
-            FunctionRegistry.RegisterFunction(functionName, functionDelegate);
+            FunctionRegistry.RegisterFunction(functionName, functionDelegate, numberOfParameters);
         }
 
         /// <summary>
