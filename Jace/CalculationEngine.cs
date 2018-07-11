@@ -256,6 +256,31 @@ namespace Jace
             FunctionRegistry.RegisterFunction(functionName, function);
         }
 
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double, double, double, double> function)
+        {
+            FunctionRegistry.RegisterFunction(functionName, function);
+        }
+
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double, double, double, double, double> function)
+        {
+            FunctionRegistry.RegisterFunction(functionName, function);
+        }
+
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double, double, double, double, double, double> function)
+        {
+            FunctionRegistry.RegisterFunction(functionName, function);
+        }
+
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double> function)
+        {
+            FunctionRegistry.RegisterFunction(functionName, function);
+        }
+
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double> function)
+        {
+            FunctionRegistry.RegisterFunction(functionName, function);
+        }
+
         public void AddFunction(string functionName, DynamicFunc<double, double> functionDelegate)
         {
             FunctionRegistry.RegisterFunction(functionName, functionDelegate);
