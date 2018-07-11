@@ -10,7 +10,7 @@ using Jace.Util;
 
 namespace Jace
 {
-    public delegate T DynamicFunc<T>(params T[] values);
+    public delegate TResult DynamicFunc<T, TResult>(params T[] values);
 
     /// <summary>
     /// The CalculationEngine class is the main class of Jace.NET to convert strings containing
@@ -256,9 +256,9 @@ namespace Jace
             FunctionRegistry.RegisterFunction(functionName, function);
         }
 
-        public void AddFunction(string functionName, DynamicFunc<double> functionDelegate, int numberOfParameters)
+        public void AddFunction(string functionName, DynamicFunc<double, double> functionDelegate)
         {
-            FunctionRegistry.RegisterFunction(functionName, functionDelegate, numberOfParameters);
+            FunctionRegistry.RegisterFunction(functionName, functionDelegate);
         }
 
         /// <summary>

@@ -15,6 +15,7 @@ namespace Jace
         private Dictionary<char, int> operationPrecedence = new Dictionary<char, int>();
         private Stack<Operation> resultStack = new Stack<Operation>();
         private Stack<Token> operatorStack = new Stack<Token>();
+        private Stack<int> parameterCount = new Stack<int>();
 
         public AstBuilder(IFunctionRegistry functionRegistry)
         {
@@ -44,6 +45,8 @@ namespace Jace
             resultStack.Clear();
             operatorStack.Clear();
 
+            parameterCount.Clear();
+
             foreach (Token token in tokens)
             {
                 object value = token.Value;
@@ -60,6 +63,7 @@ namespace Jace
                         if (functionRegistry.IsFunctionName((string)token.Value))
                         {
                             operatorStack.Push(token);
+                            parameterCount.Push(1);
                         }
                         else
                         {
@@ -71,9 +75,11 @@ namespace Jace
                         break;
                     case TokenType.RightBracket:
                         PopOperations(true, token);
+                        //parameterCount.Pop();
                         break;
                     case TokenType.ArgumentSeparator:
                         PopOperations(false, token);
+                        parameterCount.Push(parameterCount.Pop() + 1);
                         break;
                     case TokenType.Operation:
                         Token operation1Token = token;
@@ -265,9 +271,11 @@ namespace Jace
                 if (functionRegistry.IsFunctionName(functionName))
                 {
                     FunctionInfo functionInfo = functionRegistry.GetFunctionInfo(functionName);
-                            
+
+                    int numberOfParameters = functionInfo.IsDynamicFunc ? parameterCount.Pop() : functionInfo.NumberOfParameters;
+                    
                     List<Operation> operations = new List<Operation>();
-                    for (int i = 0; i < functionInfo.NumberOfParameters; i++)
+                    for (int i = 0; i < numberOfParameters; i++)
                         operations.Add(resultStack.Pop());
                     operations.Reverse();
 

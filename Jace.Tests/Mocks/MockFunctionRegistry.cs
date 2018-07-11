@@ -22,7 +22,7 @@ namespace Jace.Tests.Mocks
 
         public FunctionInfo GetFunctionInfo(string functionName)
         {
-            return new FunctionInfo(functionName, 1, false, null);
+            return new FunctionInfo(functionName, 1, false, false, null);
         }
 
         public bool IsFunctionName(string functionName)

@@ -32,18 +32,8 @@ namespace Jace.Execution
         {
             RegisterFunction(functionName, function, true);
         }
-
+        
         public void RegisterFunction(string functionName, Delegate function, bool isOverWritable)
-        {
-            RegisterFunction(functionName, function, -1, isOverWritable);
-        }
-
-        public void RegisterFunction(string functionName, Delegate function, int numberOfParameters)
-        {
-            RegisterFunction(functionName, function, numberOfParameters, true);
-        }
-
-        public void RegisterFunction(string functionName, Delegate function, int numberOfParameters, bool isOverWritable)
         {
             if (string.IsNullOrEmpty(functionName))
                 throw new ArgumentNullException("functionName");
@@ -52,22 +42,20 @@ namespace Jace.Execution
                 throw new ArgumentNullException("function");
 
             Type funcType = function.GetType();
-
+            bool isDynamicFunc = false;
+            int numberOfParameters = -1;
+            
             if (funcType.FullName.StartsWith("System.Func"))
             {
                 foreach (Type genericArgument in funcType.GenericTypeArguments)
                     if (genericArgument != typeof(double))
                         throw new ArgumentException("Only doubles are supported as function arguments.", "function");
 
-                if (numberOfParameters == -1)
-                    numberOfParameters = function.GetMethodInfo().GetParameters().Length;
-                else if (numberOfParameters != function.GetMethodInfo().GetParameters().Length)
-                    throw new ArgumentException("The number of parameters provided does not match with the number of parameters from the function", "numberOfParameters");
+                numberOfParameters = function.GetMethodInfo().GetParameters().Length;
             }
             else if (funcType.FullName.StartsWith(DynamicFuncName))
             {
-                if (numberOfParameters == -1)
-                    throw new ArgumentException("Please provide an explicit number of parameters for a " + DynamicFuncName + " delegate.", "numberOfParameters");
+                isDynamicFunc = true;
             }
             else
                 throw new ArgumentException("Only System.Func and " + DynamicFuncName + " delegates are permitted.", "function");
@@ -86,7 +74,13 @@ namespace Jace.Execution
                 throw new Exception(message);
             }
 
-            FunctionInfo functionInfo = new FunctionInfo(functionName, numberOfParameters, isOverWritable, function);
+            if (functions.ContainsKey(functionName) && functions[functionName].IsDynamicFunc != isDynamicFunc)
+            {
+                string message = string.Format("A Func can only be overwritten by another Func and a DynamicFunc can only be overwritten by another DynamicFunc.");
+                throw new Exception(message);
+            }
+
+            FunctionInfo functionInfo = new FunctionInfo(functionName, numberOfParameters, isOverWritable, isDynamicFunc, function);
 
             if (functions.ContainsKey(functionName))
                 functions[functionName] = functionInfo;

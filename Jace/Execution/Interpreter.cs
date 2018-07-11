@@ -124,7 +124,7 @@ namespace Jace.Execution
 
                 FunctionInfo functionInfo = functionRegistry.GetFunctionInfo(function.FunctionName);
 
-                double[] arguments = new double[functionInfo.NumberOfParameters];
+                double[] arguments = new double[functionInfo.IsDynamicFunc ? function.Arguments.Count : functionInfo.NumberOfParameters];
                 for (int i = 0; i < arguments.Length; i++)
                     arguments[i] = Execute(function.Arguments[i], functionRegistry, variables);
 
@@ -207,9 +207,9 @@ namespace Jace.Execution
             {
                 return ((Func<double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double>)function).Invoke(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], arguments[10], arguments[11], arguments[12], arguments[13], arguments[14], arguments[15]);
             }
-            else if (function is DynamicFunc<double>)
+            else if (function is DynamicFunc<double, double>)
             {
-                return ((DynamicFunc<double>)function).Invoke(arguments);
+                return ((DynamicFunc<double, double>)function).Invoke(arguments);
             }
             else
             {

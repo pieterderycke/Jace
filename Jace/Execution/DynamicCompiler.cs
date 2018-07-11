@@ -229,13 +229,33 @@ namespace Jace.Execution
                 Function function = (Function)operation;
 
                 FunctionInfo functionInfo = functionRegistry.GetFunctionInfo(function.FunctionName);
-                Type funcType = GetFuncType(functionInfo.NumberOfParameters);
-                Type[] parameterTypes = (from i in Enumerable.Range(0, functionInfo.NumberOfParameters)
-                                            select typeof(double)).ToArray();
+                Type funcType;
+                Type[] parameterTypes;
+                Expression[] arguments;
 
-                Expression[] arguments = new Expression[functionInfo.NumberOfParameters];
-                for (int i = 0; i < functionInfo.NumberOfParameters; i++)
-                    arguments[i] = GenerateMethodBody(function.Arguments[i], contextParameter, functionRegistry);
+                if (functionInfo.IsDynamicFunc)
+                {
+                    funcType = typeof(DynamicFunc<double, double>);
+                    parameterTypes = new Type[] { typeof(double[]) };
+
+
+                    Expression[] arrayArguments = new Expression[function.Arguments.Count];
+                    for (int i = 0; i < function.Arguments.Count; i++)
+                        arrayArguments[i] = GenerateMethodBody(function.Arguments[i], contextParameter, functionRegistry);
+
+                    arguments = new Expression[1];
+                    arguments[0] = NewArrayExpression.NewArrayInit(typeof(double), arrayArguments);
+                }
+                else
+                {
+                    funcType = GetFuncType(functionInfo.NumberOfParameters);
+                    parameterTypes = (from i in Enumerable.Range(0, functionInfo.NumberOfParameters)
+                                             select typeof(double)).ToArray();
+
+                    arguments = new Expression[functionInfo.NumberOfParameters];
+                    for (int i = 0; i < functionInfo.NumberOfParameters; i++)
+                        arguments[i] = GenerateMethodBody(function.Arguments[i], contextParameter, functionRegistry);
+                }
 
                 Expression getFunctionRegistry = Expression.Property(contextParameter, "FunctionRegistry");
 

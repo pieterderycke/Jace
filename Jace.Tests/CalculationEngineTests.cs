@@ -746,7 +746,7 @@ namespace Jace.Tests
                 return a.Sum();
             }
 
-            engine.AddFunction("test", DoSomething, 11);
+            engine.AddFunction("test", DoSomething);
             double result = engine.Calculate("test(1,2,3,4,5,6,7,8,9,10,11)");
             double expected = (11 * (11 + 1)) / 2.0;
             Assert.AreEqual(expected, result);
@@ -763,8 +763,42 @@ namespace Jace.Tests
                 return a.Sum();
             }
 
-            engine.AddFunction("test", DoSomething, 11);
+            engine.AddFunction("test", DoSomething);
             double result = engine.Calculate("test(1,2,3,4,5,6,7,8,9,10,11)");
+            double expected = (11 * (11 + 1)) / 2.0;
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void TestCustomFunctionDynamicFuncNestedInterpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture,
+                ExecutionMode.Interpreted, false, false);
+
+            double DoSomething(params double[] a)
+            {
+                return a.Sum();
+            }
+
+            engine.AddFunction("test", DoSomething);
+            double result = engine.Calculate("test(1,2,3,test(4,5,6)) + test(7,8,9,10,11)");
+            double expected = (11 * (11 + 1)) / 2.0;
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void TestCustomFunctionDynamicFuncNestedDynamicCompiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture,
+                ExecutionMode.Compiled, false, false);
+
+            double DoSomething(params double[] a)
+            {
+                return a.Sum();
+            }
+
+            engine.AddFunction("test", DoSomething);
+            double result = engine.Calculate("test(1,2,3,test(4,5,6)) + test(7,8,9,10,11)");
             double expected = (11 * (11 + 1)) / 2.0;
             Assert.AreEqual(expected, result);
         }
