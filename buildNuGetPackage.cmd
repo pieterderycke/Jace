@@ -1,17 +1,12 @@
-SET version="0.9"
+SET jaceVersion="0.9"
 
-msbuild /p:Configuration=Release Jace\Jace.csproj
-MKDIR nuget\lib\net40
-COPY Jace\bin\Release\*.dll nuget\lib\net40\
+SET msbuild="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\msbuild.exe"
 
-msbuild /p:Configuration=Release Jace.Portable\Jace.Portable.csproj
-MKDIR nuget\lib\portable-net451+win8+wpa81+wp8
-COPY Jace.Portable\bin\Release\*.dll "nuget\lib\portable-net451+win8+wpa81+wp8\"
-MKDIR nuget\lib\monoandroid
-COPY Jace.Portable\bin\Release\*.dll nuget\lib\monoandroid\
+Call %msbuild% /p:Configuration=Release Jace\Jace.csproj
+MKDIR nuget\lib\netstandard1.6
+COPY Jace\bin\Release\netstandard1.6\*.dll nuget\lib\netstandard1.6\
 
 COPY Jace.nuspec nuget\
-
-Tools\NuGet\nuget.exe pack nuget\Jace.nuspec -Version %version%
+Tools\NuGet\nuget.exe pack nuget\Jace.nuspec -Version %jaceVersion%
 
 RMDIR nuget /S /Q

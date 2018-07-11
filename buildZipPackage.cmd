@@ -1,18 +1,10 @@
 SET version=0.9
 
-msbuild /p:Configuration=Release Jace\Jace.csproj
-MKDIR zip\net40
-COPY Jace\bin\Release\*.dll zip\net40\
+SET msbuild="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\msbuild.exe"
 
-msbuild /p:Configuration=Release Jace.Portable\Jace.Portable.csproj
-MKDIR zip\windows8
-COPY Jace.Portable\bin\Release\*.dll zip\windows8\
-MKDIR zip\wp8
-COPY Jace.Portable\bin\Release\*.dll zip\wp8\
-MKDIR zip\wpa81
-COPY Jace.Portable\bin\Release\*.dll zip\wpa81\
-MKDIR zip\xamarin.android
-COPY Jace.Portable\bin\Release\*.dll zip\xamarin.android\
+Call %msbuild% /p:Configuration=Release Jace\Jace.csproj
+MKDIR zip\netstandard1.6
+COPY Jace\bin\Release\netstandard1.6\*.dll zip\netstandard1.6\
 
 COPY LICENSE.md zip\
 COPY README.md zip\

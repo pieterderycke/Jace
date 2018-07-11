@@ -9,13 +9,13 @@
     <projectUrl>https://github.com/pieterderycke/Jace</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
-		Jace.NET is a high performance calculation engine for the .NET platform that can dynamically parse, interprete and execute strings containing mathematical functions. Jace.NET is available for the various .NET flavors: .NET, WinRT, Windows Phone 7, Windows Phone 8 and Xamarin.Android.
+		Jace.NET is a high performance calculation engine for the .NET platform that can dynamically parse, interprete and execute strings containing mathematical functions. Jace.NET is available for the various .NET flavors: .NET, .NET Core, WinRT, Xamarin.Android and Xamarin.IOS.
 	</description>
 	<summary>
-		Jace.NET is a high performance calculation engine for the .NET platform that can dynamically parse, interprete and execute strings containing mathematical functions. Jace.NET is available for the various .NET flavors: .NET, WinRT, Windows Phone 7, Windows Phone 8 and Xamarin.Android.
+		Jace.NET is a high performance calculation engine for the .NET platform that can dynamically parse, interprete and execute strings containing mathematical functions. Jace.NET is available for the various .NET flavors: .NET, .NET Core, WinRT, Xamarin.Android and Xamarin.IOS.
 		
 		Jace can execute functions in two modes: in interpreted mode and in a dynamic compilation mode. If dynamic compilation mode is used, Jace will create a dynamic method at runtime and will generate the necessary MSIL opcodes for native execution of the function. If a function is re-executed with other variables, Jace will take the dynamically generated method from its cache. It is recommended to use Jace in dynamic compilation mode.
 	</summary>
-	<tags>xamarin xamarin.android math interprete parse windows phone mathematical formula</tags>
+	<tags>xamarin xamarin.android xamarin.android math interprete parse windows phone mathematical formula calculation</tags>
   </metadata>
 </package>
