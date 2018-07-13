@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Jace.Execution
 {
-    public interface IFunctionRegistry
+    public interface IFunctionRegistry : IEnumerable<FunctionInfo>
     {
         FunctionInfo GetFunctionInfo(string functionName);
         bool IsFunctionName(string functionName);

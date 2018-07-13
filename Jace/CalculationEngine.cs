@@ -70,6 +70,23 @@ namespace Jace
         /// <param name="cacheEnabled">Enable or disable caching of mathematical formulas.</param>
         /// <param name="optimizerEnabled">Enable or disable optimizing of formulas.</param>
         public CalculationEngine(CultureInfo cultureInfo, ExecutionMode executionMode, bool cacheEnabled, bool optimizerEnabled)
+            : this(cultureInfo, executionMode, cacheEnabled, optimizerEnabled, true, true)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="CalculationEngine"/> class.
+        /// </summary>
+        /// <param name="cultureInfo">
+        /// The <see cref="CultureInfo"/> required for correctly reading floating poin numbers.
+        /// </param>
+        /// <param name="executionMode">The execution mode that must be used for formula execution.</param>
+        /// <param name="cacheEnabled">Enable or disable caching of mathematical formulas.</param>
+        /// <param name="optimizerEnabled">Enable or disable optimizing of formulas.</param>
+        /// <param name="defaultFunctions">Enable or disable the default functions.</param>
+        /// <param name="defaultConstants">Enable or disable the default constants.</param>
+        public CalculationEngine(CultureInfo cultureInfo, ExecutionMode executionMode, bool cacheEnabled, 
+            bool optimizerEnabled, bool defaultFunctions, bool defaultConstants)
         {
             this.executionFormulaCache = new MemoryCache<string, Func<IDictionary<string, double>, double>>();
             this.FunctionRegistry = new FunctionRegistry(false);
@@ -89,15 +106,21 @@ namespace Jace
             optimizer = new Optimizer(new Interpreter()); // We run the optimizer with the interpreter 
 
             // Register the default constants of Jace.NET into the constant registry
-            RegisterDefaultConstants();
+            if(defaultConstants)
+                RegisterDefaultConstants();
 
             // Register the default functions of Jace.NET into the function registry
-            RegisterDefaultFunctions();
+            if(defaultFunctions)
+                RegisterDefaultFunctions();
         }
 
         internal IFunctionRegistry FunctionRegistry { get; private set; }
 
         internal IConstantRegistry ConstantRegistry { get; private set; }
+
+        public IEnumerable<FunctionInfo> Functions { get { return FunctionRegistry; } }
+
+        public IEnumerable<ConstantInfo> Constants { get { return ConstantRegistry; } }
 
         public double Calculate(string formulaText)
         {
