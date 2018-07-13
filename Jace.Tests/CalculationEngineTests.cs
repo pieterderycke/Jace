@@ -330,6 +330,36 @@ namespace Jace.Tests
         }
 
         [TestMethod]
+        public void TestFormulaBuilderConstantInterpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+            engine.AddConstant("age", 18.0);
+
+            Func<int, double> function = (Func<int, double>)engine.Formula("age+var1")
+                .Parameter("var1", DataType.Integer)
+                .Result(DataType.FloatingPoint)
+                .Build();
+
+            double result = function(3);
+            Assert.AreEqual(21.0, result);
+        }
+
+        [TestMethod]
+        public void TestFormulaBuilderConstantCompiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);
+            engine.AddConstant("age", 18.0);
+
+            Func<int, double> function = (Func<int, double>)engine.Formula("age+var1")
+                .Parameter("var1", DataType.Integer)
+                .Result(DataType.FloatingPoint)
+                .Build();
+
+            double result = function(3);
+            Assert.AreEqual(21.0, result);
+        }
+
+        [TestMethod]
         public void TestFormulaBuilderInvalidParameterName()
         {
             AssertExtensions.ThrowsException<ArgumentException>(() =>

@@ -77,10 +77,20 @@ namespace Jace.Execution
             if (!resultDataType.HasValue)
                 throw new Exception("Please define a result data type for the formula.");
 
-            Func<Dictionary<string, double>, double> formula = engine.Build(formulaText);
+            Func<IDictionary<string, double>, double> formula = engine.Build(formulaText);
 
             FuncAdapter adapter = new FuncAdapter();
-            return adapter.Wrap(parameters, variables => formula(variables));
+            return adapter.Wrap(parameters, variables => {
+
+                variables = EngineUtil.ConvertVariableNamesToLowerCase(variables);
+                engine.VerifyVariableNames(variables);
+
+                // Add the reserved variables to the dictionary
+                foreach (ConstantInfo constant in engine.ConstantRegistry)
+                    variables.Add(constant.ConstantName, constant.Value);
+
+                return formula(variables);
+            });
         }
     }
 }

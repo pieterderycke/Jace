@@ -31,7 +31,7 @@ namespace Jace.Tests
                 new ParameterInfo() { Name = "test2", DataType = DataType.FloatingPoint }
             };
 
-            Func<Dictionary<string, double>, double> function = (dictionary) => dictionary["test1"] + dictionary["test2"]; 
+            Func<IDictionary<string, double>, double> function = (dictionary) => dictionary["test1"] + dictionary["test2"]; 
 
             Func<int, double, double> wrappedFunction = (Func<int, double, double>)adapter.Wrap(parameters, function);
 
@@ -48,7 +48,7 @@ namespace Jace.Tests
                 new ParameterInfo() { Name = "test2", DataType = DataType.FloatingPoint }
             };
 
-            Func<Dictionary<string, double>, double> function = (dictionary) => dictionary["test1"] + dictionary["test2"];
+            Func<IDictionary<string, double>, double> function = (dictionary) => dictionary["test1"] + dictionary["test2"];
 
             Func<int, double, double> wrappedFunction = (Func<int, double, double>)adapter.Wrap(parameters, function);
 

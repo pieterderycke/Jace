@@ -29,7 +29,7 @@ namespace Jace.Util
         /// <param name="function">The function that must be wrapped.</param>
         /// <returns>A delegate instance of the required type.</returns>
         public Delegate Wrap(IEnumerable<Jace.Execution.ParameterInfo> parameters, 
-            Func<Dictionary<string, double>, double> function)
+            Func<IDictionary<string, double>, double> function)
         {
             Jace.Execution.ParameterInfo[] parameterArray = parameters.ToArray();
 

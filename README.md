@@ -50,7 +50,7 @@ double result = formula(variables);
 To build a typed .NET Func:
 ```csharp
 CalculationEngine engine = new CalculationEngine();
-Func<int, double, double> formula = (Func<int, double, double>)engine.Function("var1+2/(3*otherVariable)")
+Func<int, double, double> formula = (Func<int, double, double>)engine.Formula("var1+2/(3*otherVariable)")
 	.Parameter("var1", DataType.Integer)
     .Parameter("otherVariable", DataType.FloatingPoint)
     .Result(DataType.FloatingPoint)

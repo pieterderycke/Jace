@@ -145,7 +145,7 @@ namespace Jace
         /// </summary>
         /// <param name="formulaText">The formula that must be converted into a .NET func.</param>
         /// <returns>A .NET func for the provided formula.</returns>
-        public Func<Dictionary<string, double>, double> Build(string formulaText)
+        public Func<IDictionary<string, double>, double> Build(string formulaText)
         {
             if (string.IsNullOrEmpty(formulaText))
                 throw new ArgumentNullException("formulaText");
@@ -368,7 +368,7 @@ namespace Jace
         /// If an invalid variable is detected an exception is thrown.
         /// </summary>
         /// <param name="variables">The colletion of variables that must be verified.</param>
-        private void VerifyVariableNames(IDictionary<string, double> variables)
+        internal void VerifyVariableNames(IDictionary<string, double> variables)
         {
             foreach (string variableName in variables.Keys)
             {
