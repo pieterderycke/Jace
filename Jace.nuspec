@@ -16,6 +16,6 @@
 		
 		Jace can execute functions in two modes: in interpreted mode and in a dynamic compilation mode. If dynamic compilation mode is used, Jace will create a dynamic method at runtime and will generate the necessary MSIL opcodes for native execution of the function. If a function is re-executed with other variables, Jace will take the dynamically generated method from its cache. It is recommended to use Jace in dynamic compilation mode.
 	</summary>
-	<tags>xamarin xamarin.android xamarin.android math interprete parse windows phone mathematical formula calculation</tags>
+	<tags>math interprete parse windows phone mathematical formula calculation expression parse evaluate</tags>
   </metadata>
 </package>
