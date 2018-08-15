@@ -164,6 +164,16 @@ namespace Jace.Execution
                 Expression argument = GenerateMethodBody(unaryMinus.Argument, contextParameter, functionRegistry);
                 return Expression.Negate(argument);
             }
+            else if (operation.GetType() == typeof(And))
+            {
+                And and = (And)operation;
+                Expression argument1 = Expression.NotEqual(GenerateMethodBody(and.Argument1, contextParameter, functionRegistry), Expression.Constant(0.0));
+                Expression argument2 = Expression.NotEqual(GenerateMethodBody(and.Argument2, contextParameter, functionRegistry), Expression.Constant(0.0));
+
+                return Expression.Condition(Expression.And(argument1, argument2),
+                    Expression.Constant(1.0),
+                    Expression.Constant(0.0));
+            }
             else if (operation.GetType() == typeof(LessThan))
             {
                 LessThan lessThan = (LessThan)operation;

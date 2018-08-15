@@ -88,6 +88,11 @@ namespace Jace.Execution
                 UnaryMinus unaryMinus = (UnaryMinus)operation;
                 return -Execute(unaryMinus.Argument, functionRegistry, variables);
             }
+            else if (operation.GetType() == typeof(And))
+            {
+                And lessThan = (And)operation;
+                return ((Execute(lessThan.Argument1, functionRegistry, variables) != 0) && (Execute(lessThan.Argument2, functionRegistry, variables) != 0)) ? 1.0 : 0.0;
+            }
             else if(operation.GetType() == typeof(LessThan))
             {
                 LessThan lessThan = (LessThan)operation;
