@@ -10,6 +10,9 @@ Jace.NET can interprete and execute strings containing mathematical formulas. Th
 
 Jace can execute formulas in two modes: in interpreted mode and in a dynamic compilation mode. If dynamic compilation mode is used, Jace will create a dynamic method at runtime and will generate the necessary MSIL opcodes for native execution of the formula. If a formula is re-executed with other variables, Jace will take the dynamically generated method from its cache. It is recommended to use Jace in dynamic compilation mode.
 
+## Wiki
+For detailed information how to use Jace.NET, please consult the [wiki](https://github.com/pieterderycke/Jace/wiki)
+
 ## Architecture
 Jace.NET follows a design similar to most of the modern compilers. Interpretation and execution is done in a number of phases:
 
