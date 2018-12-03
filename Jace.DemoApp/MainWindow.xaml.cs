@@ -43,7 +43,7 @@ namespace Jace.DemoApp
 
                 IFunctionRegistry functionRegistry = new FunctionRegistry(false);
 
-                AstBuilder astBuilder = new AstBuilder(functionRegistry);
+                AstBuilder astBuilder = new AstBuilder(functionRegistry, true);
                 Operation operation = astBuilder.Build(tokens);
 
                 ShowAbstractSyntaxTree(operation);
