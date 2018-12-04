@@ -29,12 +29,20 @@ namespace Jace.Benchmark
             Console.WriteLine();
 
             Console.WriteLine("Interpreted Mode:");
-            CalculationEngine interpretedEngine = new CalculationEngine(CultureInfo.CurrentCulture, ExecutionMode.Interpreted);
+            CalculationEngine interpretedEngine = new CalculationEngine(CultureInfo.CurrentCulture, ExecutionMode.Interpreted, true, true, true);
             BenchMarkCalculationEngine(interpretedEngine, "2+3*7");
 
+            Console.WriteLine("Interpreted Mode(Case Sensitive):");
+            CalculationEngine interpretedEngineCaseSensitive = new CalculationEngine(CultureInfo.CurrentCulture, ExecutionMode.Interpreted, true, true, false);
+            BenchMarkCalculationEngine(interpretedEngineCaseSensitive, "2+3*7");
+
             Console.WriteLine("Compiled Mode:");
-            CalculationEngine compiledEngine = new CalculationEngine(CultureInfo.CurrentCulture, ExecutionMode.Compiled);
+            CalculationEngine compiledEngine = new CalculationEngine(CultureInfo.CurrentCulture, ExecutionMode.Compiled, true, true, true);
             BenchMarkCalculationEngine(compiledEngine, "2+3*7");
+
+            Console.WriteLine("Compiled Mode(Case Sensitive):");
+            CalculationEngine compiledEngineCaseSensitive = new CalculationEngine(CultureInfo.CurrentCulture, ExecutionMode.Compiled, true, true, false);
+            BenchMarkCalculationEngine(compiledEngineCaseSensitive, "2+3*7");
 
             Console.WriteLine("--------------------");
             Console.WriteLine("Function: {0}", "(var1 + var2 * 3)/(2+3) - something");
@@ -44,8 +52,14 @@ namespace Jace.Benchmark
             Console.WriteLine("Interpreted Mode:");
             BenchMarkCalculationEngineFunctionBuild(interpretedEngine, "(var1 + var2 * 3)/(2+3) - something");
 
+            Console.WriteLine("Interpreted Mode(Case Sensitive):");
+            BenchMarkCalculationEngineFunctionBuild(interpretedEngineCaseSensitive, "(var1 + var2 * 3)/(2+3) - something");
+
             Console.WriteLine("Compiled Mode:");
             BenchMarkCalculationEngineFunctionBuild(compiledEngine, "(var1 + var2 * 3)/(2+3) - something");
+
+            Console.WriteLine("Compiled Mode(Case Sensitive):");
+            BenchMarkCalculationEngineFunctionBuild(compiledEngineCaseSensitive, "(var1 + var2 * 3)/(2+3) - something");
 
             Console.WriteLine("--------------------");
             Console.WriteLine("Random Generated Functions: {0}", NumberOfFunctionsToGenerate.ToString("N0"));
@@ -60,8 +74,14 @@ namespace Jace.Benchmark
             Console.WriteLine("Interpreted Mode:");
             BenchMarkCalculationEngineRandomFunctionBuild(interpretedEngine, functions, NumberExecutionsPerRandomFunction);
 
+            Console.WriteLine("Interpreted Mode(Case Sensitive):");
+            BenchMarkCalculationEngineRandomFunctionBuild(interpretedEngineCaseSensitive, functions, NumberExecutionsPerRandomFunction);
+
             Console.WriteLine("Compiled Mode:");
             BenchMarkCalculationEngineRandomFunctionBuild(compiledEngine, functions, NumberExecutionsPerRandomFunction);
+
+            Console.WriteLine("Compiled Mode(Case Sensitive):");
+            BenchMarkCalculationEngineRandomFunctionBuild(compiledEngineCaseSensitive, functions, NumberExecutionsPerRandomFunction);
 
             Console.WriteLine("Press enter to exit...");
             Console.ReadLine();

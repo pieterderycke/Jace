@@ -91,6 +91,36 @@ namespace Jace.Tests
         }
 
         [TestMethod]
+        public void TestCalculateFormulaWithCaseSensitiveVariablesCompiled()
+        {
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("VaR1", 2.5);
+            variables.Add("vAr2", 3.4);
+            variables.Add("var1", 1);
+            variables.Add("var2", 1);
+
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, false, false, false);
+            double result = engine.Calculate("VaR1*vAr2", variables);
+
+            Assert.AreEqual(8.5, result);
+        }
+
+        [TestMethod]
+        public void TestCalculateFormulaWithCaseSensitiveVariablesInterpreted()
+        {
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("VaR1", 2.5);
+            variables.Add("vAr2", 3.4);
+            variables.Add("var1", 1);
+            variables.Add("var2", 1);
+
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, false, false, false);
+            double result = engine.Calculate("VaR1*vAr2", variables);
+
+            Assert.AreEqual(8.5, result);
+        }
+
+        [TestMethod]
         public void TestCalculateFormulaVariableNotDefinedInterpreted()
         {
             Dictionary<string, double> variables = new Dictionary<string, double>();
