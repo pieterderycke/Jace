@@ -26,11 +26,12 @@ namespace Jace
         private readonly bool cacheEnabled;
         private readonly bool optimizerEnabled;
         private readonly bool adjustVariableCaseEnabled;
+
         /// <summary>
         /// Creates a new instance of the <see cref="CalculationEngine"/> class with
         /// default parameters.
         /// </summary>
-    public CalculationEngine()
+        public CalculationEngine()
             : this(CultureInfo.CurrentCulture, ExecutionMode.Compiled)
         {
         }
