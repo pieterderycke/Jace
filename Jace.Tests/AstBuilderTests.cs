@@ -27,7 +27,7 @@ namespace Jace.Tests
         {
             IFunctionRegistry registry = new MockFunctionRegistry();
 
-            AstBuilder builder = new AstBuilder(registry);
+            AstBuilder builder = new AstBuilder(registry, true);
             Operation operation = builder.Build(new List<Token>() { 
                 new Token() { Value = '(', TokenType = TokenType.LeftBracket }, 
                 new Token() { Value = 42, TokenType = TokenType.Integer }, 
@@ -51,7 +51,7 @@ namespace Jace.Tests
         {
             IFunctionRegistry registry = new MockFunctionRegistry();
 
-            AstBuilder builder = new AstBuilder(registry);
+            AstBuilder builder = new AstBuilder(registry, true);
             Operation operation = builder.Build(new List<Token>() {
                 new Token() { Value = 2, TokenType = TokenType.Integer }, 
                 new Token() { Value = '+', TokenType = TokenType.Operation }, 
@@ -73,7 +73,7 @@ namespace Jace.Tests
         {
             IFunctionRegistry registry = new MockFunctionRegistry();
 
-            AstBuilder builder = new AstBuilder(registry);
+            AstBuilder builder = new AstBuilder(registry, true);
             Operation operation = builder.Build(new List<Token>() {
                 new Token() { Value = 2, TokenType = TokenType.Integer }, 
                 new Token() { Value = '*', TokenType = TokenType.Operation }, 
@@ -95,7 +95,7 @@ namespace Jace.Tests
         {
             IFunctionRegistry registry = new MockFunctionRegistry();
 
-            AstBuilder builder = new AstBuilder(registry);
+            AstBuilder builder = new AstBuilder(registry, true);
             Operation operation = builder.Build(new List<Token>() { 
                 new Token() { Value = 10, TokenType = TokenType.Integer }, 
                 new Token() { Value = '/', TokenType = TokenType.Operation }, 
@@ -115,7 +115,7 @@ namespace Jace.Tests
         {
             IFunctionRegistry registry = new MockFunctionRegistry();
 
-            AstBuilder builder = new AstBuilder(registry);
+            AstBuilder builder = new AstBuilder(registry, true);
             Operation operation = builder.Build(new List<Token>() { 
                 new Token() { Value = 10, TokenType = TokenType.Integer }, 
                 new Token() { Value = '*', TokenType = TokenType.Operation }, 
@@ -133,7 +133,7 @@ namespace Jace.Tests
         {
             IFunctionRegistry registry = new MockFunctionRegistry();
 
-            AstBuilder builder = new AstBuilder(registry);
+            AstBuilder builder = new AstBuilder(registry, true);
             Operation operation = builder.Build(new List<Token>() { 
                 new Token() { Value = 2, TokenType = TokenType.Integer }, 
                 new Token() { Value = '^', TokenType = TokenType.Operation }, 
@@ -151,7 +151,7 @@ namespace Jace.Tests
         {
             IFunctionRegistry registry = new MockFunctionRegistry();
 
-            AstBuilder builder = new AstBuilder(registry);
+            AstBuilder builder = new AstBuilder(registry, true);
             Operation operation = builder.Build(new List<Token>() { 
                 new Token() { Value = 2.7, TokenType = TokenType.FloatingPoint }, 
                 new Token() { Value = '%', TokenType = TokenType.Operation }, 
@@ -169,7 +169,7 @@ namespace Jace.Tests
         {
             IFunctionRegistry registry = new MockFunctionRegistry();
 
-            AstBuilder builder = new AstBuilder(registry);
+            AstBuilder builder = new AstBuilder(registry, true);
             Operation operation = builder.Build(new List<Token>() { 
                 new Token() { Value = 10, TokenType = TokenType.Integer }, 
                 new Token() { Value = '*', TokenType = TokenType.Operation }, 
@@ -187,7 +187,7 @@ namespace Jace.Tests
         {
             IFunctionRegistry registry = new MockFunctionRegistry();
 
-            AstBuilder builder = new AstBuilder(registry);
+            AstBuilder builder = new AstBuilder(registry, true);
             Operation operation = builder.Build(new List<Token>() { 
                 new Token() { Value = "var1", TokenType = TokenType.Text }, 
                 new Token() { Value = '+', TokenType = TokenType.Operation }, 
@@ -215,7 +215,7 @@ namespace Jace.Tests
         {
             IFunctionRegistry registry = new MockFunctionRegistry();
 
-            AstBuilder builder = new AstBuilder(registry);
+            AstBuilder builder = new AstBuilder(registry, true);
             Operation operation = builder.Build(new List<Token>() { 
                 new Token() { Value = "sin", TokenType = TokenType.Text }, 
                 new Token() { Value = '(', TokenType = TokenType.LeftBracket }, 
@@ -232,7 +232,7 @@ namespace Jace.Tests
         {
             IFunctionRegistry registry = new MockFunctionRegistry();
 
-            AstBuilder builder = new AstBuilder(registry);
+            AstBuilder builder = new AstBuilder(registry, true);
             Operation operation = builder.Build(new List<Token>() { 
                 new Token() { Value = "sin", TokenType = TokenType.Text }, 
                 new Token() { Value = '(', TokenType = TokenType.LeftBracket }, 
@@ -254,7 +254,7 @@ namespace Jace.Tests
         {
             IFunctionRegistry registry = new MockFunctionRegistry();
 
-            AstBuilder builder = new AstBuilder(registry);
+            AstBuilder builder = new AstBuilder(registry, true);
             Operation operation = builder.Build(new List<Token>() { 
                 new Token() { Value = "sin", TokenType = TokenType.Text }, 
                 new Token() { Value = '(', TokenType = TokenType.LeftBracket }, 
@@ -282,7 +282,7 @@ namespace Jace.Tests
         {
             IFunctionRegistry registry = new MockFunctionRegistry();
 
-            AstBuilder builder = new AstBuilder(registry);
+            AstBuilder builder = new AstBuilder(registry, true);
             Operation operation = builder.Build(new List<Token>() { 
                 new Token() { Value = 5.3, TokenType = TokenType.FloatingPoint }, 
                 new Token() { Value = '*', TokenType = TokenType.Operation}, 
@@ -309,7 +309,7 @@ namespace Jace.Tests
         {
             IFunctionRegistry registry = new MockFunctionRegistry();
 
-            AstBuilder builder = new AstBuilder(registry);
+            AstBuilder builder = new AstBuilder(registry, true);
 
             AssertExtensions.ThrowsException<ParseException>(() =>
                 {
@@ -329,7 +329,7 @@ namespace Jace.Tests
         {
             IFunctionRegistry registry = new MockFunctionRegistry();
 
-            AstBuilder builder = new AstBuilder(registry);
+            AstBuilder builder = new AstBuilder(registry, true);
 
             AssertExtensions.ThrowsException<ParseException>(() =>
                 {
@@ -349,7 +349,7 @@ namespace Jace.Tests
         {
             IFunctionRegistry registry = new MockFunctionRegistry();
 
-            AstBuilder builder = new AstBuilder(registry);
+            AstBuilder builder = new AstBuilder(registry, true);
 
             AssertExtensions.ThrowsException<ParseException>(() =>
                 {
@@ -367,7 +367,7 @@ namespace Jace.Tests
         {
             IFunctionRegistry registry = new MockFunctionRegistry();
 
-            AstBuilder builder = new AstBuilder(registry);
+            AstBuilder builder = new AstBuilder(registry, true);
 
             AssertExtensions.ThrowsException<ParseException>(() =>
                 {
@@ -385,7 +385,7 @@ namespace Jace.Tests
         {
             IFunctionRegistry registry = new MockFunctionRegistry();
 
-            AstBuilder builder = new AstBuilder(registry);
+            AstBuilder builder = new AstBuilder(registry, true);
 
             AssertExtensions.ThrowsException<ParseException>(() =>
                 {
