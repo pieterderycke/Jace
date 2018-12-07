@@ -11,18 +11,19 @@ namespace Jace
     public class AstBuilder
     {
         private readonly IFunctionRegistry functionRegistry;
-
+        private readonly bool adjustVariableCaseEnabled;
         private Dictionary<char, int> operationPrecedence = new Dictionary<char, int>();
         private Stack<Operation> resultStack = new Stack<Operation>();
         private Stack<Token> operatorStack = new Stack<Token>();
         private Stack<int> parameterCount = new Stack<int>();
 
-        public AstBuilder(IFunctionRegistry functionRegistry)
+        public AstBuilder(IFunctionRegistry functionRegistry, bool adjustVariableCaseEnabled)
         {
             if (functionRegistry == null)
                 throw new ArgumentNullException("functionRegistry");
 
             this.functionRegistry = functionRegistry;
+            this.adjustVariableCaseEnabled = adjustVariableCaseEnabled;
 
             operationPrecedence.Add('(', 0);
             operationPrecedence.Add('&', 1);
@@ -69,7 +70,12 @@ namespace Jace
                         }
                         else
                         {
-                            resultStack.Push(new Variable(((string)token.Value).ToLowerInvariant()));
+                            string tokenValue = (string)token.Value;
+                            if (adjustVariableCaseEnabled)
+                            {
+                              tokenValue = tokenValue.ToLowerInvariant();
+                            }
+                            resultStack.Push(new Variable(tokenValue));
                         }
                         break;
                     case TokenType.LeftBracket:

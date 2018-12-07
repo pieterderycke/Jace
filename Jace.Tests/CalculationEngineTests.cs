@@ -43,7 +43,7 @@ namespace Jace.Tests
         public void TestCalculateModuloCompiled()
         {
             CalculationEngine engine = 
-                new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, false, false);
+                new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, false, false, false);
             double result = engine.Calculate("5 % 3.0");
 
             Assert.AreEqual(2.0, result);
@@ -53,7 +53,7 @@ namespace Jace.Tests
         public void TestCalculateModuloInterpreted()
         {
             CalculationEngine engine = 
-                new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, false, false);
+                new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, false, false, false);
             double result = engine.Calculate("5 % 3.0");
 
             Assert.AreEqual(2.0, result);
@@ -86,6 +86,36 @@ namespace Jace.Tests
 
             CalculationEngine engine = new CalculationEngine();
             double result = engine.Calculate("var1*var2", variables);
+
+            Assert.AreEqual(8.5, result);
+        }
+
+        [TestMethod]
+        public void TestCalculateFormulaWithCaseSensitiveVariablesCompiled()
+        {
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("VaR1", 2.5);
+            variables.Add("vAr2", 3.4);
+            variables.Add("var1", 1);
+            variables.Add("var2", 1);
+
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, false, false, false);
+            double result = engine.Calculate("VaR1*vAr2", variables);
+
+            Assert.AreEqual(8.5, result);
+        }
+
+        [TestMethod]
+        public void TestCalculateFormulaWithCaseSensitiveVariablesInterpreted()
+        {
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("VaR1", 2.5);
+            variables.Add("vAr2", 3.4);
+            variables.Add("var1", 1);
+            variables.Add("var2", 1);
+
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, false, false, false);
+            double result = engine.Calculate("VaR1*vAr2", variables);
 
             Assert.AreEqual(8.5, result);
         }
@@ -128,7 +158,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestCalculateSineFunctionCompiled()
         {
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false, true);
             double result = engine.Calculate("sin(14)");
 
             Assert.AreEqual(Math.Sin(14.0), result);
@@ -146,7 +176,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestCalculateCosineFunctionCompiled()
         {
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false, true);
             double result = engine.Calculate("cos(41)");
 
             Assert.AreEqual(Math.Cos(41.0), result);
@@ -155,7 +185,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestCalculateLognFunctionInterpreted()
         {
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false, true);
             double result = engine.Calculate("logn(14, 3)");
 
             Assert.AreEqual(Math.Log(14.0, 3.0), result);
@@ -164,7 +194,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestCalculateLognFunctionCompiled()
         {
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false, true);
             double result = engine.Calculate("logn(14, 3)");
 
             Assert.AreEqual(Math.Log(14.0, 3.0), result);
@@ -173,7 +203,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestNegativeConstant()
         {
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false, true);
             double result = engine.Calculate("-100");
 
             Assert.AreEqual(-100.0, result);
@@ -182,7 +212,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestMultiplicationWithNegativeConstant()
         {
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false, true);
             double result = engine.Calculate("5*-100");
 
             Assert.AreEqual(-500.0, result);
@@ -191,7 +221,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestUnaryMinus1Compiled()
         {
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false, true);
             double result = engine.Calculate("-(1+2+(3+4))");
 
             Assert.AreEqual(-10.0, result);
@@ -200,7 +230,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestUnaryMinus1Interpreted()
         {
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false, true);
             double result = engine.Calculate("-(1+2+(3+4))");
 
             Assert.AreEqual(-10.0, result);
@@ -209,7 +239,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestUnaryMinus2Compiled()
         {
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false, true);
             double result = engine.Calculate("5+(-(1*2))");
 
             Assert.AreEqual(3.0, result);
@@ -218,7 +248,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestUnaryMinus2Interpreted()
         {
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false, true);
             double result = engine.Calculate("5+(-(1*2))");
 
             Assert.AreEqual(3.0, result);
@@ -227,7 +257,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestUnaryMinus3Compiled()
         {
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false, true);
             double result = engine.Calculate("5*(-(1*2)*3)");
 
             Assert.AreEqual(-30.0, result);
@@ -236,7 +266,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestUnaryMinus3Interpreted()
         {
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false, true);
             double result = engine.Calculate("5*(-(1*2)*3)");
 
             Assert.AreEqual(-30.0, result);
@@ -245,7 +275,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestUnaryMinus4Compiled()
         {
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false, true);
             double result = engine.Calculate("5* -(1*2)");
 
             Assert.AreEqual(-10.0, result);
@@ -254,7 +284,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestUnaryMinus4Interpreted()
         {
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false, true);
             double result = engine.Calculate("5* -(1*2)");
 
             Assert.AreEqual(-10.0, result);
@@ -263,7 +293,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestUnaryMinus5Compiled()
         {
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false, true);
             double result = engine.Calculate("-(1*2)^3");
 
             Assert.AreEqual(-8.0, result);
@@ -272,7 +302,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestUnaryMinus5Interpreted()
         {
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false, true);
             double result = engine.Calculate("-(1*2)^3");
 
             Assert.AreEqual(-8.0, result);
@@ -410,10 +440,34 @@ namespace Jace.Tests
         }
 
         [TestMethod]
+        public void TestVariableNameCaseSensitivityNoToLowerCompiled()
+        {
+          Dictionary<string, double> variables = new Dictionary<string, double>();
+          variables.Add("BlAbLa", 42.5);
+
+          CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, false, false, false);
+          double result = engine.Calculate("2 * BlAbLa", variables);
+
+          Assert.AreEqual(85.0, result);
+        }
+
+        [TestMethod]
+        public void TestVariableNameCaseSensitivityNoToLowerInterpreted()
+        {
+          Dictionary<string, double> variables = new Dictionary<string, double>();
+          variables.Add("BlAbLa", 42.5);
+
+          CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, false, false, false);
+          double result = engine.Calculate("2 * BlAbLa", variables);
+
+          Assert.AreEqual(85.0, result);
+        }
+
+    [TestMethod]
         public void TestCustomFunctionInterpreted()
         {
             CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture,
-                ExecutionMode.Interpreted, false, false);
+                ExecutionMode.Interpreted, false, false, false);
             engine.AddFunction("test", (a, b) => a + b);
 
             double result = engine.Calculate("test(2,3)");
@@ -424,7 +478,7 @@ namespace Jace.Tests
         public void TestCustomFunctionCompiled()
         {
             CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture,
-                ExecutionMode.Compiled, false, false);
+                ExecutionMode.Compiled, false, false, false);
             engine.AddFunction("test", (a, b) => a + b);
 
             double result = engine.Calculate("test(2,3)");
@@ -738,7 +792,7 @@ namespace Jace.Tests
         public void TestCustomFunctionFunc11Interpreted()
         {
             CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture,
-                ExecutionMode.Interpreted, false, false);
+                ExecutionMode.Interpreted, false, false, false);
             engine.AddFunction("test", (a, b, c, d, e, f, g, h, i, j, k) => a + b + c + d + e + f + g + h + i + j + k);
             double result = engine.Calculate("test(1,2,3,4,5,6,7,8,9,10,11)");
             double expected = (11 * (11 + 1)) / 2.0;
@@ -749,7 +803,7 @@ namespace Jace.Tests
         public void TestCustomFunctionFunc11Compiled()
         {
             CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture,
-                ExecutionMode.Compiled, false, false);
+                ExecutionMode.Compiled, false, false, false);
             engine.AddFunction("test", (a, b, c, d, e, f, g, h, i, j, k) => a + b + c + d + e + f + g + h + i + j + k);
             double result = engine.Calculate("test(1,2,3,4,5,6,7,8,9,10,11)");
             double expected = (11 * (11 + 1)) / 2.0;
@@ -760,7 +814,7 @@ namespace Jace.Tests
         public void TestCustomFunctionDynamicFuncInterpreted()
         {
             CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture,
-                ExecutionMode.Interpreted, false, false);
+                ExecutionMode.Interpreted, false, false, false);
 
             double DoSomething(params double[] a)
             {
@@ -777,7 +831,7 @@ namespace Jace.Tests
         public void TestCustomFunctionDynamicFuncCompiled()
         {
             CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture,
-                ExecutionMode.Compiled, false, false);
+                ExecutionMode.Compiled, false, false, false);
 
             double DoSomething(params double[] a)
             {
@@ -794,7 +848,7 @@ namespace Jace.Tests
         public void TestCustomFunctionDynamicFuncNestedInterpreted()
         {
             CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture,
-                ExecutionMode.Interpreted, false, false);
+                ExecutionMode.Interpreted, false, false, false);
 
             double DoSomething(params double[] a)
             {
@@ -811,7 +865,7 @@ namespace Jace.Tests
         public void TestCustomFunctionDynamicFuncNestedDynamicCompiled()
         {
             CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture,
-                ExecutionMode.Compiled, false, false);
+                ExecutionMode.Compiled, false, false, false);
 
             double DoSomething(params double[] a)
             {

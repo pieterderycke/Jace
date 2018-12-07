@@ -13,9 +13,12 @@ namespace Jace.Execution
     public class DynamicCompiler : IExecutor
     {
         private string FuncAssemblyQualifiedName;
+        private readonly bool adjustVariableCaseEnabled;
 
-        public DynamicCompiler()
+        public DynamicCompiler(): this(true) { }
+        public DynamicCompiler(bool adjustVariableCaseEnabled)
         {
+            this.adjustVariableCaseEnabled = adjustVariableCaseEnabled;
             // The lower func reside in mscorelib, the higher ones in another assembly.
             // This is  an easy cross platform way to to have this AssemblyQualifiedName.
             FuncAssemblyQualifiedName =
@@ -37,12 +40,17 @@ namespace Jace.Execution
             IFunctionRegistry functionRegistry)
         {
             Func<FormulaContext, double> func = BuildFormulaInternal(operation, functionRegistry);
-            return variables =>
+            return adjustVariableCaseEnabled
+                ? (Func<IDictionary<string, double>, double>)(variables =>
                 {
-                    variables = EngineUtil.ConvertVariableNamesToLowerCase(variables);
-                    FormulaContext context = new FormulaContext(variables, functionRegistry);
-                    return func(context);
-                };
+                  variables = EngineUtil.ConvertVariableNamesToLowerCase(variables);
+                  FormulaContext context = new FormulaContext(variables, functionRegistry);
+                  return func(context);
+                })
+                : (Func<IDictionary<string, double>, double>)(variables =>
+                {
+                  return func(new FormulaContext(variables, functionRegistry));
+                });
         }
 
         private Func<FormulaContext, double> BuildFormulaInternal(Operation operation, 
