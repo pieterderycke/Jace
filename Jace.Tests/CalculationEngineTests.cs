@@ -43,7 +43,7 @@ namespace Jace.Tests
         public void TestCalculateModuloCompiled()
         {
             CalculationEngine engine = 
-                new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, false, false, false);
+                new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, false, false, true);
             double result = engine.Calculate("5 % 3.0");
 
             Assert.AreEqual(2.0, result);
@@ -53,7 +53,7 @@ namespace Jace.Tests
         public void TestCalculateModuloInterpreted()
         {
             CalculationEngine engine = 
-                new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, false, false, false);
+                new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, false, false, true);
             double result = engine.Calculate("5 % 3.0");
 
             Assert.AreEqual(2.0, result);
@@ -881,7 +881,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestAndCompiled()
         {
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false, true);
             double result = engine.Calculate("(1 && 0)");
             Assert.AreEqual(0, result);
         }
@@ -889,7 +889,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestAndInterpreted()
         {
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false, true);
             double result = engine.Calculate("(1 && 0)");
             Assert.AreEqual(0, result);
         }
@@ -897,7 +897,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestOr1Compiled()
         {
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false, true);
             double result = engine.Calculate("(1 || 0)");
             Assert.AreEqual(1, result);
         }
@@ -905,7 +905,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestOr1Interpreted()
         {
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false, true);
             double result = engine.Calculate("(1 || 0)");
             Assert.AreEqual(1, result);
         }
@@ -913,7 +913,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestOr2Compiled()
         {
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false, true);
             double result = engine.Calculate("(0 || 0)");
             Assert.AreEqual(0, result);
         }
@@ -921,7 +921,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestOr2Interpreted()
         {
-            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false, true);
             double result = engine.Calculate("(0 || 0)");
             Assert.AreEqual(0, result);
         }
