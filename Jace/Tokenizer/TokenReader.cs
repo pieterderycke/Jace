@@ -43,6 +43,7 @@ namespace Jace.Tokenizer
             char[] characters = formula.ToCharArray();
 
             bool isFormulaSubPart = true;
+            bool isScientific = false;
 
             for(int i = 0; i < characters.Length; i++)
             {
@@ -50,9 +51,23 @@ namespace Jace.Tokenizer
                 {
                     string buffer = "" + characters[i];
                     int startPosition = i;
+                                       
 
                     while (++i < characters.Length && IsPartOfNumeric(characters[i], false, isFormulaSubPart))
                     {
+                        if (isScientific && IsScientificNotation(characters[i]))
+                            throw new ParseException(string.Format("Invalid token \"{0}\" detected at position {1}.", characters[i], i));
+
+                        if (IsScientificNotation(characters[i]))
+                        {
+                            isScientific = IsScientificNotation(characters[i]);
+
+                            if (characters[i + 1] == '-')
+                            {
+                                buffer += characters[i++];
+                            }
+                        }
+
                         buffer += characters[i];
                     }
 
@@ -206,7 +221,7 @@ namespace Jace.Tokenizer
 
         private bool IsPartOfNumeric(char character, bool isFirstCharacter, bool isFormulaSubPart)
         {
-            return character == decimalSeparator || (character >= '0' && character <= '9') || (isFormulaSubPart && isFirstCharacter && character == '-');
+            return character == decimalSeparator || (character >= '0' && character <= '9') || (isFormulaSubPart && isFirstCharacter && character == '-') || character == 'e' || character == 'E';
         }
 
         private bool IsPartOfVariable(char character, bool isFirstCharacter)
@@ -227,6 +242,11 @@ namespace Jace.Tokenizer
             }
             else
                 return false;
+        }
+
+        private bool IsScientificNotation(char currentToken)
+        {
+            return currentToken == 'e' || currentToken == 'E';
         }
     }
 }

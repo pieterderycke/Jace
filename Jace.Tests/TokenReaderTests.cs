@@ -464,5 +464,39 @@ namespace Jace.Tests
                 List<Token> tokens = reader.Read("$1+$2+$3");
             });
         }
+
+        [TestMethod]
+        public void TestTokenReader20()
+        {
+            TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
+            List<Token> tokens = reader.Read("2.11E-3");
+
+            Assert.AreEqual(1, tokens.Count);
+            
+            Assert.AreEqual(2.11E-3, tokens[0].Value);
+            Assert.AreEqual(0, tokens[0].StartPosition);
+            Assert.AreEqual(7, tokens[0].Length);
+        }
+
+        [TestMethod]
+        public void TestTokenReader21()
+        {
+            TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
+            List<Token> tokens = reader.Read("var_1+2.11E-3");
+
+            Assert.AreEqual(3, tokens.Count);
+
+            Assert.AreEqual("var_1", tokens[0].Value);
+            Assert.AreEqual(0, tokens[0].StartPosition);
+            Assert.AreEqual(5, tokens[0].Length);
+
+            Assert.AreEqual('+', tokens[1].Value);
+            Assert.AreEqual(5, tokens[1].StartPosition);
+            Assert.AreEqual(1, tokens[1].Length);
+
+            Assert.AreEqual(2.11E-3, tokens[2].Value);
+            Assert.AreEqual(6, tokens[2].StartPosition);
+            Assert.AreEqual(7, tokens[2].Length);
+        }
     }
 }
