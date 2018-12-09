@@ -292,7 +292,15 @@ namespace Jace
                 {
                     FunctionInfo functionInfo = functionRegistry.GetFunctionInfo(functionName);
 
-                    int numberOfParameters = functionInfo.IsDynamicFunc ? parameterCount.Pop() : functionInfo.NumberOfParameters;
+                    int numberOfParameters;
+
+                    if (functionInfo.IsDynamicFunc) {
+                        numberOfParameters = parameterCount.Pop();
+                    }
+                    else {
+                        parameterCount.Pop();
+                        numberOfParameters = functionInfo.NumberOfParameters;
+                    }
                     
                     List<Operation> operations = new List<Operation>();
                     for (int i = 0; i < numberOfParameters; i++)
