@@ -61,18 +61,28 @@ namespace Jace
         {
         }
 
-    /// <summary>
-    /// Creates a new instance of the <see cref="CalculationEngine"/> class.
-    /// </summary>
-    /// <param name="cultureInfo">
-    /// The <see cref="CultureInfo"/> required for correctly reading floating poin numbers.
-    /// </param>
-    /// <param name="executionMode">The execution mode that must be used for formula execution.</param>
-    /// <param name="cacheEnabled">Enable or disable caching of mathematical formulas.</param>
-    /// <param name="optimizerEnabled">Enable or disable optimizing of formulas.</param>
-    /// <param name="adjustVariableCaseEnabled">Enable or disable auto lowercasing of variables.</param>
-    public CalculationEngine(CultureInfo cultureInfo, ExecutionMode executionMode, bool cacheEnabled, bool optimizerEnabled, bool adjustVariableCaseEnabled)
+        /// <summary>
+        /// Creates a new instance of the <see cref="CalculationEngine"/> class.
+        /// </summary>
+        /// <param name="cultureInfo">
+        /// The <see cref="CultureInfo"/> required for correctly reading floating poin numbers.
+        /// </param>
+        /// <param name="executionMode">The execution mode that must be used for formula execution.</param>
+        /// <param name="cacheEnabled">Enable or disable caching of mathematical formulas.</param>
+        /// <param name="optimizerEnabled">Enable or disable optimizing of formulas.</param>
+        /// <param name="adjustVariableCaseEnabled">Enable or disable auto lowercasing of variables.</param>
+        public CalculationEngine(CultureInfo cultureInfo, ExecutionMode executionMode, bool cacheEnabled, bool optimizerEnabled, bool adjustVariableCaseEnabled)
             : this(cultureInfo, executionMode, cacheEnabled, optimizerEnabled, adjustVariableCaseEnabled, true, true)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="CalculationEngine"/> class.
+        /// </summary>
+        /// <param name="options">The <see cref="JaceOptions"/> to configure the behaviour of the engine.</param>
+        public CalculationEngine(JaceOptions options)
+            : this(options.CultureInfo, options.ExecutionMode, options.CacheEnabled, options.OptimizerEnabled, options.AdjustVariableCase,
+                  options.DefaultFunctions, options.DefaultConstants)
         {
         }
 
