@@ -925,5 +925,37 @@ namespace Jace.Tests
             double result = engine.Calculate("(0 || 0)");
             Assert.AreEqual(0, result);
         }
+
+        [TestMethod]
+        public void TestMedian1Compiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false, true);
+            double result = engine.Calculate("median(3,1,5,4,2)");
+            Assert.AreEqual(3, result);
+        }
+
+        [TestMethod]
+        public void TestMedian1Interpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false, true);
+            double result = engine.Calculate("median(3,1,5,4,2)");
+            Assert.AreEqual(3, result);
+        }
+
+        [TestMethod]
+        public void TestMedian2Compiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false, true);
+            double result = engine.Calculate("median(3,1,5,4)");
+            Assert.AreEqual(3, result);
+        }
+
+        [TestMethod]
+        public void TestMedian2Interpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false, true);
+            double result = engine.Calculate("median(3,1,5,4)");
+            Assert.AreEqual(3, result);
+        }
     }
 }

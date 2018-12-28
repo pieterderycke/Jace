@@ -353,6 +353,7 @@ namespace Jace
             FunctionRegistry.RegisterFunction("max",  (DynamicFunc<double, double>)((a) => a.Max()), false);
             FunctionRegistry.RegisterFunction("min", (DynamicFunc<double, double>)((a) => a.Min()), false);
             FunctionRegistry.RegisterFunction("avg", (DynamicFunc<double, double>)((a) => a.Average()), false);
+            FunctionRegistry.RegisterFunction("median", (DynamicFunc<double, double>)((a) => MathExtended.Median(a)), false);
         }
 
         private void RegisterDefaultConstants()
