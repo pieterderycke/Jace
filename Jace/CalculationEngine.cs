@@ -358,6 +358,7 @@ namespace Jace
             FunctionRegistry.RegisterFunction("ceiling", (Func<double, double>)((a) => Math.Ceiling(a)), false);
             FunctionRegistry.RegisterFunction("floor", (Func<double, double>)((a) => Math.Floor(a)), false);
             FunctionRegistry.RegisterFunction("truncate", (Func<double, double>)((a) => Math.Truncate(a)), false);
+            FunctionRegistry.RegisterFunction("round", (Func<double, double>)((a) => Math.Round(a)), false);
 
             // Dynamic based arguments Functions
             FunctionRegistry.RegisterFunction("max",  (DynamicFunc<double, double>)((a) => a.Max()), false);
