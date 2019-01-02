@@ -221,7 +221,7 @@ namespace Jace.Tokenizer
 
         private bool IsPartOfNumeric(char character, bool isFirstCharacter, bool isFormulaSubPart)
         {
-            return character == decimalSeparator || (character >= '0' && character <= '9') || (isFormulaSubPart && isFirstCharacter && character == '-') || character == 'e' || character == 'E';
+            return character == decimalSeparator || (character >= '0' && character <= '9') || (isFormulaSubPart && isFirstCharacter && character == '-') || (!isFirstCharacter && character == 'e') || (!isFirstCharacter && character == 'E');
         }
 
         private bool IsPartOfVariable(char character, bool isFirstCharacter)

@@ -521,5 +521,39 @@ namespace Jace.Tests
             Assert.AreEqual(0, tokens[0].StartPosition);
             Assert.AreEqual(6, tokens[0].Length);
         }
+
+        [TestMethod]
+        public void TestTokenReader24()
+        {
+            TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
+            List<Token> tokens = reader.Read("1 * e");
+
+            Assert.AreEqual(3, tokens.Count);
+
+            Assert.AreEqual(1, tokens[0].Value);
+            Assert.AreEqual(0, tokens[0].StartPosition);
+            Assert.AreEqual(1, tokens[0].Length);
+
+            Assert.AreEqual('*', tokens[1].Value);
+            Assert.AreEqual(2, tokens[1].StartPosition);
+            Assert.AreEqual(1, tokens[1].Length);
+
+            Assert.AreEqual("e", tokens[2].Value);
+            Assert.AreEqual(4, tokens[2].StartPosition);
+            Assert.AreEqual(1, tokens[2].Length);
+        }
+
+        [TestMethod]
+        public void TestTokenReader25()
+        {
+            TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
+            List<Token> tokens = reader.Read("e");
+
+            Assert.AreEqual(1, tokens.Count);
+
+            Assert.AreEqual("e", tokens[0].Value);
+            Assert.AreEqual(0, tokens[0].StartPosition);
+            Assert.AreEqual(1, tokens[0].Length);
+        }
     }
 }

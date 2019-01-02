@@ -1,4 +1,4 @@
-SET version=0.9.1
+SET version=0.9.2
 
 SET msbuild="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\msbuild.exe"
 
