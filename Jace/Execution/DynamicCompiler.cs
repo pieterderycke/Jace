@@ -60,13 +60,11 @@ namespace Jace.Execution
 
             LabelTarget returnLabel = Expression.Label(typeof(double));
 
-            return Expression.Lambda<Func<FormulaContext, double>>(
-                Expression.Block(
-                    Expression.Return(returnLabel, GenerateMethodBody(operation, contextParameter, functionRegistry)),
-                    Expression.Label(returnLabel, Expression.Constant(0.0))
-                ),
+            Expression<Func<FormulaContext, double>> lambda = Expression.Lambda<Func<FormulaContext, double>>(
+                GenerateMethodBody(operation, contextParameter, functionRegistry),
                 contextParameter
-            ).Compile();
+            );
+            return lambda.Compile();
         }
 
         private Expression GenerateMethodBody(Operation operation, ParameterExpression contextParameter,
@@ -79,7 +77,8 @@ namespace Jace.Execution
             {
                 IntegerConstant constant = (IntegerConstant)operation;
 
-                return Expression.Convert(Expression.Constant(constant.Value, typeof(int)), typeof(double));
+                double value = constant.Value;
+                return Expression.Constant(value, typeof(double));
             }
             else if (operation.GetType() == typeof(FloatingPointConstant))
             {
@@ -289,16 +288,25 @@ namespace Jace.Execution
 
                 ParameterExpression functionInfoVariable = Expression.Variable(typeof(FunctionInfo));
 
-                return Expression.Block(
-                    new[] { functionInfoVariable },
-                    Expression.Assign(
-                        functionInfoVariable,
-                        Expression.Call(getFunctionRegistry, typeof(IFunctionRegistry).GetRuntimeMethod("GetFunctionInfo", new Type[] { typeof(string) }), Expression.Constant(function.FunctionName))
-                    ),
-                    Expression.Call(
-                        Expression.Convert(Expression.Property(functionInfoVariable, "Function"), funcType),
-                        funcType.GetRuntimeMethod("Invoke", parameterTypes),
-                        arguments));
+                Expression funcInstance;
+                if (!functionInfo.IsOverWritable)
+                {
+                    funcInstance = Expression.Convert(
+                        Expression.Property(
+                            Expression.Call(
+                                getFunctionRegistry,
+                                typeof(IFunctionRegistry).GetRuntimeMethod("GetFunctionInfo", new Type[] { typeof(string) }),
+                                Expression.Constant(function.FunctionName)),
+                            "Function"),
+                        funcType);
+                }
+                else
+                    funcInstance = Expression.Constant(functionInfo.Function, funcType);
+
+                return Expression.Call(
+                    funcInstance,
+                    funcType.GetRuntimeMethod("Invoke", parameterTypes),
+                    arguments);
             }
             else
             {
