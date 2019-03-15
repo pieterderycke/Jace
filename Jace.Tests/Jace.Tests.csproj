@@ -64,6 +64,7 @@
     <Compile Include="FuncAdapterTests.cs" />
     <Compile Include="FunctionRegistryTests.cs" />
     <Compile Include="MemoryCacheTests.cs" />
+    <Compile Include="Mocks\MockConstantRegistry.cs" />
     <Compile Include="Mocks\MockFunctionRegistry.cs" />
     <Compile Include="TokenReaderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
