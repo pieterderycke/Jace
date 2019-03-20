@@ -28,13 +28,13 @@ namespace Jace.Benchmark
             Console.WriteLine("Number Of Tests: {0}", NumberOfTests.ToString("N0"));
             Console.WriteLine();
 
-            //Console.WriteLine("Interpreted Mode:");
-            //CalculationEngine interpretedEngine = new CalculationEngine(CultureInfo.CurrentCulture, ExecutionMode.Interpreted, true, true, true);
-            //BenchMarkCalculationEngine(interpretedEngine, "2+3*7");
+            Console.WriteLine("Interpreted Mode:");
+            CalculationEngine interpretedEngine = new CalculationEngine(CultureInfo.CurrentCulture, ExecutionMode.Interpreted, true, true, true);
+            BenchMarkCalculationEngine(interpretedEngine, "2+3*7");
 
-            //Console.WriteLine("Interpreted Mode(Case Sensitive):");
-            //CalculationEngine interpretedEngineCaseSensitive = new CalculationEngine(CultureInfo.CurrentCulture, ExecutionMode.Interpreted, true, true, false);
-            //BenchMarkCalculationEngine(interpretedEngineCaseSensitive, "2+3*7");
+            Console.WriteLine("Interpreted Mode(Case Sensitive):");
+            CalculationEngine interpretedEngineCaseSensitive = new CalculationEngine(CultureInfo.CurrentCulture, ExecutionMode.Interpreted, true, true, false);
+            BenchMarkCalculationEngine(interpretedEngineCaseSensitive, "2+3*7");
 
             Console.WriteLine("Compiled Mode:");
             CalculationEngine compiledEngine = new CalculationEngine(CultureInfo.CurrentCulture, ExecutionMode.Compiled, true, true, true);
@@ -44,16 +44,16 @@ namespace Jace.Benchmark
             CalculationEngine compiledEngineCaseSensitive = new CalculationEngine(CultureInfo.CurrentCulture, ExecutionMode.Compiled, true, true, false);
             BenchMarkCalculationEngine(compiledEngineCaseSensitive, "2+3*7");
 
-            //Console.WriteLine("--------------------");
-            //Console.WriteLine("Function: {0}", "(var1 + var2 * 3)/(2+3) - something");
-            //Console.WriteLine("Number Of Tests: {0}", NumberOfTests.ToString("N0"));
-            //Console.WriteLine();
+            Console.WriteLine("--------------------");
+            Console.WriteLine("Function: {0}", "(var1 + var2 * 3)/(2+3) - something");
+            Console.WriteLine("Number Of Tests: {0}", NumberOfTests.ToString("N0"));
+            Console.WriteLine();
 
-            //Console.WriteLine("Interpreted Mode:");
-            //BenchMarkCalculationEngineFunctionBuild(interpretedEngine, "(var1 + var2 * 3)/(2+3) - something");
+            Console.WriteLine("Interpreted Mode:");
+            BenchMarkCalculationEngineFunctionBuild(interpretedEngine, "(var1 + var2 * 3)/(2+3) - something");
 
-            //Console.WriteLine("Interpreted Mode(Case Sensitive):");
-            //BenchMarkCalculationEngineFunctionBuild(interpretedEngineCaseSensitive, "(var1 + var2 * 3)/(2+3) - something");
+            Console.WriteLine("Interpreted Mode(Case Sensitive):");
+            BenchMarkCalculationEngineFunctionBuild(interpretedEngineCaseSensitive, "(var1 + var2 * 3)/(2+3) - something");
 
             Console.WriteLine("Compiled Mode:");
             BenchMarkCalculationEngineFunctionBuild(compiledEngine, "(var1 + var2 * 3)/(2+3) - something");
@@ -61,21 +61,21 @@ namespace Jace.Benchmark
             Console.WriteLine("Compiled Mode(Case Sensitive):");
             BenchMarkCalculationEngineFunctionBuild(compiledEngineCaseSensitive, "(var1 + var2 * 3)/(2+3) - something");
 
-            //Console.WriteLine("--------------------");
-            //Console.WriteLine("Random Generated Functions: {0}", NumberOfFunctionsToGenerate.ToString("N0"));
-            //Console.WriteLine("Number Of Variables Of Each Function: {0}", 3);
-            //Console.WriteLine("Number Of Executions For Each Function: {0}", NumberExecutionsPerRandomFunction.ToString("N0"));
-            //Console.WriteLine("Total Number Of Executions: {0}", (NumberExecutionsPerRandomFunction * NumberOfFunctionsToGenerate).ToString("N0"));
-            //Console.WriteLine("Parallel: {0}", true);
-            //Console.WriteLine();
+            Console.WriteLine("--------------------");
+            Console.WriteLine("Random Generated Functions: {0}", NumberOfFunctionsToGenerate.ToString("N0"));
+            Console.WriteLine("Number Of Variables Of Each Function: {0}", 3);
+            Console.WriteLine("Number Of Executions For Each Function: {0}", NumberExecutionsPerRandomFunction.ToString("N0"));
+            Console.WriteLine("Total Number Of Executions: {0}", (NumberExecutionsPerRandomFunction * NumberOfFunctionsToGenerate).ToString("N0"));
+            Console.WriteLine("Parallel: {0}", true);
+            Console.WriteLine();
 
             List<string> functions = GenerateRandomFunctions(NumberOfFunctionsToGenerate);
 
-            //Console.WriteLine("Interpreted Mode:");
-            //BenchMarkCalculationEngineRandomFunctionBuild(interpretedEngine, functions, NumberExecutionsPerRandomFunction);
+            Console.WriteLine("Interpreted Mode:");
+            BenchMarkCalculationEngineRandomFunctionBuild(interpretedEngine, functions, NumberExecutionsPerRandomFunction);
 
-            //Console.WriteLine("Interpreted Mode(Case Sensitive):");
-            //BenchMarkCalculationEngineRandomFunctionBuild(interpretedEngineCaseSensitive, functions, NumberExecutionsPerRandomFunction);
+            Console.WriteLine("Interpreted Mode(Case Sensitive):");
+            BenchMarkCalculationEngineRandomFunctionBuild(interpretedEngineCaseSensitive, functions, NumberExecutionsPerRandomFunction);
 
             Console.WriteLine("Compiled Mode:");
             BenchMarkCalculationEngineRandomFunctionBuild(compiledEngine, functions, NumberExecutionsPerRandomFunction);
