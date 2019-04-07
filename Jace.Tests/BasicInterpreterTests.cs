@@ -25,12 +25,13 @@ namespace Jace.Tests
         public void TestBasicInterpreterSubstraction()
         {
             IFunctionRegistry functionRegistry = new MockFunctionRegistry();
+            IConstantRegistry constantRegistry = new MockConstantRegistry();
 
             IExecutor executor = new Interpreter();
             double result = executor.Execute(new Subtraction(
                 DataType.Integer,
                 new IntegerConstant(6),
-                new IntegerConstant(9)), functionRegistry);
+                new IntegerConstant(9)), functionRegistry, constantRegistry);
 
             Assert.AreEqual(-3.0, result);
         }
@@ -39,6 +40,7 @@ namespace Jace.Tests
         public void TestBasicInterpreter1()
         {
             IFunctionRegistry functionRegistry = new MockFunctionRegistry();
+            IConstantRegistry constantRegistry = new MockConstantRegistry();
 
             IExecutor executor = new Interpreter();
             // 6 + (2 * 4)
@@ -49,7 +51,7 @@ namespace Jace.Tests
                     new Multiplication(
                         DataType.Integer, 
                         new IntegerConstant(2), 
-                        new IntegerConstant(4))), functionRegistry);
+                        new IntegerConstant(4))), functionRegistry, constantRegistry);
 
             Assert.AreEqual(14.0, result);
         }
@@ -58,6 +60,7 @@ namespace Jace.Tests
         public void TestBasicInterpreterWithVariables()
         {
             IFunctionRegistry functionRegistry = new MockFunctionRegistry();
+            IConstantRegistry constantRegistry = new MockConstantRegistry();
 
             Dictionary<string, double> variables = new Dictionary<string, double>();
             variables.Add("var1", 2);
@@ -74,7 +77,7 @@ namespace Jace.Tests
                         new Multiplication(
                             DataType.FloatingPoint, 
                             new IntegerConstant(3),
-                            new Variable("age")))), functionRegistry, variables);
+                            new Variable("age")))), functionRegistry, constantRegistry, variables);
 
             Assert.AreEqual(26.0, result);
         }

@@ -19,26 +19,29 @@ namespace Jace.Execution
             this.adjustVariableCaseEnabled = adjustVariableCaseEnabled;
         }
         public Func<IDictionary<string, double>, double> BuildFormula(Operation operation, 
-            IFunctionRegistry functionRegistry)
+            IFunctionRegistry functionRegistry,
+            IConstantRegistry constantRegistry)
         {
             return adjustVariableCaseEnabled
               ? (Func<IDictionary<string, double>, double>)(variables =>
               {
                 variables = EngineUtil.ConvertVariableNamesToLowerCase(variables);
-                return Execute(operation, functionRegistry, variables);
+                return Execute(operation, functionRegistry, constantRegistry, variables);
               })
               : (Func<IDictionary<string, double>, double>)(variables =>
               {
-                return Execute(operation, functionRegistry, variables);
+                return Execute(operation, functionRegistry, constantRegistry,variables);
               });
         }
 
-        public double Execute(Operation operation, IFunctionRegistry functionRegistry)
+        public double Execute(Operation operation, IFunctionRegistry functionRegistry, IConstantRegistry constantRegistry)
         {
-            return Execute(operation, functionRegistry, new Dictionary<string, double>());
+            return Execute(operation, functionRegistry, constantRegistry, new Dictionary<string, double>());
         }
 
-        public double Execute(Operation operation, IFunctionRegistry functionRegistry, 
+        public double Execute(Operation operation,
+            IFunctionRegistry functionRegistry,
+            IConstantRegistry constantRegistry, 
             IDictionary<string, double> variables)
         {
             if (operation == null)
@@ -69,83 +72,83 @@ namespace Jace.Execution
             else if (operation.GetType() == typeof(Multiplication))
             {
                 Multiplication multiplication = (Multiplication)operation;
-                return Execute(multiplication.Argument1, functionRegistry, variables) * Execute(multiplication.Argument2, functionRegistry, variables);
+                return Execute(multiplication.Argument1, functionRegistry, constantRegistry,  variables) * Execute(multiplication.Argument2, functionRegistry, constantRegistry,  variables);
             }
             else if (operation.GetType() == typeof(Addition))
             {
                 Addition addition = (Addition)operation;
-                return Execute(addition.Argument1, functionRegistry, variables) + Execute(addition.Argument2, functionRegistry, variables);
+                return Execute(addition.Argument1, functionRegistry, constantRegistry,  variables) + Execute(addition.Argument2, functionRegistry, constantRegistry,  variables);
             }
             else if (operation.GetType() == typeof(Subtraction))
             {
                 Subtraction addition = (Subtraction)operation;
-                return Execute(addition.Argument1, functionRegistry, variables) - Execute(addition.Argument2, functionRegistry, variables);
+                return Execute(addition.Argument1, functionRegistry, constantRegistry,  variables) - Execute(addition.Argument2, functionRegistry, constantRegistry,  variables);
             }
             else if (operation.GetType() == typeof(Division))
             {
                 Division division = (Division)operation;
-                return Execute(division.Dividend, functionRegistry, variables) / Execute(division.Divisor, functionRegistry, variables);
+                return Execute(division.Dividend, functionRegistry, constantRegistry,  variables) / Execute(division.Divisor, functionRegistry, constantRegistry,  variables);
             }
             else if (operation.GetType() == typeof(Modulo))
             {
                 Modulo division = (Modulo)operation;
-                return Execute(division.Dividend, functionRegistry, variables) % Execute(division.Divisor, functionRegistry, variables);
+                return Execute(division.Dividend, functionRegistry, constantRegistry,  variables) % Execute(division.Divisor, functionRegistry, constantRegistry,  variables);
             }
             else if (operation.GetType() == typeof(Exponentiation))
             {
                 Exponentiation exponentiation = (Exponentiation)operation;
-                return Math.Pow(Execute(exponentiation.Base, functionRegistry, variables), Execute(exponentiation.Exponent, functionRegistry, variables));
+                return Math.Pow(Execute(exponentiation.Base, functionRegistry, constantRegistry,  variables), Execute(exponentiation.Exponent, functionRegistry, constantRegistry,  variables));
             }
             else if (operation.GetType() == typeof(UnaryMinus))
             {
                 UnaryMinus unaryMinus = (UnaryMinus)operation;
-                return -Execute(unaryMinus.Argument, functionRegistry, variables);
+                return -Execute(unaryMinus.Argument, functionRegistry, constantRegistry,  variables);
             }
             else if (operation.GetType() == typeof(And))
             {
                 And and = (And)operation;
-                var operation1 = Execute(and.Argument1, functionRegistry, variables) != 0;
-                var operation2 = Execute(and.Argument2, functionRegistry, variables) != 0;
+                var operation1 = Execute(and.Argument1, functionRegistry, constantRegistry,  variables) != 0;
+                var operation2 = Execute(and.Argument2, functionRegistry, constantRegistry,  variables) != 0;
 
                 return (operation1 && operation2) ? 1.0 : 0.0;
             }
             else if (operation.GetType() == typeof(Or))
             {
                 Or or = (Or)operation;
-                var operation1 = Execute(or.Argument1, functionRegistry, variables) != 0;
-                var operation2 = Execute(or.Argument2, functionRegistry, variables) != 0;
+                var operation1 = Execute(or.Argument1, functionRegistry, constantRegistry,  variables) != 0;
+                var operation2 = Execute(or.Argument2, functionRegistry, constantRegistry,  variables) != 0;
 
                 return (operation1 || operation2) ? 1.0 : 0.0;
             }
             else if(operation.GetType() == typeof(LessThan))
             {
                 LessThan lessThan = (LessThan)operation;
-                return (Execute(lessThan.Argument1, functionRegistry, variables) < Execute(lessThan.Argument2, functionRegistry, variables)) ? 1.0 : 0.0;
+                return (Execute(lessThan.Argument1, functionRegistry, constantRegistry,  variables) < Execute(lessThan.Argument2, functionRegistry, constantRegistry,  variables)) ? 1.0 : 0.0;
             }
             else if (operation.GetType() == typeof(LessOrEqualThan))
             {
                 LessOrEqualThan lessOrEqualThan = (LessOrEqualThan)operation;
-                return (Execute(lessOrEqualThan.Argument1, functionRegistry, variables) <= Execute(lessOrEqualThan.Argument2, functionRegistry, variables)) ? 1.0 : 0.0;
+                return (Execute(lessOrEqualThan.Argument1, functionRegistry, constantRegistry,  variables) <= Execute(lessOrEqualThan.Argument2, functionRegistry, constantRegistry,  variables)) ? 1.0 : 0.0;
             }
             else if (operation.GetType() == typeof(GreaterThan))
             {
                 GreaterThan greaterThan = (GreaterThan)operation;
-                return (Execute(greaterThan.Argument1, functionRegistry, variables) > Execute(greaterThan.Argument2, functionRegistry, variables)) ? 1.0 : 0.0;
+                return (Execute(greaterThan.Argument1, functionRegistry, constantRegistry,  variables) > Execute(greaterThan.Argument2, functionRegistry, constantRegistry,  variables)) ? 1.0 : 0.0;
             }
             else if (operation.GetType() == typeof(GreaterOrEqualThan))
             {
                 GreaterOrEqualThan greaterOrEqualThan = (GreaterOrEqualThan)operation;
-                return (Execute(greaterOrEqualThan.Argument1, functionRegistry, variables) >= Execute(greaterOrEqualThan.Argument2, functionRegistry, variables)) ? 1.0 : 0.0;
+                return (Execute(greaterOrEqualThan.Argument1, functionRegistry, constantRegistry,  variables) >= Execute(greaterOrEqualThan.Argument2, functionRegistry, constantRegistry,  variables)) ? 1.0 : 0.0;
             }
             else if (operation.GetType() == typeof(Equal))
             {
                 Equal equal = (Equal)operation;
-                return (Execute(equal.Argument1, functionRegistry, variables) == Execute(equal.Argument2, functionRegistry, variables)) ? 1.0 : 0.0;
+                return (Execute(equal.Argument1, functionRegistry, constantRegistry,  variables) == Execute(equal.Argument2, functionRegistry, constantRegistry,  variables)) ? 1.0 : 0.0;
             }
             else if (operation.GetType() == typeof(NotEqual))
             {
                 NotEqual notEqual = (NotEqual)operation;
-                return (Execute(notEqual.Argument1, functionRegistry, variables) != Execute(notEqual.Argument2, functionRegistry, variables)) ? 1.0 : 0.0;
+                return (Execute(notEqual.Argument1, functionRegistry, constantRegistry,  variables) != Execute(notEqual.Argument2, functionRegistry, constantRegistry,  variables)) ? 1.0 : 0.0;
             }
             else if (operation.GetType() == typeof(Function))
             {
@@ -155,7 +158,7 @@ namespace Jace.Execution
 
                 double[] arguments = new double[functionInfo.IsDynamicFunc ? function.Arguments.Count : functionInfo.NumberOfParameters];
                 for (int i = 0; i < arguments.Length; i++)
-                    arguments[i] = Execute(function.Arguments[i], functionRegistry, variables);
+                    arguments[i] = Execute(function.Arguments[i], functionRegistry, constantRegistry,  variables);
 
                 return Invoke(functionInfo.Function, arguments);
             }

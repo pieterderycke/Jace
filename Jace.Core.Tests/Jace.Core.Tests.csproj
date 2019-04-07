@@ -15,6 +15,7 @@
     <Compile Include="..\Jace.Tests\FuncAdapterTests.cs" Link="FuncAdapterTests.cs" />
     <Compile Include="..\Jace.Tests\FunctionRegistryTests.cs" Link="FunctionRegistryTests.cs" />
     <Compile Include="..\Jace.Tests\MemoryCacheTests.cs" Link="MemoryCacheTests.cs" />
+    <Compile Include="..\Jace.Tests\Mocks\MockConstantRegistry.cs" Link="Mocks\MockConstantRegistry.cs" />
     <Compile Include="..\Jace.Tests\Mocks\MockFunctionRegistry.cs" Link="Mocks\MockFunctionRegistry.cs" />
     <Compile Include="..\Jace.Tests\TokenReaderTests.cs" Link="TokenReaderTests.cs" />
   </ItemGroup>
@@ -27,10 +28,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Jace\Jace.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Mocks\" />
   </ItemGroup>
 
 </Project>

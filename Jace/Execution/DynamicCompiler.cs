@@ -25,31 +25,31 @@ namespace Jace.Execution
                 typeof(Func<double, double, double, double, double, double, double, double, double, double>).GetTypeInfo().Assembly.FullName;
         }
 
-        public double Execute(Operation operation, IFunctionRegistry functionRegistry)
+        public double Execute(Operation operation, IFunctionRegistry functionRegistry, IConstantRegistry constantRegistry)
         {
-            return Execute(operation, functionRegistry, new Dictionary<string, double>());
+            return Execute(operation, functionRegistry, constantRegistry, new Dictionary<string, double>());
         }
 
-        public double Execute(Operation operation, IFunctionRegistry functionRegistry, 
+        public double Execute(Operation operation, IFunctionRegistry functionRegistry, IConstantRegistry constantRegistry, 
             IDictionary<string, double> variables)
         {
-            return BuildFormula(operation, functionRegistry)(variables);
+            return BuildFormula(operation, functionRegistry, constantRegistry)(variables);
         }
 
         public Func<IDictionary<string, double>, double> BuildFormula(Operation operation,
-            IFunctionRegistry functionRegistry)
+            IFunctionRegistry functionRegistry, IConstantRegistry constantRegistry)
         {
             Func<FormulaContext, double> func = BuildFormulaInternal(operation, functionRegistry);
             return adjustVariableCaseEnabled
                 ? (Func<IDictionary<string, double>, double>)(variables =>
                 {
                   variables = EngineUtil.ConvertVariableNamesToLowerCase(variables);
-                  FormulaContext context = new FormulaContext(variables, functionRegistry);
+                  FormulaContext context = new FormulaContext(variables, functionRegistry, constantRegistry);
                   return func(context);
                 })
                 : (Func<IDictionary<string, double>, double>)(variables =>
                 {
-                  return func(new FormulaContext(variables, functionRegistry));
+                  return func(new FormulaContext(variables, functionRegistry, constantRegistry));
                 });
         }
 
@@ -60,14 +60,14 @@ namespace Jace.Execution
 
             LabelTarget returnLabel = Expression.Label(typeof(double));
 
-            return Expression.Lambda<Func<FormulaContext, double>>(
-                Expression.Block(
-                    Expression.Return(returnLabel, GenerateMethodBody(operation, contextParameter, functionRegistry)),
-                    Expression.Label(returnLabel, Expression.Constant(0.0))
-                ),
+            Expression<Func<FormulaContext, double>> lambda = Expression.Lambda<Func<FormulaContext, double>>(
+                GenerateMethodBody(operation, contextParameter, functionRegistry),
                 contextParameter
-            ).Compile();
+            );
+            return lambda.Compile();
         }
+
+        
 
         private Expression GenerateMethodBody(Operation operation, ParameterExpression contextParameter,
             IFunctionRegistry functionRegistry)
@@ -79,7 +79,8 @@ namespace Jace.Execution
             {
                 IntegerConstant constant = (IntegerConstant)operation;
 
-                return Expression.Convert(Expression.Constant(constant.Value, typeof(int)), typeof(double));
+                double value = constant.Value;
+                return Expression.Constant(value, typeof(double));
             }
             else if (operation.GetType() == typeof(FloatingPointConstant))
             {
@@ -89,34 +90,13 @@ namespace Jace.Execution
             }
             else if (operation.GetType() == typeof(Variable))
             {
-                Type contextType = typeof(FormulaContext);
-                Type dictionaryType = typeof(IDictionary<string, double>);
-
                 Variable variable = (Variable)operation;
 
-                Expression getVariables = Expression.Property(contextParameter, "Variables");
-                ParameterExpression value = Expression.Variable(typeof(double), "value");
-
-                Expression variableFound = Expression.Call(getVariables,
-                    dictionaryType.GetRuntimeMethod("TryGetValue", new Type[] { typeof(string), typeof(double).MakeByRefType() }),
+                Func<string, FormulaContext, double> getVariableValueOrThrow = PrecompiledMethods.GetVariableValueOrThrow;
+                return Expression.Call(null,
+                    getVariableValueOrThrow.GetMethodInfo(),
                     Expression.Constant(variable.Name),
-                    value);
-
-                Expression throwException = Expression.Throw(
-                    Expression.New(typeof(VariableNotDefinedException).GetConstructor(new Type[] { typeof(string) }),
-                        Expression.Constant(string.Format("The variable \"{0}\" used is not defined.", variable.Name))));
-
-                LabelTarget returnLabel = Expression.Label(typeof(double));
-
-                return Expression.Block(
-                    new[] { value },
-                    Expression.IfThenElse(
-                        variableFound,
-                        Expression.Return(returnLabel, value),
-                        throwException
-                    ),
-                    Expression.Label(returnLabel, Expression.Constant(0.0))
-                );
+                    contextParameter);
             }
             else if (operation.GetType() == typeof(Multiplication))
             {
@@ -289,16 +269,25 @@ namespace Jace.Execution
 
                 ParameterExpression functionInfoVariable = Expression.Variable(typeof(FunctionInfo));
 
-                return Expression.Block(
-                    new[] { functionInfoVariable },
-                    Expression.Assign(
-                        functionInfoVariable,
-                        Expression.Call(getFunctionRegistry, typeof(IFunctionRegistry).GetRuntimeMethod("GetFunctionInfo", new Type[] { typeof(string) }), Expression.Constant(function.FunctionName))
-                    ),
-                    Expression.Call(
-                        Expression.Convert(Expression.Property(functionInfoVariable, "Function"), funcType),
-                        funcType.GetRuntimeMethod("Invoke", parameterTypes),
-                        arguments));
+                Expression funcInstance;
+                if (!functionInfo.IsOverWritable)
+                {
+                    funcInstance = Expression.Convert(
+                        Expression.Property(
+                            Expression.Call(
+                                getFunctionRegistry,
+                                typeof(IFunctionRegistry).GetRuntimeMethod("GetFunctionInfo", new Type[] { typeof(string) }),
+                                Expression.Constant(function.FunctionName)),
+                            "Function"),
+                        funcType);
+                }
+                else
+                    funcInstance = Expression.Constant(functionInfo.Function, funcType);
+
+                return Expression.Call(
+                    funcInstance,
+                    funcType.GetRuntimeMethod("Invoke", parameterTypes),
+                    arguments);
             }
             else
             {
@@ -320,6 +309,19 @@ namespace Jace.Execution
                 typeArguments[i] = typeof(double);
 
             return funcType.MakeGenericType(typeArguments);
+        }
+
+        private static class PrecompiledMethods
+        {
+            public static double GetVariableValueOrThrow(string variableName, FormulaContext context)
+            {
+                if (context.Variables.TryGetValue(variableName, out double result))
+                    return result;
+                else if (context.ConstantRegistry.IsConstantName(variableName))
+                    return context.ConstantRegistry.GetConstantInfo(variableName).Value;
+                else
+                    throw new VariableNotDefinedException($"The variable \"{variableName}\" used is not defined.");
+            }
         }
     }
 }

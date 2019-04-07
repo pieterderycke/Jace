@@ -389,14 +389,14 @@ namespace Jace
             Operation operation = astBuilder.Build(tokens);
 
             if (optimizerEnabled)
-                return optimizer.Optimize(operation, this.FunctionRegistry);
+                return optimizer.Optimize(operation, this.FunctionRegistry, this.ConstantRegistry);
             else
                 return operation;
         }
 
         private Func<IDictionary<string, double>, double> BuildFormula(string formulaText, Operation operation)
         {
-            return executionFormulaCache.GetOrAdd(formulaText, v => executor.BuildFormula(operation, this.FunctionRegistry));
+            return executionFormulaCache.GetOrAdd(formulaText, v => executor.BuildFormula(operation, this.FunctionRegistry, this.ConstantRegistry));
         }
 
         private bool IsInFormulaCache(string formulaText, out Func<IDictionary<string, double>, double> function)

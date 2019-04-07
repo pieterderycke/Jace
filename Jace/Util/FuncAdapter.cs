@@ -67,8 +67,6 @@ namespace Jace.Util
             Type delegateType = GetDelegateType(parameterArray);
             Type dictionaryType = typeof(Dictionary<string, double>);
 
-            LabelTarget returnLabel = Expression.Label(typeof(double));
-
             ParameterExpression dictionaryExpression =
                 Expression.Variable(typeof(Dictionary<string, double>), "dictionary");
             BinaryExpression dictionaryAssignExpression =
@@ -94,8 +92,6 @@ namespace Jace.Util
 
             InvocationExpression invokeExpression = Expression.Invoke(Expression.Constant(function), dictionaryExpression);
             methodBody.Add(invokeExpression);
-            methodBody.Add(Expression.Return(returnLabel, invokeExpression));
-            methodBody.Add(Expression.Label(returnLabel, Expression.Constant(0.0)));
 
             LambdaExpression lambdaExpression = Expression.Lambda(delegateType,
                 Expression.Block(new[] { dictionaryExpression }, methodBody),
