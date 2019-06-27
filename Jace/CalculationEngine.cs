@@ -183,18 +183,18 @@ namespace Jace
         /// </summary>
         /// <param name="formulaText">The formula that must be converted into a .NET func.</param>
         /// <returns>A .NET func for the provided formula.</returns>
-        public Func<IDictionary<string, double>, double> Build(string formulaText)
+        public Func<IDictionary<string, double>, double> Build(string formulaText, IDictionary<string, double> constants = null)
         {
             if (string.IsNullOrEmpty(formulaText))
                 throw new ArgumentNullException("formulaText");
 
-            if (IsInFormulaCache(formulaText, out var result))
+            if (IsInFormulaCache(formulaText, out var result) && constants != null)
             {
                 return result;
             }
             else
             {
-                Operation operation = BuildAbstractSyntaxTree(formulaText);
+                Operation operation = BuildAbstractSyntaxTree(formulaText, constants);
                 return BuildFormula(formulaText, operation);
             }
         }
@@ -380,12 +380,21 @@ namespace Jace
         /// <param name="formulaText">A string containing the mathematical formula that must be converted 
         /// into an abstract syntax tree.</param>
         /// <returns>The abstract syntax tree of the formula.</returns>
-        private Operation BuildAbstractSyntaxTree(string formulaText)
+        private Operation BuildAbstractSyntaxTree(string formulaText, IDictionary<string,double> constants = null)
         {
             TokenReader tokenReader = new TokenReader(cultureInfo);
             List<Token> tokens = tokenReader.Read(formulaText);
 
-            AstBuilder astBuilder = new AstBuilder(FunctionRegistry, adjustVariableCaseEnabled);
+            var localConstantRegistry = new ConstantRegistry(false);
+            if (constants != null)
+            {
+                foreach (var constant in constants)
+                {
+                    localConstantRegistry.RegisterConstant(constant.Key,constant.Value);
+                }
+            }
+            
+            AstBuilder astBuilder = new AstBuilder(FunctionRegistry, adjustVariableCaseEnabled, localConstantRegistry);
             Operation operation = astBuilder.Build(tokens);
 
             if (optimizerEnabled)
