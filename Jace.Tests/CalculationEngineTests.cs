@@ -957,5 +957,14 @@ namespace Jace.Tests
             double result = engine.Calculate("median(3,1,5,4)");
             Assert.AreEqual(3, result);
         }
+        
+        [TestMethod]
+        public void TestCalculationFormulaBuildingWithConstants()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);
+            var fn = engine.Build("a+b+c", new Dictionary<string, double> {{"a", 1}});
+            double result = fn(new Dictionary<string, double> {{"b", 2}, {"c", 2}});
+            Assert.AreEqual(5.0, result);
+        }
     }
 }
