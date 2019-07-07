@@ -101,8 +101,8 @@ namespace Jace
             bool optimizerEnabled, bool adjustVariableCaseEnabled, bool defaultFunctions, bool defaultConstants)
         {
             this.executionFormulaCache = new MemoryCache<string, Func<IDictionary<string, double>, double>>();
-            this.FunctionRegistry = new FunctionRegistry(false);
-            this.ConstantRegistry = new ConstantRegistry(false);
+            this.FunctionRegistry = new FunctionRegistry(!adjustVariableCaseEnabled);
+            this.ConstantRegistry = new ConstantRegistry(!adjustVariableCaseEnabled);
             this.cultureInfo = cultureInfo;
             this.cacheEnabled = cacheEnabled;
             this.optimizerEnabled = optimizerEnabled;
@@ -164,7 +164,7 @@ namespace Jace
             }
             else
             {
-                Operation operation = BuildAbstractSyntaxTree(formulaText);
+                Operation operation = BuildAbstractSyntaxTree(formulaText, new ConstantRegistry(!adjustVariableCaseEnabled));
                 function = BuildFormula(formulaText, operation);
                 return function(variables);
             }
@@ -175,7 +175,7 @@ namespace Jace
             if (string.IsNullOrEmpty(formulaText))
                 throw new ArgumentNullException("formulaText");
 
-            return new FormulaBuilder(formulaText, this);
+            return new FormulaBuilder(formulaText, adjustVariableCaseEnabled, this);
         }
 
         /// <summary>
@@ -183,18 +183,49 @@ namespace Jace
         /// </summary>
         /// <param name="formulaText">The formula that must be converted into a .NET func.</param>
         /// <returns>A .NET func for the provided formula.</returns>
-        public Func<IDictionary<string, double>, double> Build(string formulaText, IDictionary<string, double> constants = null)
+        public Func<IDictionary<string, double>, double> Build(string formulaText)
         {
             if (string.IsNullOrEmpty(formulaText))
                 throw new ArgumentNullException("formulaText");
 
-            if (IsInFormulaCache(formulaText, out var result) && constants != null)
+            if (IsInFormulaCache(formulaText, out var result))
             {
                 return result;
             }
             else
             {
-                Operation operation = BuildAbstractSyntaxTree(formulaText, constants);
+                Operation operation = BuildAbstractSyntaxTree(formulaText, new ConstantRegistry(!adjustVariableCaseEnabled));
+                return BuildFormula(formulaText, operation);
+            }
+        }
+
+        /// <summary>
+        /// Build a .NET func for the provided formula.
+        /// </summary>
+        /// <param name="formulaText">The formula that must be converted into a .NET func.</param>
+        /// <param name="constants">Constant values for variables defined into the formula. They variables will be replaced by the constant value at pre-compilation time.</param>
+        /// <returns>A .NET func for the provided formula.</returns>
+        public Func<IDictionary<string, double>, double> Build(string formulaText, IDictionary<string, double> constants)
+        {
+            if (string.IsNullOrEmpty(formulaText))
+                throw new ArgumentNullException("formulaText");
+
+            if (IsInFormulaCache(formulaText, out var result))
+            {
+                return result;
+            }
+            else
+            {
+                ConstantRegistry compiledConstants = new ConstantRegistry(!adjustVariableCaseEnabled);
+                if (constants != null)
+                {
+                    foreach (var constant in constants)
+                    {
+                        compiledConstants.RegisterConstant(constant.Key,constant.Value);
+                    }
+                }
+
+                Operation operation = BuildAbstractSyntaxTree(formulaText, compiledConstants);
                 return BuildFormula(formulaText, operation);
             }
         }
@@ -380,21 +411,12 @@ namespace Jace
         /// <param name="formulaText">A string containing the mathematical formula that must be converted 
         /// into an abstract syntax tree.</param>
         /// <returns>The abstract syntax tree of the formula.</returns>
-        private Operation BuildAbstractSyntaxTree(string formulaText, IDictionary<string,double> constants = null)
+        private Operation BuildAbstractSyntaxTree(string formulaText, ConstantRegistry compiledConstants)
         {
             TokenReader tokenReader = new TokenReader(cultureInfo);
             List<Token> tokens = tokenReader.Read(formulaText);
-
-            var localConstantRegistry = new ConstantRegistry(false);
-            if (constants != null)
-            {
-                foreach (var constant in constants)
-                {
-                    localConstantRegistry.RegisterConstant(constant.Key,constant.Value);
-                }
-            }
             
-            AstBuilder astBuilder = new AstBuilder(FunctionRegistry, adjustVariableCaseEnabled, localConstantRegistry);
+            AstBuilder astBuilder = new AstBuilder(FunctionRegistry, adjustVariableCaseEnabled, compiledConstants);
             Operation operation = astBuilder.Build(tokens);
 
             if (optimizerEnabled)

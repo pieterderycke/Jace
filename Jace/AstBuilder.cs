@@ -18,13 +18,13 @@ namespace Jace
         private Stack<Token> operatorStack = new Stack<Token>();
         private Stack<int> parameterCount = new Stack<int>();
 
-        public AstBuilder(IFunctionRegistry functionRegistry, bool adjustVariableCaseEnabled, IConstantRegistry constantRegistry = null)
+        public AstBuilder(IFunctionRegistry functionRegistry, bool adjustVariableCaseEnabled, IConstantRegistry compiledConstants = null)
         {
             if (functionRegistry == null)
                 throw new ArgumentNullException("functionRegistry");
 
             this.functionRegistry = functionRegistry;
-            this.localConstantRegistry = constantRegistry ?? new ConstantRegistry(false);
+            this.localConstantRegistry = compiledConstants ?? new ConstantRegistry(!adjustVariableCaseEnabled);
             this.adjustVariableCaseEnabled = adjustVariableCaseEnabled;
 
             operationPrecedence.Add('(', 0);
