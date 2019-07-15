@@ -1049,5 +1049,127 @@ namespace Jace.Tests
             double result = formula(2.0);
             Assert.AreEqual(3.0, result);
         }
+
+        [TestMethod]
+        public void TestCalculationFormulaBuildingWithConstantsCache1()
+        {
+            CalculationEngine engine = new CalculationEngine(new JaceOptions { CacheEnabled = true });
+
+            var fn = engine.Build("a+b+c", new Dictionary<string, double> { { "a", 1 } });
+            double result = fn(new Dictionary<string, double> { { "b", 2 }, { "c", 2 } });
+            Assert.AreEqual(5.0, result);
+
+            AssertExtensions.ThrowsException<VariableNotDefinedException>(() =>
+            {
+                var fn1 = engine.Build("a+b+c");
+                double result1 = fn1(new Dictionary<string, double> { { "b", 3 }, { "c", 3 } });
+            });
+        }
+
+        [TestMethod]
+        public void TestCalculationFormulaBuildingWithConstantsCache2()
+        {
+            CalculationEngine engine = new CalculationEngine( new JaceOptions { CacheEnabled = true });
+            var fn = engine.Build("a+b+c");
+            double result = fn(new Dictionary<string, double> { { "a", 1 }, { "b", 2 }, { "c", 2 } });
+            Assert.AreEqual(5.0, result);
+
+
+            var fn1 = engine.Build("a+b+c", new Dictionary<string, double> { { "a", 2 } });
+            double result1 = fn1(new Dictionary<string, double> { { "b", 2 }, { "c", 2 } });
+            Assert.AreEqual(6.0, result1);
+        }
+
+
+        [TestMethod]
+        public void TestCalculationFormulaBuildingWithConstantsCache3()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, true, false);
+
+            Func<double, double> formula = (Func<double, double>)engine.Formula("a+A")
+                .Parameter("A", DataType.FloatingPoint)
+                .Constant("a", 1)
+                .Result(DataType.FloatingPoint)
+                .Build();
+
+            double result = formula(2.0);
+            Assert.AreEqual(3.0, result);
+
+            Func<double, double, double> formula1 = (Func<double, double, double>)engine.Formula("a+A")
+            .Parameter("A", DataType.FloatingPoint)
+            .Parameter("a", DataType.FloatingPoint)
+            .Result(DataType.FloatingPoint)
+            .Build();
+
+            double result1 = formula1(2.0, 2.0);
+            Assert.AreEqual(4.0, result1);
+        }
+
+
+        [TestMethod]
+        public void TestCalculationFormulaBuildingWithConstantsCache4()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, true, false);
+
+            Func<double, double> formula = (Func<double, double>)engine.Formula("a+A")
+                .Parameter("A", DataType.FloatingPoint)
+                .Constant("a", 1)
+                .Result(DataType.FloatingPoint)
+                .Build();
+
+            double result = formula(2.0);
+            Assert.AreEqual(3.0, result);
+
+            Func<double, double, double> formula1 = (Func<double, double, double>)engine.Formula("a+A")
+                .Parameter("A", DataType.FloatingPoint)
+                .Parameter("a", DataType.FloatingPoint)
+                .Result(DataType.FloatingPoint)
+                .Build();
+
+            double result1 = formula1(2.0, 2.0);
+            Assert.AreEqual(4.0, result1);
+        }
+
+        [TestMethod]
+        public void TestCalculationFormulaBuildingWithConstantsCache5()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);
+            var fn = engine.Build("a+b+c", new Dictionary<string, double> { { "a", 1 } });
+            double result = fn(new Dictionary<string, double> { { "b", 2 }, { "c", 2 } });
+            Assert.AreEqual(5.0, result);
+
+            var fn1 = engine.Build("a+b+c", new Dictionary<string, double> { { "a", 2 } });
+            double result1 = fn1(new Dictionary<string, double> { { "b", 2 }, { "c", 2 } });
+            Assert.AreEqual(6.0, result1);
+        }
+
+        [TestMethod]
+        public void TestCalculationFormulaBuildingWithConstantsCache6()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+            var fn = engine.Build("a+b+c", new Dictionary<string, double> { { "a", 1 } });
+            double result = fn(new Dictionary<string, double> { { "b", 2 }, { "c", 2 } });
+            Assert.AreEqual(5.0, result);
+
+            var fn1 = engine.Build("a+b+c", new Dictionary<string, double> { { "a", 2 } });
+            double result1 = fn1(new Dictionary<string, double> { { "b", 2 }, { "c", 2 } });
+            Assert.AreEqual(6.0, result1);
+        }
+
+        [TestMethod]
+        public void TestCalculationFormulaBuildingWithConstantsCache7()
+        {
+            CalculationEngine engine = new CalculationEngine(new JaceOptions { CacheEnabled = true });
+
+            var fn = engine.Build("a+b+c");
+            double result = fn(new Dictionary<string, double> { { "a", 1 }, { "b", 2 }, { "c", 2 } });
+            Assert.AreEqual(5.0, result);
+
+
+            var fn1 = engine.Build("a+b+c", new Dictionary<string, double> { {"a", 2 }});
+            double result1 = fn1(new Dictionary<string, double> { { "b", 3 }, { "c", 3 } });
+            Assert.AreEqual(8.0, result1);
+        }
+
     }
 }

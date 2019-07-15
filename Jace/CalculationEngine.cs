@@ -158,14 +158,14 @@ namespace Jace
             foreach (ConstantInfo constant in ConstantRegistry)
                 variables.Add(constant.ConstantName, constant.Value);
 
-            if (IsInFormulaCache(formulaText, out var function))
+            if (IsInFormulaCache(formulaText, null, out var function))
             {
                 return function(variables);
             }
             else
             {
                 Operation operation = BuildAbstractSyntaxTree(formulaText, new ConstantRegistry(!adjustVariableCaseEnabled));
-                function = BuildFormula(formulaText, operation);
+                function = BuildFormula(formulaText, null, operation);
                 return function(variables);
             }
         }
@@ -188,14 +188,14 @@ namespace Jace
             if (string.IsNullOrEmpty(formulaText))
                 throw new ArgumentNullException("formulaText");
 
-            if (IsInFormulaCache(formulaText, out var result))
+            if (IsInFormulaCache(formulaText, null, out var result))
             {
                 return result;
             }
             else
             {
                 Operation operation = BuildAbstractSyntaxTree(formulaText, new ConstantRegistry(!adjustVariableCaseEnabled));
-                return BuildFormula(formulaText, operation);
+                return BuildFormula(formulaText, null, operation);
             }
         }
 
@@ -210,23 +210,24 @@ namespace Jace
             if (string.IsNullOrEmpty(formulaText))
                 throw new ArgumentNullException("formulaText");
 
-            if (IsInFormulaCache(formulaText, out var result))
+
+            ConstantRegistry compiledConstants = new ConstantRegistry(!adjustVariableCaseEnabled);
+            if (constants != null)
+            {
+                foreach (var constant in constants)
+                {
+                    compiledConstants.RegisterConstant(constant.Key, constant.Value);
+                }
+            }
+
+            if (IsInFormulaCache(formulaText, compiledConstants, out var result))
             {
                 return result;
             }
             else
             {
-                ConstantRegistry compiledConstants = new ConstantRegistry(!adjustVariableCaseEnabled);
-                if (constants != null)
-                {
-                    foreach (var constant in constants)
-                    {
-                        compiledConstants.RegisterConstant(constant.Key,constant.Value);
-                    }
-                }
-
                 Operation operation = BuildAbstractSyntaxTree(formulaText, compiledConstants);
-                return BuildFormula(formulaText, operation);
+                return BuildFormula(formulaText, compiledConstants,  operation);
             }
         }
 
@@ -425,15 +426,20 @@ namespace Jace
                 return operation;
         }
 
-        private Func<IDictionary<string, double>, double> BuildFormula(string formulaText, Operation operation)
+        private Func<IDictionary<string, double>, double> BuildFormula(string formulaText, ConstantRegistry compiledConstants, Operation operation)
         {
-            return executionFormulaCache.GetOrAdd(formulaText, v => executor.BuildFormula(operation, this.FunctionRegistry, this.ConstantRegistry));
+            return executionFormulaCache.GetOrAdd(GenerateFormulaCacheKey(formulaText, compiledConstants), v => executor.BuildFormula(operation, this.FunctionRegistry, this.ConstantRegistry));
         }
 
-        private bool IsInFormulaCache(string formulaText, out Func<IDictionary<string, double>, double> function)
+        private bool IsInFormulaCache(string formulaText, ConstantRegistry compiledConstants, out Func<IDictionary<string, double>, double> function)
         {
             function = null;
-            return cacheEnabled && executionFormulaCache.TryGetValue(formulaText, out function);
+            return cacheEnabled && executionFormulaCache.TryGetValue(GenerateFormulaCacheKey(formulaText, compiledConstants), out function);
+        }
+
+        private string GenerateFormulaCacheKey(string formulaText, ConstantRegistry compiledConstants)
+        {
+            return (compiledConstants != null && compiledConstants.Any()) ? $"{formulaText}@{String.Join(",", compiledConstants?.Select(x => $"{x.ConstantName}:{x.Value}"))}" : formulaText;
         }
 
         /// <summary>
