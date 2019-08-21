@@ -15,23 +15,12 @@ namespace Jace.Util
     /// <typeparam name="TValue">The type of the values.</typeparam>
     public class MemoryCache<TKey, TValue>
     {
-        private const int DefaultMaximumSize = 500;
-        private const int DefaultReductionSize = 50;
-
         private readonly int maximumSize;
         private readonly int reductionSize;
 
         private long counter; // We cannot use DateTime.Now, because the precission is not high enough.
 
         private readonly ConcurrentDictionary<TKey, CacheItem> dictionary;
-
-        /// <summary>
-        /// Create a new instance of the <see cref="MemoryCache"/>.
-        /// </summary>
-        public MemoryCache()
-            : this(DefaultMaximumSize, DefaultReductionSize)
-        {
-        }
 
         /// <summary>
         /// Create a new instance of the <see cref="MemoryCache"/>.
