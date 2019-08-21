@@ -72,7 +72,7 @@ namespace Jace
         /// <param name="optimizerEnabled">Enable or disable optimizing of formulas.</param>
         /// <param name="adjustVariableCaseEnabled">Enable or disable auto lowercasing of variables.</param>
         public CalculationEngine(CultureInfo cultureInfo, ExecutionMode executionMode, bool cacheEnabled, bool optimizerEnabled, bool adjustVariableCaseEnabled)
-            : this(cultureInfo, executionMode, cacheEnabled, optimizerEnabled, adjustVariableCaseEnabled, true, true)
+            : this(cultureInfo, executionMode, cacheEnabled, optimizerEnabled, adjustVariableCaseEnabled, true, true, JaceOptions.DefaultCacheMaximumSize, JaceOptions.DefaultCacheReductionSize)
         {
         }
 
@@ -82,7 +82,7 @@ namespace Jace
         /// <param name="options">The <see cref="JaceOptions"/> to configure the behaviour of the engine.</param>
         public CalculationEngine(JaceOptions options)
             : this(options.CultureInfo, options.ExecutionMode, options.CacheEnabled, options.OptimizerEnabled, options.AdjustVariableCase,
-                  options.DefaultFunctions, options.DefaultConstants)
+                  options.DefaultFunctions, options.DefaultConstants, options.CacheMaximumSize, options.CacheReductionSize)
         {
         }
 
@@ -98,11 +98,11 @@ namespace Jace
         /// <param name="defaultFunctions">Enable or disable the default functions.</param>
         /// <param name="defaultConstants">Enable or disable the default constants.</param>
         public CalculationEngine(CultureInfo cultureInfo, ExecutionMode executionMode, bool cacheEnabled, 
-            bool optimizerEnabled, bool adjustVariableCaseEnabled, bool defaultFunctions, bool defaultConstants)
+            bool optimizerEnabled, bool adjustVariableCaseEnabled, bool defaultFunctions, bool defaultConstants, int cacheMaximumSize, int cacheReductionSize)
         {
-            this.executionFormulaCache = new MemoryCache<string, Func<IDictionary<string, double>, double>>();
-            this.FunctionRegistry = new FunctionRegistry(!adjustVariableCaseEnabled);
-            this.ConstantRegistry = new ConstantRegistry(!adjustVariableCaseEnabled);
+            this.executionFormulaCache = new MemoryCache<string, Func<IDictionary<string, double>, double>>(cacheMaximumSize, cacheReductionSize);
+            this.FunctionRegistry = new FunctionRegistry(false);
+            this.ConstantRegistry = new ConstantRegistry(false);
             this.cultureInfo = cultureInfo;
             this.cacheEnabled = cacheEnabled;
             this.optimizerEnabled = optimizerEnabled;
