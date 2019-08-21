@@ -14,8 +14,10 @@ namespace Jace.Execution
         private readonly CalculationEngine engine;
 
         private string formulaText;
+        private bool adjustVariableCaseEnabled;
         private DataType? resultDataType;
         private List<ParameterInfo> parameters;
+        private IDictionary<string, double> constants;
 
         /// <summary>
         /// Creates a new instance of the FormulaBuilder class.
@@ -24,11 +26,13 @@ namespace Jace.Execution
         /// A calculation engine instance that can be used for interpreting and executing 
         /// the formula.
         /// </param>
-        internal FormulaBuilder(string formulaText, CalculationEngine engine)
+        internal FormulaBuilder(string formulaText, bool adjustVariableCaseEnabled, CalculationEngine engine)
         {
             this.parameters = new List<ParameterInfo>();
+            this.constants = new Dictionary<string, double>();
             this.formulaText = formulaText;
             this.engine = engine;
+            this.adjustVariableCaseEnabled = adjustVariableCaseEnabled;
         }
 
         /// <summary>
@@ -50,6 +54,35 @@ namespace Jace.Execution
                 throw new ArgumentException(string.Format("A parameter with the name \"{0}\" was already defined.", name), "name");
 
             parameters.Add(new ParameterInfo() {Name = name, DataType = dataType});
+            return this;
+        }
+
+        /// <summary>
+        /// Add a new constant to the formula being constructed.
+        /// </summary>
+        /// <param name="name">The name of the constant.</param>
+        /// <param name="constantValue">The value of the constant. Variables for which a constant value is defined will be replaced at pre-compilation time.</param>
+        /// <returns>The <see cref="FormulaBuilder"/> instance.</returns>
+        public FormulaBuilder Constant(string name, int constantValue)
+        {
+            return Constant(name, (double)constantValue);
+        }
+
+        /// <summary>
+        /// Add a new constant to the formula being constructed. The
+        /// </summary>
+        /// <param name="name">The name of the constant.</param>
+        /// <param name="constantValue">The value of the constant.</param>
+        /// <returns>The <see cref="FormulaBuilder"/> instance.</returns>
+        public FormulaBuilder Constant(string name, double constantValue)
+        {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentNullException("name");
+
+            if (constants.Any(p => p.Key == name))
+                throw new ArgumentException(string.Format("A constant with the name \"{0}\" was already defined.", name), "name");
+
+            constants[name] = constantValue;
             return this;
         }
 
@@ -77,12 +110,14 @@ namespace Jace.Execution
             if (!resultDataType.HasValue)
                 throw new Exception("Please define a result data type for the formula.");
 
-            Func<IDictionary<string, double>, double> formula = engine.Build(formulaText);
+            Func<IDictionary<string, double>, double> formula = engine.Build(formulaText, constants);
 
             FuncAdapter adapter = new FuncAdapter();
             return adapter.Wrap(parameters, variables => {
 
-                variables = EngineUtil.ConvertVariableNamesToLowerCase(variables);
+                if(adjustVariableCaseEnabled)
+                    variables = EngineUtil.ConvertVariableNamesToLowerCase(variables);
+
                 engine.VerifyVariableNames(variables);
 
                 // Add the reserved variables to the dictionary

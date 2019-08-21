@@ -85,6 +85,7 @@ namespace Jace.Tokenizer
                             cultureInfo, out doubleValue))
                         {
                             tokens.Add(new Token() { TokenType = TokenType.FloatingPoint, Value = doubleValue, StartPosition = startPosition, Length = i - startPosition });
+                            isScientific = false;
                             isFormulaSubPart = false;
                         }
                         else if (buffer == "-")

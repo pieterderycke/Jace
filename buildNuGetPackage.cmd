@@ -1,4 +1,4 @@
-SET jaceVersion="0.9.3"
+SET jaceVersion="1.0"
 
 SET msbuild="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\msbuild.exe"
 

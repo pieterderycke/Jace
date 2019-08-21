@@ -11,18 +11,20 @@ namespace Jace
     public class AstBuilder
     {
         private readonly IFunctionRegistry functionRegistry;
+        private readonly IConstantRegistry localConstantRegistry;
         private readonly bool adjustVariableCaseEnabled;
         private Dictionary<char, int> operationPrecedence = new Dictionary<char, int>();
         private Stack<Operation> resultStack = new Stack<Operation>();
         private Stack<Token> operatorStack = new Stack<Token>();
         private Stack<int> parameterCount = new Stack<int>();
 
-        public AstBuilder(IFunctionRegistry functionRegistry, bool adjustVariableCaseEnabled)
+        public AstBuilder(IFunctionRegistry functionRegistry, bool adjustVariableCaseEnabled, IConstantRegistry compiledConstants = null)
         {
             if (functionRegistry == null)
                 throw new ArgumentNullException("functionRegistry");
 
             this.functionRegistry = functionRegistry;
+            this.localConstantRegistry = compiledConstants ?? new ConstantRegistry(!adjustVariableCaseEnabled);
             this.adjustVariableCaseEnabled = adjustVariableCaseEnabled;
 
             operationPrecedence.Add('(', 0);
@@ -71,11 +73,18 @@ namespace Jace
                         else
                         {
                             string tokenValue = (string)token.Value;
-                            if (adjustVariableCaseEnabled)
+                            if (localConstantRegistry.IsConstantName(tokenValue))
                             {
-                              tokenValue = tokenValue.ToLowerInvariant();
+                                resultStack.Push(new FloatingPointConstant(localConstantRegistry.GetConstantInfo(tokenValue).Value));
                             }
-                            resultStack.Push(new Variable(tokenValue));
+                            else
+                            {
+                                if (adjustVariableCaseEnabled)
+                                {
+                                    tokenValue = tokenValue.ToLowerInvariant();
+                                }
+                                resultStack.Push(new Variable(tokenValue));
+                            }
                         }
                         break;
                     case TokenType.LeftBracket:

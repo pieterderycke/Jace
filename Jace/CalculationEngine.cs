@@ -158,14 +158,14 @@ namespace Jace
             foreach (ConstantInfo constant in ConstantRegistry)
                 variables.Add(constant.ConstantName, constant.Value);
 
-            if (IsInFormulaCache(formulaText, out var function))
+            if (IsInFormulaCache(formulaText, null, out var function))
             {
                 return function(variables);
             }
             else
             {
-                Operation operation = BuildAbstractSyntaxTree(formulaText);
-                function = BuildFormula(formulaText, operation);
+                Operation operation = BuildAbstractSyntaxTree(formulaText, new ConstantRegistry(!adjustVariableCaseEnabled));
+                function = BuildFormula(formulaText, null, operation);
                 return function(variables);
             }
         }
@@ -175,7 +175,7 @@ namespace Jace
             if (string.IsNullOrEmpty(formulaText))
                 throw new ArgumentNullException("formulaText");
 
-            return new FormulaBuilder(formulaText, this);
+            return new FormulaBuilder(formulaText, adjustVariableCaseEnabled, this);
         }
 
         /// <summary>
@@ -188,14 +188,46 @@ namespace Jace
             if (string.IsNullOrEmpty(formulaText))
                 throw new ArgumentNullException("formulaText");
 
-            if (IsInFormulaCache(formulaText, out var result))
+            if (IsInFormulaCache(formulaText, null, out var result))
             {
                 return result;
             }
             else
             {
-                Operation operation = BuildAbstractSyntaxTree(formulaText);
-                return BuildFormula(formulaText, operation);
+                Operation operation = BuildAbstractSyntaxTree(formulaText, new ConstantRegistry(!adjustVariableCaseEnabled));
+                return BuildFormula(formulaText, null, operation);
+            }
+        }
+
+        /// <summary>
+        /// Build a .NET func for the provided formula.
+        /// </summary>
+        /// <param name="formulaText">The formula that must be converted into a .NET func.</param>
+        /// <param name="constants">Constant values for variables defined into the formula. They variables will be replaced by the constant value at pre-compilation time.</param>
+        /// <returns>A .NET func for the provided formula.</returns>
+        public Func<IDictionary<string, double>, double> Build(string formulaText, IDictionary<string, double> constants)
+        {
+            if (string.IsNullOrEmpty(formulaText))
+                throw new ArgumentNullException("formulaText");
+
+
+            ConstantRegistry compiledConstants = new ConstantRegistry(!adjustVariableCaseEnabled);
+            if (constants != null)
+            {
+                foreach (var constant in constants)
+                {
+                    compiledConstants.RegisterConstant(constant.Key, constant.Value);
+                }
+            }
+
+            if (IsInFormulaCache(formulaText, compiledConstants, out var result))
+            {
+                return result;
+            }
+            else
+            {
+                Operation operation = BuildAbstractSyntaxTree(formulaText, compiledConstants);
+                return BuildFormula(formulaText, compiledConstants,  operation);
             }
         }
 
@@ -380,12 +412,12 @@ namespace Jace
         /// <param name="formulaText">A string containing the mathematical formula that must be converted 
         /// into an abstract syntax tree.</param>
         /// <returns>The abstract syntax tree of the formula.</returns>
-        private Operation BuildAbstractSyntaxTree(string formulaText)
+        private Operation BuildAbstractSyntaxTree(string formulaText, ConstantRegistry compiledConstants)
         {
             TokenReader tokenReader = new TokenReader(cultureInfo);
             List<Token> tokens = tokenReader.Read(formulaText);
-
-            AstBuilder astBuilder = new AstBuilder(FunctionRegistry, adjustVariableCaseEnabled);
+            
+            AstBuilder astBuilder = new AstBuilder(FunctionRegistry, adjustVariableCaseEnabled, compiledConstants);
             Operation operation = astBuilder.Build(tokens);
 
             if (optimizerEnabled)
@@ -394,15 +426,20 @@ namespace Jace
                 return operation;
         }
 
-        private Func<IDictionary<string, double>, double> BuildFormula(string formulaText, Operation operation)
+        private Func<IDictionary<string, double>, double> BuildFormula(string formulaText, ConstantRegistry compiledConstants, Operation operation)
         {
-            return executionFormulaCache.GetOrAdd(formulaText, v => executor.BuildFormula(operation, this.FunctionRegistry, this.ConstantRegistry));
+            return executionFormulaCache.GetOrAdd(GenerateFormulaCacheKey(formulaText, compiledConstants), v => executor.BuildFormula(operation, this.FunctionRegistry, this.ConstantRegistry));
         }
 
-        private bool IsInFormulaCache(string formulaText, out Func<IDictionary<string, double>, double> function)
+        private bool IsInFormulaCache(string formulaText, ConstantRegistry compiledConstants, out Func<IDictionary<string, double>, double> function)
         {
             function = null;
-            return cacheEnabled && executionFormulaCache.TryGetValue(formulaText, out function);
+            return cacheEnabled && executionFormulaCache.TryGetValue(GenerateFormulaCacheKey(formulaText, compiledConstants), out function);
+        }
+
+        private string GenerateFormulaCacheKey(string formulaText, ConstantRegistry compiledConstants)
+        {
+            return (compiledConstants != null && compiledConstants.Any()) ? $"{formulaText}@{String.Join(",", compiledConstants?.Select(x => $"{x.ConstantName}:{x.Value}"))}" : formulaText;
         }
 
         /// <summary>
