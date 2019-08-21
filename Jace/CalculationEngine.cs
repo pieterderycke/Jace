@@ -368,29 +368,29 @@ namespace Jace
 
         private void RegisterDefaultFunctions()
         {
-            FunctionRegistry.RegisterFunction("sin", (Func<double, double>)((a) => Math.Sin(a)), false);
-            FunctionRegistry.RegisterFunction("cos", (Func<double, double>)((a) => Math.Cos(a)), false);
-            FunctionRegistry.RegisterFunction("csc", (Func<double, double>)((a) => MathUtil.Csc(a)), false);
-            FunctionRegistry.RegisterFunction("sec", (Func<double, double>)((a) => MathUtil.Sec(a)), false);
-            FunctionRegistry.RegisterFunction("asin", (Func<double, double>)((a) => Math.Asin(a)), false);
-            FunctionRegistry.RegisterFunction("acos", (Func<double, double>)((a) => Math.Acos(a)), false);
-            FunctionRegistry.RegisterFunction("tan", (Func<double, double>)((a) => Math.Tan(a)), false);
-            FunctionRegistry.RegisterFunction("cot", (Func<double, double>)((a) => MathUtil.Cot(a)), false);
-            FunctionRegistry.RegisterFunction("atan", (Func<double, double>)((a) => Math.Atan(a)), false);
-            FunctionRegistry.RegisterFunction("acot", (Func<double, double>)((a) => MathUtil.Acot(a)), false);
-            FunctionRegistry.RegisterFunction("loge", (Func<double, double>)((a) => Math.Log(a)), false);
-            FunctionRegistry.RegisterFunction("log10", (Func<double, double>)((a) => Math.Log10(a)), false);
+            FunctionRegistry.RegisterFunction("sin", (Func<double, double>)Math.Sin, false);
+            FunctionRegistry.RegisterFunction("cos", (Func<double, double>)Math.Cos, false);
+            FunctionRegistry.RegisterFunction("csc", (Func<double, double>)MathUtil.Csc, false);
+            FunctionRegistry.RegisterFunction("sec", (Func<double, double>)MathUtil.Sec, false);
+            FunctionRegistry.RegisterFunction("asin", (Func<double, double>)Math.Asin, false);
+            FunctionRegistry.RegisterFunction("acos", (Func<double, double>)Math.Acos, false);
+            FunctionRegistry.RegisterFunction("tan", (Func<double, double>)Math.Tan, false);
+            FunctionRegistry.RegisterFunction("cot", (Func<double, double>)MathUtil.Cot, false);
+            FunctionRegistry.RegisterFunction("atan", (Func<double, double>)Math.Atan, false);
+            FunctionRegistry.RegisterFunction("acot", (Func<double, double>)MathUtil.Acot, false);
+            FunctionRegistry.RegisterFunction("loge", (Func<double, double>)Math.Log, false);
+            FunctionRegistry.RegisterFunction("log10", (Func<double, double>)Math.Log10, false);
             FunctionRegistry.RegisterFunction("logn", (Func<double, double, double>)((a, b) => Math.Log(a, b)), false);
-            FunctionRegistry.RegisterFunction("sqrt", (Func<double, double>)((a) => Math.Sqrt(a)), false);
-            FunctionRegistry.RegisterFunction("abs", (Func<double, double>)((a) => Math.Abs(a)), false);
+            FunctionRegistry.RegisterFunction("sqrt", (Func<double, double>)Math.Sqrt, false);
+            FunctionRegistry.RegisterFunction("abs", (Func<double, double>)Math.Abs, false);
             FunctionRegistry.RegisterFunction("if", (Func<double, double, double, double>)((a, b, c) => (a != 0.0 ? b : c)), false);
             FunctionRegistry.RegisterFunction("ifless", (Func<double, double, double, double, double>)((a, b, c, d) => (a < b ? c : d)), false);
             FunctionRegistry.RegisterFunction("ifmore", (Func<double, double, double, double, double>)((a, b, c, d) => (a > b ? c : d)), false);
             FunctionRegistry.RegisterFunction("ifequal", (Func<double, double, double, double, double>)((a, b, c, d) => (a == b ? c : d)), false);
-            FunctionRegistry.RegisterFunction("ceiling", (Func<double, double>)((a) => Math.Ceiling(a)), false);
-            FunctionRegistry.RegisterFunction("floor", (Func<double, double>)((a) => Math.Floor(a)), false);
-            FunctionRegistry.RegisterFunction("truncate", (Func<double, double>)((a) => Math.Truncate(a)), false);
-            FunctionRegistry.RegisterFunction("round", (Func<double, double>)((a) => Math.Round(a)), false);
+            FunctionRegistry.RegisterFunction("ceiling", (Func<double, double>)Math.Ceiling, false);
+            FunctionRegistry.RegisterFunction("floor", (Func<double, double>)Math.Floor, false);
+            FunctionRegistry.RegisterFunction("truncate", (Func<double, double>)Math.Truncate, false);
+            FunctionRegistry.RegisterFunction("round", (Func<double, double>)Math.Round, false);
 
             // Dynamic based arguments Functions
             FunctionRegistry.RegisterFunction("max",  (DynamicFunc<double, double>)((a) => a.Max()), false);
