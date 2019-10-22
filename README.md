@@ -80,6 +80,9 @@ Below you can find the results of Jace.NET benchmark that show its high performa
 * Interpreted Mode : 00:00:06.7860119
 * Dynamic Compilation Mode: 00:00:02.5584045
 
+## Compatibility
+If you are using Jace.NET inside a Unity project using IL2CPP you must use Jace.NET in interpreted mode due to limitations of IL2CPP with dynamic code generation.
+
 ## More Information
 For more information, you can read the following articles:
 * http://pieterderycke.wordpress.com/2012/11/04/jace-net-just-another-calculation-engine-for-net/
