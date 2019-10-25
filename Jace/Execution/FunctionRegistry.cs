@@ -62,7 +62,10 @@ namespace Jace.Execution
                     if (genericArgument != typeof(double))
                         throw new ArgumentException("Only doubles are supported as function arguments.", "function");
 
-                numberOfParameters = function.GetMethodInfo().GetParameters().Length;
+                numberOfParameters = function
+                    .GetMethodInfo()
+                    .GetParameters()
+                    .Count(p => p.ParameterType == typeof(double));
             }
             else if (funcType.FullName.StartsWith(DynamicFuncName))
             {
