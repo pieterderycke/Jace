@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2035
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jace", "Jace\Jace.csproj", "{91CC2C02-72EA-43AF-95B0-F45EDF91538E}"
 EndProject
@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jace.DemoApp", "Jace.DemoAp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jace.Benchmark", "Jace.Benchmark\Jace.Benchmark.csproj", "{1418C55E-4FD1-460C-B2E5-4322C03AB5A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jace.Core.Tests", "Jace.Core.Tests\Jace.Core.Tests.csproj", "{B3C87650-2E04-4E09-9864-F4B706A7B00D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jace.Core.Tests", "Jace.Core.Tests\Jace.Core.Tests.csproj", "{B3C87650-2E04-4E09-9864-F4B706A7B00D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
