@@ -10,27 +10,27 @@ namespace Jace.Execution
 {
     public class Interpreter : IExecutor
     {
-        private readonly bool adjustVariableCaseEnabled;
+        private readonly bool caseSensitive;
 
-        public Interpreter(): this(true) { }
+        public Interpreter(): this(false) { }
 
-        public Interpreter(bool adjustVariableCaseEnabled)
+        public Interpreter(bool caseSensitive)
         {
-            this.adjustVariableCaseEnabled = adjustVariableCaseEnabled;
+            this.caseSensitive = caseSensitive;
         }
         public Func<IDictionary<string, double>, double> BuildFormula(Operation operation, 
             IFunctionRegistry functionRegistry,
             IConstantRegistry constantRegistry)
         {
-            return adjustVariableCaseEnabled
+            return caseSensitive
               ? (Func<IDictionary<string, double>, double>)(variables =>
               {
-                variables = EngineUtil.ConvertVariableNamesToLowerCase(variables);
-                return Execute(operation, functionRegistry, constantRegistry, variables);
+                  return Execute(operation, functionRegistry, constantRegistry, variables);
               })
               : (Func<IDictionary<string, double>, double>)(variables =>
               {
-                return Execute(operation, functionRegistry, constantRegistry,variables);
+                  variables = EngineUtil.ConvertVariableNamesToLowerCase(variables);
+                  return Execute(operation, functionRegistry, constantRegistry, variables);
               });
         }
 

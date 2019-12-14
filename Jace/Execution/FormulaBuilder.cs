@@ -14,7 +14,7 @@ namespace Jace.Execution
         private readonly CalculationEngine engine;
 
         private string formulaText;
-        private bool adjustVariableCaseEnabled;
+        private bool caseSensitive;
         private DataType? resultDataType;
         private List<ParameterInfo> parameters;
         private IDictionary<string, double> constants;
@@ -26,13 +26,13 @@ namespace Jace.Execution
         /// A calculation engine instance that can be used for interpreting and executing 
         /// the formula.
         /// </param>
-        internal FormulaBuilder(string formulaText, bool adjustVariableCaseEnabled, CalculationEngine engine)
+        internal FormulaBuilder(string formulaText, bool caseSensitive, CalculationEngine engine)
         {
             this.parameters = new List<ParameterInfo>();
             this.constants = new Dictionary<string, double>();
             this.formulaText = formulaText;
             this.engine = engine;
-            this.adjustVariableCaseEnabled = adjustVariableCaseEnabled;
+            this.caseSensitive = caseSensitive;
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace Jace.Execution
             FuncAdapter adapter = new FuncAdapter();
             return adapter.Wrap(parameters, variables => {
 
-                if(adjustVariableCaseEnabled)
+                if(!caseSensitive)
                     variables = EngineUtil.ConvertVariableNamesToLowerCase(variables);
 
                 engine.VerifyVariableNames(variables);

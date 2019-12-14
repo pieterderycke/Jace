@@ -13,12 +13,12 @@ namespace Jace.Execution
     public class DynamicCompiler : IExecutor
     {
         private string FuncAssemblyQualifiedName;
-        private readonly bool adjustVariableCaseEnabled;
+        private readonly bool caseSensitive;
 
-        public DynamicCompiler(): this(true) { }
-        public DynamicCompiler(bool adjustVariableCaseEnabled)
+        public DynamicCompiler(): this(false) { }
+        public DynamicCompiler(bool caseSensitive)
         {
-            this.adjustVariableCaseEnabled = adjustVariableCaseEnabled;
+            this.caseSensitive = caseSensitive;
             // The lower func reside in mscorelib, the higher ones in another assembly.
             // This is  an easy cross platform way to to have this AssemblyQualifiedName.
             FuncAssemblyQualifiedName =
@@ -40,16 +40,16 @@ namespace Jace.Execution
             IFunctionRegistry functionRegistry, IConstantRegistry constantRegistry)
         {
             Func<FormulaContext, double> func = BuildFormulaInternal(operation, functionRegistry);
-            return adjustVariableCaseEnabled
+            return caseSensitive
                 ? (Func<IDictionary<string, double>, double>)(variables =>
                 {
-                  variables = EngineUtil.ConvertVariableNamesToLowerCase(variables);
-                  FormulaContext context = new FormulaContext(variables, functionRegistry, constantRegistry);
-                  return func(context);
+                    return func(new FormulaContext(variables, functionRegistry, constantRegistry));
                 })
                 : (Func<IDictionary<string, double>, double>)(variables =>
                 {
-                  return func(new FormulaContext(variables, functionRegistry, constantRegistry));
+                    variables = EngineUtil.ConvertVariableNamesToLowerCase(variables);
+                    FormulaContext context = new FormulaContext(variables, functionRegistry, constantRegistry);
+                    return func(context);
                 });
         }
 

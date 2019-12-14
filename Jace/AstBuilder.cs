@@ -12,20 +12,20 @@ namespace Jace
     {
         private readonly IFunctionRegistry functionRegistry;
         private readonly IConstantRegistry localConstantRegistry;
-        private readonly bool adjustVariableCaseEnabled;
+        private readonly bool caseSensitive;
         private Dictionary<char, int> operationPrecedence = new Dictionary<char, int>();
         private Stack<Operation> resultStack = new Stack<Operation>();
         private Stack<Token> operatorStack = new Stack<Token>();
         private Stack<int> parameterCount = new Stack<int>();
 
-        public AstBuilder(IFunctionRegistry functionRegistry, bool adjustVariableCaseEnabled, IConstantRegistry compiledConstants = null)
+        public AstBuilder(IFunctionRegistry functionRegistry, bool caseSensitive, IConstantRegistry compiledConstants = null)
         {
             if (functionRegistry == null)
                 throw new ArgumentNullException("functionRegistry");
 
             this.functionRegistry = functionRegistry;
-            this.localConstantRegistry = compiledConstants ?? new ConstantRegistry(!adjustVariableCaseEnabled);
-            this.adjustVariableCaseEnabled = adjustVariableCaseEnabled;
+            this.localConstantRegistry = compiledConstants ?? new ConstantRegistry(caseSensitive);
+            this.caseSensitive = caseSensitive;
 
             operationPrecedence.Add('(', 0);
             operationPrecedence.Add('&', 1);
@@ -79,7 +79,7 @@ namespace Jace
                             }
                             else
                             {
-                                if (adjustVariableCaseEnabled)
+                                if (!caseSensitive)
                                 {
                                     tokenValue = tokenValue.ToLowerInvariant();
                                 }
