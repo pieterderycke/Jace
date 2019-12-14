@@ -49,7 +49,9 @@ namespace Jace.Tokenizer
             {
                 if (IsPartOfNumeric(characters[i], true, isFormulaSubPart))
                 {
-                    string buffer = "" + characters[i];
+                    StringBuilder buffer = new StringBuilder();
+                    buffer.Append(characters[i]);
+                    //string buffer = "" + characters[i];
                     int startPosition = i;
                                        
 
@@ -64,16 +66,16 @@ namespace Jace.Tokenizer
 
                             if (characters[i + 1] == '-')
                             {
-                                buffer += characters[i++];
+                                buffer.Append(characters[i++]);
                             }
                         }
 
-                        buffer += characters[i];
+                        buffer.Append(characters[i]);
                     }
 
                     // Verify if we do not have an int
                     int intValue;
-                    if (int.TryParse(buffer, out intValue))
+                    if (int.TryParse(buffer.ToString(), out intValue))
                     {
                         tokens.Add(new Token() { TokenType = TokenType.Integer, Value = intValue, StartPosition = startPosition, Length = i - startPosition });
                         isFormulaSubPart = false;
@@ -81,14 +83,14 @@ namespace Jace.Tokenizer
                     else
                     {
                         double doubleValue;
-                        if (double.TryParse(buffer, NumberStyles.Float | NumberStyles.AllowThousands,
+                        if (double.TryParse(buffer.ToString(), NumberStyles.Float | NumberStyles.AllowThousands,
                             cultureInfo, out doubleValue))
                         {
                             tokens.Add(new Token() { TokenType = TokenType.FloatingPoint, Value = doubleValue, StartPosition = startPosition, Length = i - startPosition });
                             isScientific = false;
                             isFormulaSubPart = false;
                         }
-                        else if (buffer == "-")
+                        else if (buffer.ToString() == "-")
                         {
                             // Verify if we have a unary minus, we use the token '_' for a unary minus in the AST builder
                             tokens.Add(new Token() { TokenType = TokenType.Operation, Value = '_', StartPosition = startPosition, Length = 1 });
