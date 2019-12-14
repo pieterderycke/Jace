@@ -6,6 +6,7 @@ using System.Text;
 using Jace.Operations;
 using Jace.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq.Expressions;
 
 namespace Jace.Tests
 {
@@ -17,7 +18,7 @@ namespace Jace.Tests
         {
             CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);
             double result = engine.Calculate("2.0+3.0");
-            
+
             Assert.AreEqual(5.0, result);
         }
 
@@ -42,7 +43,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestCalculateModuloCompiled()
         {
-            CalculationEngine engine = 
+            CalculationEngine engine =
                 new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, false, false, true);
             double result = engine.Calculate("5 % 3.0");
 
@@ -52,7 +53,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestCalculateModuloInterpreted()
         {
-            CalculationEngine engine = 
+            CalculationEngine engine =
                 new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, false, false, true);
             double result = engine.Calculate("5 % 3.0");
 
@@ -310,7 +311,7 @@ namespace Jace.Tests
 
         [TestMethod]
         public void TestBuild()
-        { 
+        {
             CalculationEngine engine = new CalculationEngine();
             Func<Dictionary<string, double>, double> function = engine.Build("var1+2*(3*age)");
 
@@ -414,7 +415,7 @@ namespace Jace.Tests
             Assert.AreEqual(2 * Math.PI, result);
         }
 
-        [TestMethod]        
+        [TestMethod]
         public void TestReservedVariableName()
         {
             AssertExtensions.ThrowsException<ArgumentException>(() =>
@@ -454,28 +455,28 @@ namespace Jace.Tests
         [TestMethod]
         public void TestVariableNameCaseSensitivityNoToLowerCompiled()
         {
-          Dictionary<string, double> variables = new Dictionary<string, double>();
-          variables.Add("BlAbLa", 42.5);
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("BlAbLa", 42.5);
 
-          CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, false, false, false);
-          double result = engine.Calculate("2 * BlAbLa", variables);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, false, false, false);
+            double result = engine.Calculate("2 * BlAbLa", variables);
 
-          Assert.AreEqual(85.0, result);
+            Assert.AreEqual(85.0, result);
         }
 
         [TestMethod]
         public void TestVariableNameCaseSensitivityNoToLowerInterpreted()
         {
-          Dictionary<string, double> variables = new Dictionary<string, double>();
-          variables.Add("BlAbLa", 42.5);
+            Dictionary<string, double> variables = new Dictionary<string, double>();
+            variables.Add("BlAbLa", 42.5);
 
-          CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, false, false, false);
-          double result = engine.Calculate("2 * BlAbLa", variables);
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, false, false, false);
+            double result = engine.Calculate("2 * BlAbLa", variables);
 
-          Assert.AreEqual(85.0, result);
+            Assert.AreEqual(85.0, result);
         }
 
-    [TestMethod]
+        [TestMethod]
         public void TestCustomFunctionInterpreted()
         {
             CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture,
@@ -782,7 +783,7 @@ namespace Jace.Tests
             Dictionary<string, double> variables = new Dictionary<string, double>();
             variables.Add("var_var_1", 1);
             variables.Add("var_var_2", 2);
-            
+
             double result = engine.Calculate("var_var_1 + var_var_2", variables);
             Assert.AreEqual(3.0, result);
         }
@@ -821,7 +822,7 @@ namespace Jace.Tests
             double expected = (11 * (11 + 1)) / 2.0;
             Assert.AreEqual(expected, result);
         }
-        
+
         [TestMethod]
         public void TestCustomFunctionDynamicFuncInterpreted()
         {
@@ -969,13 +970,13 @@ namespace Jace.Tests
             double result = engine.Calculate("median(3,1,5,4)");
             Assert.AreEqual(3, result);
         }
-        
+
         [TestMethod]
         public void TestCalculationFormulaBuildingWithConstants1Compiled()
         {
             CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled);
-            var fn = engine.Build("a+b+c", new Dictionary<string, double> {{"a", 1}});
-            double result = fn(new Dictionary<string, double> {{"b", 2}, {"c", 2}});
+            var fn = engine.Build("a+b+c", new Dictionary<string, double> { { "a", 1 } });
+            double result = fn(new Dictionary<string, double> { { "b", 2 }, { "c", 2 } });
             Assert.AreEqual(5.0, result);
         }
 
@@ -1069,7 +1070,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestCalculationFormulaBuildingWithConstantsCache2()
         {
-            CalculationEngine engine = new CalculationEngine( new JaceOptions { CacheEnabled = true });
+            CalculationEngine engine = new CalculationEngine(new JaceOptions { CacheEnabled = true });
             var fn = engine.Build("a+b+c");
             double result = fn(new Dictionary<string, double> { { "a", 1 }, { "b", 2 }, { "c", 2 } });
             Assert.AreEqual(5.0, result);
@@ -1166,10 +1167,37 @@ namespace Jace.Tests
             Assert.AreEqual(5.0, result);
 
 
-            var fn1 = engine.Build("a+b+c", new Dictionary<string, double> { {"a", 2 }});
+            var fn1 = engine.Build("a+b+c", new Dictionary<string, double> { { "a", 2 } });
             double result1 = fn1(new Dictionary<string, double> { { "b", 3 }, { "c", 3 } });
             Assert.AreEqual(8.0, result1);
         }
 
+        [TestMethod]
+        public void TestCalculationCompiledExpressionCompiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, true, false);
+
+            Expression<Func<double, double, double>> expression = (a, b) => a + b;
+            expression.Compile();
+
+            engine.AddFunction("test", expression.Compile());
+
+            double result = engine.Calculate("test(2, 3)");
+            Assert.AreEqual(5.0, result);
+        }
+
+        [TestMethod]
+        public void TestCalculationCompiledExpressionInterpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, true, false);
+
+            Expression<Func<double, double, double>> expression = (a, b) => a + b;
+            expression.Compile();
+
+            engine.AddFunction("test", expression.Compile());
+
+            double result = engine.Calculate("test(2, 3)");
+            Assert.AreEqual(5.0, result);
+        }
     }
 }
