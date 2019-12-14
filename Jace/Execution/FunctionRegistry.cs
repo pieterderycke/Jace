@@ -22,7 +22,7 @@ namespace Jace.Execution
 
         public IEnumerator<FunctionInfo> GetEnumerator()
         {
-            return functions.Select(p => p.Value).ToList().GetEnumerator();
+            return functions.Values.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
