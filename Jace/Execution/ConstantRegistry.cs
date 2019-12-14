@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Jace.Util;
 
 namespace Jace.Execution
 {
@@ -72,7 +73,7 @@ namespace Jace.Execution
 
         private string ConvertConstantName(string constantName)
         {
-            return caseSensitive ? constantName : constantName.ToLowerInvariant();
+            return caseSensitive ? constantName : constantName.ToLowerFast();
         }
     }
 }

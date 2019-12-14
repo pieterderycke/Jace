@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Collections;
+using Jace.Util;
 
 namespace Jace.Execution
 {
@@ -112,7 +113,7 @@ namespace Jace.Execution
 
         private string ConvertFunctionName(string functionName)
         {
-            return caseSensitive ? functionName : functionName.ToLowerInvariant();
+            return caseSensitive ? functionName : functionName.ToLowerFast();
         }
     }
 }

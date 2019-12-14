@@ -5,6 +5,7 @@ using System.Text;
 using Jace.Execution;
 using Jace.Operations;
 using Jace.Tokenizer;
+using Jace.Util;
 
 namespace Jace
 {
@@ -81,7 +82,7 @@ namespace Jace
                             {
                                 if (!caseSensitive)
                                 {
-                                    tokenValue = tokenValue.ToLowerInvariant();
+                                    tokenValue = tokenValue.ToLowerFast();
                                 }
                                 resultStack.Push(new Variable(tokenValue));
                             }
