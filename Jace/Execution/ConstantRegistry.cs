@@ -19,7 +19,7 @@ namespace Jace.Execution
 
         public IEnumerator<ConstantInfo> GetEnumerator()
         {
-            return constants.Select(p => p.Value).ToList().GetEnumerator();
+            return constants.Values.GetEnumerator();
         }
 
         IEnumerator System.Collections.IEnumerable.GetEnumerator()
