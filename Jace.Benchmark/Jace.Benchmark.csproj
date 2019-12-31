@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BenchmarkMode.cs" />
     <Compile Include="BenchMarkOperation.cs" />
     <Compile Include="CaseSensitivity.cs" />
     <Compile Include="FunctionGenerator.cs" />

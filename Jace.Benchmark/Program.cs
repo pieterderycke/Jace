@@ -22,28 +22,29 @@ namespace Jace.Benchmark
         {
             var result = Parser.Default.ParseArguments<Options>(args)
                 .WithParsed(options => {
-                    DataTable table = Benchmark(options.CaseSensitivity);
+                    DataTable table = Benchmark(options.Mode, options.CaseSensitivity);
 
                     WriteToExcelFile(table, options.FileName);
             });
         }
 
-        private static DataTable Benchmark(CaseSensitivity caseSensitivity)
+        private static DataTable Benchmark(BenchmarkMode mode, CaseSensitivity caseSensitivity)
         { 
             TimeSpan duration;
 
-            CalculationEngine interpretedEngine = new CalculationEngine(CultureInfo.CurrentCulture, ExecutionMode.Interpreted, true, true, true);
-            CalculationEngine interpretedEngineCaseSensitive = new CalculationEngine(CultureInfo.CurrentCulture, ExecutionMode.Interpreted, true, true, false);
-            CalculationEngine compiledEngine = new CalculationEngine(CultureInfo.CurrentCulture, ExecutionMode.Compiled, true, true, true);
-            CalculationEngine compiledEngineCaseSensitive = new CalculationEngine(CultureInfo.CurrentCulture, ExecutionMode.Compiled, true, true, false);
+            CalculationEngine interpretedEngine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, true, true);
+            CalculationEngine interpretedEngineCaseSensitive = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, true, false);
+            CalculationEngine compiledEngine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, true, true);
+            CalculationEngine compiledEngineCaseSensitive = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, true, false);
 
             BenchMarkOperation[] benchmarks = {
-                new BenchMarkOperation() { Formula = "2+3*7", BenchMarkDelegate = BenchMarkCalculationEngine },
-                new BenchMarkOperation() { Formula = "(var1 + var2 * 3)/(2+3) - something", BenchMarkDelegate = BenchMarkCalculationEngineFunctionBuild },
+                new BenchMarkOperation() { Formula = "2+3*7", Mode = BenchmarkMode.Static, BenchMarkDelegate = BenchMarkCalculationEngine },
+                new BenchMarkOperation() { Formula = "logn(var1, (2+3) * 500)", Mode = BenchmarkMode.SimpleFunction , BenchMarkDelegate = BenchMarkCalculationEngineFunctionBuild },
+                new BenchMarkOperation() { Formula = "(var1 + var2 * 3)/(2+3) - something", Mode = BenchmarkMode.Simple , BenchMarkDelegate = BenchMarkCalculationEngineFunctionBuild },
             };
 
             DataTable table = new DataTable();
-            table.Columns.Add("Mode");
+            table.Columns.Add("Engine");
             table.Columns.Add("Case Sensitive");
             table.Columns.Add("Formula");
             table.Columns.Add("Iterations per Random Formula", typeof(int));
@@ -52,63 +53,69 @@ namespace Jace.Benchmark
 
             foreach (BenchMarkOperation benchmark in benchmarks)
             {
+                if (mode == BenchmarkMode.All || mode == benchmark.Mode)
+                {
+                    if (caseSensitivity == CaseSensitivity.All || caseSensitivity == CaseSensitivity.CaseInSensitive)
+                    {
+                        duration = benchmark.BenchMarkDelegate(interpretedEngine, benchmark.Formula);
+                        table.AddBenchmarkRecord("Interpreted", false, benchmark.Formula, null, NumberOfTests, duration);
+                    }
+
+                    if (caseSensitivity == CaseSensitivity.All || caseSensitivity == CaseSensitivity.CaseSensitive)
+                    {
+                        duration = benchmark.BenchMarkDelegate(interpretedEngineCaseSensitive, benchmark.Formula);
+                        table.AddBenchmarkRecord("Interpreted", true, benchmark.Formula, null, NumberOfTests, duration);
+                    }
+
+                    if (caseSensitivity == CaseSensitivity.All || caseSensitivity == CaseSensitivity.CaseInSensitive)
+                    {
+                        duration = benchmark.BenchMarkDelegate(compiledEngine, benchmark.Formula);
+                        table.AddBenchmarkRecord("Compiled", false, benchmark.Formula, null, NumberOfTests, duration);
+                    }
+
+                    if (caseSensitivity == CaseSensitivity.All || caseSensitivity == CaseSensitivity.CaseSensitive)
+                    {
+                        duration = benchmark.BenchMarkDelegate(compiledEngineCaseSensitive, benchmark.Formula);
+                        table.AddBenchmarkRecord("Compiled", true, benchmark.Formula, null, NumberOfTests, duration);
+                    }
+                }
+            }
+
+            if (mode == BenchmarkMode.All || mode == BenchmarkMode.Random)
+            {
+                List<string> functions = GenerateRandomFunctions(NumberOfFunctionsToGenerate);
+
                 if (caseSensitivity == CaseSensitivity.All || caseSensitivity == CaseSensitivity.CaseInSensitive)
                 {
-                    duration = benchmark.BenchMarkDelegate(interpretedEngine, benchmark.Formula);
-                    table.AddBenchmarkRecord("Interpreted", false, benchmark.Formula, null, NumberOfTests, duration);
+                    //Interpreted Mode
+                    duration = BenchMarkCalculationEngineRandomFunctionBuild(interpretedEngine, functions, NumberExecutionsPerRandomFunction);
+                    table.AddBenchmarkRecord("Interpreted", false, string.Format("Random Mode {0} functions 3 variables", NumberOfFunctionsToGenerate),
+                        NumberExecutionsPerRandomFunction, NumberExecutionsPerRandomFunction * NumberOfFunctionsToGenerate, duration);
                 }
 
                 if (caseSensitivity == CaseSensitivity.All || caseSensitivity == CaseSensitivity.CaseSensitive)
                 {
-                    duration = benchmark.BenchMarkDelegate(interpretedEngineCaseSensitive, benchmark.Formula);
-                    table.AddBenchmarkRecord("Interpreted", true, benchmark.Formula, null, NumberOfTests, duration);
+                    //Interpreted Mode(Case Sensitive)
+                    duration = BenchMarkCalculationEngineRandomFunctionBuild(interpretedEngineCaseSensitive, functions, NumberExecutionsPerRandomFunction);
+                    table.AddBenchmarkRecord("Interpreted", true, string.Format("Random Mode {0} functions 3 variables", NumberOfFunctionsToGenerate),
+                        NumberExecutionsPerRandomFunction, NumberExecutionsPerRandomFunction * NumberOfFunctionsToGenerate, duration);
                 }
 
                 if (caseSensitivity == CaseSensitivity.All || caseSensitivity == CaseSensitivity.CaseInSensitive)
                 {
-                    duration = benchmark.BenchMarkDelegate(compiledEngine, benchmark.Formula);
-                    table.AddBenchmarkRecord("Compiled", false, benchmark.Formula, null, NumberOfTests, duration);
+                    //Compiled Mode
+                    duration = BenchMarkCalculationEngineRandomFunctionBuild(compiledEngine, functions, NumberExecutionsPerRandomFunction);
+                    table.AddBenchmarkRecord("Compiled", false, string.Format("Random Mode {0} functions 3 variables", NumberOfFunctionsToGenerate),
+                        NumberExecutionsPerRandomFunction, NumberExecutionsPerRandomFunction * NumberOfFunctionsToGenerate, duration);
                 }
 
                 if (caseSensitivity == CaseSensitivity.All || caseSensitivity == CaseSensitivity.CaseSensitive)
                 {
-                    duration = benchmark.BenchMarkDelegate(compiledEngineCaseSensitive, benchmark.Formula);
-                    table.AddBenchmarkRecord("Compiled", true, benchmark.Formula, null, NumberOfTests, duration);
+                    //Compiled Mode(Case Sensitive)
+                    duration = BenchMarkCalculationEngineRandomFunctionBuild(compiledEngineCaseSensitive, functions, NumberExecutionsPerRandomFunction);
+                    table.AddBenchmarkRecord("Compiled", true, string.Format("Random Mode {0} functions 3 variables", NumberOfFunctionsToGenerate),
+                        NumberExecutionsPerRandomFunction, NumberExecutionsPerRandomFunction * NumberOfFunctionsToGenerate, duration);
                 }
-            }
-
-            List<string> functions = GenerateRandomFunctions(NumberOfFunctionsToGenerate);
-
-            if (caseSensitivity == CaseSensitivity.All || caseSensitivity == CaseSensitivity.CaseInSensitive)
-            {
-                //Interpreted Mode
-                duration = BenchMarkCalculationEngineRandomFunctionBuild(interpretedEngine, functions, NumberExecutionsPerRandomFunction);
-                table.AddBenchmarkRecord("Interpreted", false, string.Format("Random Mode {0} functions 3 variables", NumberOfFunctionsToGenerate),
-                    NumberExecutionsPerRandomFunction, NumberExecutionsPerRandomFunction * NumberOfFunctionsToGenerate, duration);
-            }
-
-            if (caseSensitivity == CaseSensitivity.All || caseSensitivity == CaseSensitivity.CaseSensitive)
-            {
-                //Interpreted Mode(Case Sensitive)
-                duration = BenchMarkCalculationEngineRandomFunctionBuild(interpretedEngineCaseSensitive, functions, NumberExecutionsPerRandomFunction);
-                table.AddBenchmarkRecord("Interpreted", true, string.Format("Random Mode {0} functions 3 variables", NumberOfFunctionsToGenerate),
-                    NumberExecutionsPerRandomFunction, NumberExecutionsPerRandomFunction * NumberOfFunctionsToGenerate, duration);
-            }
-
-            if (caseSensitivity == CaseSensitivity.All || caseSensitivity == CaseSensitivity.CaseInSensitive)
-            {
-                //Compiled Mode
-                duration = BenchMarkCalculationEngineRandomFunctionBuild(compiledEngine, functions, NumberExecutionsPerRandomFunction);
-                table.AddBenchmarkRecord("Compiled", false, string.Format("Random Mode {0} functions 3 variables", NumberOfFunctionsToGenerate),
-                    NumberExecutionsPerRandomFunction, NumberExecutionsPerRandomFunction * NumberOfFunctionsToGenerate, duration);
-            }
-
-            if (caseSensitivity == CaseSensitivity.All || caseSensitivity == CaseSensitivity.CaseSensitive)
-            {
-                //Compiled Mode(Case Sensitive)
-                duration = BenchMarkCalculationEngineRandomFunctionBuild(compiledEngineCaseSensitive, functions, NumberExecutionsPerRandomFunction);
-                table.AddBenchmarkRecord("Compiled", true, string.Format("Random Mode {0} functions 3 variables", NumberOfFunctionsToGenerate),
-                    NumberExecutionsPerRandomFunction, NumberExecutionsPerRandomFunction * NumberOfFunctionsToGenerate, duration);
             }
 
             return table;
@@ -189,9 +196,9 @@ namespace Jace.Benchmark
             return end - start;
         }
 
-        private static void AddBenchmarkRecord(this DataTable table, string mode, bool caseSensitive, string formula, int? iterationsPerRandom, int totalIterations, TimeSpan duration)
+        private static void AddBenchmarkRecord(this DataTable table, string engine, bool caseSensitive, string formula, int? iterationsPerRandom, int totalIterations, TimeSpan duration)
         {
-            table.Rows.Add(mode, caseSensitive, formula, iterationsPerRandom, totalIterations, duration);
+            table.Rows.Add(engine, caseSensitive, formula, iterationsPerRandom, totalIterations, duration);
         }
 
         private static void WriteToExcelFile(DataTable table, string fileName)

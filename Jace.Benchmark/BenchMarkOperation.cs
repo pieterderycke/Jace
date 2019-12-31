@@ -9,6 +9,7 @@ namespace Jace.Benchmark
     public class BenchMarkOperation
     {
         public string Formula { get; set; }
+        public BenchmarkMode Mode { get; set; }
         public Func<CalculationEngine, string, TimeSpan>  BenchMarkDelegate { get; set; }
     }
 }

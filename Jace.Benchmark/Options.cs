@@ -12,6 +12,10 @@ namespace Jace.Benchmark
         [Option("case-sensitivity", HelpText = "Execute in case sensitive mode, case insensitive mode or execute both.")]
         public CaseSensitivity CaseSensitivity { get; set; }
 
+        [Option('m', "mode", HelpText = "Specify the benchmark to execute.")]
+        public BenchmarkMode Mode { get; set; }
+
+
         [Option('f', "file", HelpText = "The file to store the output results in.", Required = true)]
         public string FileName { get; set; }
     }
