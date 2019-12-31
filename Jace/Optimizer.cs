@@ -56,6 +56,12 @@ namespace Jace
                     division.Base = Optimize(division.Base, functionRegistry, constantRegistry);
                     division.Exponent = Optimize(division.Exponent, functionRegistry, constantRegistry);
                 }
+                else if(operation.GetType() == typeof(Function))
+                {
+                    Function function = (Function)operation;
+                    IList<Operation> arguments = function.Arguments.Select(a => Optimize(a, functionRegistry, constantRegistry)).ToList();
+                    function.Arguments = arguments;
+                }
 
                 return operation;
             }

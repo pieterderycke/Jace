@@ -28,7 +28,7 @@ namespace Jace.Tests.Mocks
 
         public FunctionInfo GetFunctionInfo(string functionName)
         {
-            return new FunctionInfo(functionName, 1, false, false, null);
+            return new FunctionInfo(functionName, 1, true, false, false, null);
         }
 
         public bool IsFunctionName(string functionName)
@@ -41,7 +41,7 @@ namespace Jace.Tests.Mocks
             throw new NotImplementedException();
         }
 
-        public void RegisterFunction(string functionName, Delegate function, bool isOverWritable)
+        public void RegisterFunction(string functionName, Delegate function, bool isIdempotent, bool isOverWritable)
         {
             throw new NotImplementedException();
         }
@@ -52,11 +52,6 @@ namespace Jace.Tests.Mocks
         }
 
         public void RegisterFunction(string functionName, Delegate function, int numberOfParameters)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RegisterFunction(string functionName, Delegate function, int numberOfParameters, bool isOverWritable)
         {
             throw new NotImplementedException();
         }

@@ -66,6 +66,7 @@
     <Compile Include="MemoryCacheTests.cs" />
     <Compile Include="Mocks\MockConstantRegistry.cs" />
     <Compile Include="Mocks\MockFunctionRegistry.cs" />
+    <Compile Include="OptimizerTests.cs" />
     <Compile Include="TokenReaderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -42,10 +42,10 @@ namespace Jace.Execution
 
         public void RegisterFunction(string functionName, Delegate function)
         {
-            RegisterFunction(functionName, function, true);
+            RegisterFunction(functionName, function, true, true);
         }
         
-        public void RegisterFunction(string functionName, Delegate function, bool isOverWritable)
+        public void RegisterFunction(string functionName, Delegate function, bool isIdempotent, bool isOverWritable)
         {
             if (string.IsNullOrEmpty(functionName))
                 throw new ArgumentNullException("functionName");
@@ -95,7 +95,7 @@ namespace Jace.Execution
                 throw new Exception(message);
             }
 
-            FunctionInfo functionInfo = new FunctionInfo(functionName, numberOfParameters, isOverWritable, isDynamicFunc, function);
+            FunctionInfo functionInfo = new FunctionInfo(functionName, numberOfParameters, isIdempotent, isOverWritable, isDynamicFunc, function);
 
             if (functions.ContainsKey(functionName))
                 functions[functionName] = functionInfo;

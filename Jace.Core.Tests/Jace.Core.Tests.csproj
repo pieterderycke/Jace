@@ -17,6 +17,7 @@
     <Compile Include="..\Jace.Tests\MemoryCacheTests.cs" Link="MemoryCacheTests.cs" />
     <Compile Include="..\Jace.Tests\Mocks\MockConstantRegistry.cs" Link="Mocks\MockConstantRegistry.cs" />
     <Compile Include="..\Jace.Tests\Mocks\MockFunctionRegistry.cs" Link="Mocks\MockFunctionRegistry.cs" />
+    <Compile Include="..\Jace.Tests\OptimizerTests.cs" Link="OptimizerTests.cs" />
     <Compile Include="..\Jace.Tests\TokenReaderTests.cs" Link="TokenReaderTests.cs" />
   </ItemGroup>
 

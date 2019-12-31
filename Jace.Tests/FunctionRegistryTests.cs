@@ -56,11 +56,11 @@ namespace Jace.Tests
             Func<double, double, double> testFunction1 = (a, b) => a * b;
             Func<double, double, double> testFunction2 = (a, b) => a * b;
 
-            registry.RegisterFunction("test", testFunction1, false);
+            registry.RegisterFunction("test", testFunction1, true, false);
 
             AssertExtensions.ThrowsException<Exception>(() =>
                 {
-                    registry.RegisterFunction("test", testFunction2, false);
+                    registry.RegisterFunction("test", testFunction2, true, false);
                 });
         }
     }
