@@ -43,6 +43,12 @@ namespace Jace
                     Multiplication multiplication = (Multiplication)operation;
                     multiplication.Argument1 = Optimize(multiplication.Argument1, functionRegistry, constantRegistry);
                     multiplication.Argument2 = Optimize(multiplication.Argument2, functionRegistry, constantRegistry);
+
+                    if ((multiplication.Argument1.GetType() == typeof(FloatingPointConstant) && ((FloatingPointConstant)multiplication.Argument1).Value == 0.0)
+                        || (multiplication.Argument2.GetType() == typeof(FloatingPointConstant) && ((FloatingPointConstant)multiplication.Argument2).Value == 0.0))
+                    {
+                        return new FloatingPointConstant(0.0);
+                    }
                 }
                 else if (operation.GetType() == typeof(Division))
                 {
