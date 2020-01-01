@@ -246,9 +246,10 @@ namespace Jace
         /// </summary>
         /// <param name="functionName">The name of the function. This name can be used in mathematical formulas.</param>
         /// <param name="function">The implemenation of the function.</param>
-        public void AddFunction(string functionName, Func<double> function)
+        /// <param name="isIdempotent">Does the function provide the same result when it is executed multiple times.</param>
+        public void AddFunction(string functionName, Func<double> function, bool isIdempotent = true)
         {
-            FunctionRegistry.RegisterFunction(functionName, function);
+            FunctionRegistry.RegisterFunction(functionName, function, isIdempotent, true);
         }
 
         /// <summary>
@@ -256,9 +257,10 @@ namespace Jace
         /// </summary>
         /// <param name="functionName">The name of the function. This name can be used in mathematical formulas.</param>
         /// <param name="function">The implemenation of the function.</param>
-        public void AddFunction(string functionName, Func<double, double> function)
+        /// <param name="isIdempotent">Does the function provide the same result when it is executed multiple times.</param>
+        public void AddFunction(string functionName, Func<double, double> function, bool isIdempotent = true)
         {
-            FunctionRegistry.RegisterFunction(functionName, function); 
+            FunctionRegistry.RegisterFunction(functionName, function, isIdempotent, true); 
         }
 
         /// <summary>
@@ -266,9 +268,10 @@ namespace Jace
         /// </summary>
         /// <param name="functionName">The name of the function. This name can be used in mathematical formulas.</param>
         /// <param name="function">The implemenation of the function.</param>
-        public void AddFunction(string functionName, Func<double, double, double> function)
+        /// <param name="isIdempotent">Does the function provide the same result when it is executed multiple times.</param>
+        public void AddFunction(string functionName, Func<double, double, double> function, bool isIdempotent = true)
         {
-            FunctionRegistry.RegisterFunction(functionName, function);
+            FunctionRegistry.RegisterFunction(functionName, function, isIdempotent, true);
         }
 
         /// <summary>
@@ -276,9 +279,10 @@ namespace Jace
         /// </summary>
         /// <param name="functionName">The name of the function. This name can be used in mathematical formulas.</param>
         /// <param name="function">The implemenation of the function.</param>
-        public void AddFunction(string functionName, Func<double, double, double, double> function)
+        /// <param name="isIdempotent">Does the function provide the same result when it is executed multiple times.</param>
+        public void AddFunction(string functionName, Func<double, double, double, double> function, bool isIdempotent = true)
         {
-            FunctionRegistry.RegisterFunction(functionName, function);
+            FunctionRegistry.RegisterFunction(functionName, function, isIdempotent, true);
         }
 
         /// <summary>
@@ -286,9 +290,10 @@ namespace Jace
         /// </summary>
         /// <param name="functionName">The name of the function. This name can be used in mathematical formulas.</param>
         /// <param name="function">The implemenation of the function.</param>
-        public void AddFunction(string functionName, Func<double, double, double, double, double> function)
+        /// <param name="isIdempotent">Does the function provide the same result when it is executed multiple times.</param>
+        public void AddFunction(string functionName, Func<double, double, double, double, double> function, bool isIdempotent = true)
         {
-            FunctionRegistry.RegisterFunction(functionName, function);
+            FunctionRegistry.RegisterFunction(functionName, function, isIdempotent, true);
         }
 
         /// <summary>
@@ -296,9 +301,10 @@ namespace Jace
         /// </summary>
         /// <param name="functionName">The name of the function. This name can be used in mathematical formulas.</param>
         /// <param name="function">The implemenation of the function.</param>
-        public void AddFunction(string functionName, Func<double, double, double, double, double, double> function)
+        /// <param name="isIdempotent">Does the function provide the same result when it is executed multiple times.</param>
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double> function, bool isIdempotent = true)
         {
-            FunctionRegistry.RegisterFunction(functionName, function);
+            FunctionRegistry.RegisterFunction(functionName, function, isIdempotent, true);
         }
 
         /// <summary>
@@ -306,64 +312,65 @@ namespace Jace
         /// </summary>
         /// <param name="functionName">The name of the function. This name can be used in mathematical formulas.</param>
         /// <param name="function">The implemenation of the function.</param>
-        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double> function)
+        /// <param name="isIdempotent">Does the function provide the same result when it is executed multiple times.</param>
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double> function, bool isIdempotent = true)
         {
-            FunctionRegistry.RegisterFunction(functionName, function);
+            FunctionRegistry.RegisterFunction(functionName, function, isIdempotent, true);
         }
 
-        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double> function)
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double> function, bool isIdempotent = true)
         {
-            FunctionRegistry.RegisterFunction(functionName, function);
+            FunctionRegistry.RegisterFunction(functionName, function, isIdempotent, true);
         }
 
-        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double> function)
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double> function, bool isIdempotent = true)
         {
-            FunctionRegistry.RegisterFunction(functionName, function);
+            FunctionRegistry.RegisterFunction(functionName, function, isIdempotent, true);
         }
 
-        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double> function)
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double> function, bool isIdempotent = true)
         {
-            FunctionRegistry.RegisterFunction(functionName, function);
+            FunctionRegistry.RegisterFunction(functionName, function, isIdempotent, true);
         }
 
-        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double, double> function)
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double, double> function, bool isIdempotent = true)
         {
-            FunctionRegistry.RegisterFunction(functionName, function);
+            FunctionRegistry.RegisterFunction(functionName, function, isIdempotent, true);
         }
 
-        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double, double, double> function)
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double, double, double> function, bool isIdempotent = true)
         {
-            FunctionRegistry.RegisterFunction(functionName, function);
+            FunctionRegistry.RegisterFunction(functionName, function, isIdempotent, true);
         }
 
-        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double, double, double, double> function)
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double, double, double, double> function, bool isIdempotent = true)
         {
-            FunctionRegistry.RegisterFunction(functionName, function);
+            FunctionRegistry.RegisterFunction(functionName, function, isIdempotent, true);
         }
 
-        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double, double, double, double, double> function)
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double, double, double, double, double> function, bool isIdempotent = true)
         {
-            FunctionRegistry.RegisterFunction(functionName, function);
+            FunctionRegistry.RegisterFunction(functionName, function, isIdempotent, true);
         }
 
-        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double, double, double, double, double, double> function)
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double, double, double, double, double, double> function, bool isIdempotent = true)
         {
-            FunctionRegistry.RegisterFunction(functionName, function);
+            FunctionRegistry.RegisterFunction(functionName, function, isIdempotent, true);
         }
 
-        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double> function)
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double> function, bool isIdempotent = true)
         {
-            FunctionRegistry.RegisterFunction(functionName, function);
+            FunctionRegistry.RegisterFunction(functionName, function, isIdempotent, true);
         }
 
-        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double> function)
+        public void AddFunction(string functionName, Func<double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double> function, bool isIdempotent = true)
         {
-            FunctionRegistry.RegisterFunction(functionName, function);
+            FunctionRegistry.RegisterFunction(functionName, function, isIdempotent, true);
         }
 
-        public void AddFunction(string functionName, DynamicFunc<double, double> functionDelegate)
+        public void AddFunction(string functionName, DynamicFunc<double, double> functionDelegate, bool isIdempotent = true)
         {
-            FunctionRegistry.RegisterFunction(functionName, functionDelegate);
+            FunctionRegistry.RegisterFunction(functionName, functionDelegate, isIdempotent, true);
         }
 
         /// <summary>
