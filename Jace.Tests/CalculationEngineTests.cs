@@ -1173,7 +1173,7 @@ namespace Jace.Tests
         }
 
         [TestMethod]
-        public void TestCalculationCompiledExpressionCompiled()
+        public void TestCalculationCompiledExpression1Compiled()
         {
             CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, true, false);
 
@@ -1187,7 +1187,7 @@ namespace Jace.Tests
         }
 
         [TestMethod]
-        public void TestCalculationCompiledExpressionInterpreted()
+        public void TestCalculationCompiledExpression1Interpreted()
         {
             CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, true, false);
 
@@ -1197,6 +1197,34 @@ namespace Jace.Tests
             engine.AddFunction("test", expression.Compile());
 
             double result = engine.Calculate("test(2, 3)");
+            Assert.AreEqual(5.0, result);
+        }
+
+        [TestMethod]
+        public void TestCalculationCompiledExpression2Compiled()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, true, false);
+
+            Expression<Func<double>> expression = () => 5;
+            expression.Compile();
+
+            engine.AddFunction("test", expression.Compile());
+
+            double result = engine.Calculate("test()");
+            Assert.AreEqual(5.0, result);
+        }
+
+        [TestMethod]
+        public void TestCalculationCompiledExpression2Interpreted()
+        {
+            CalculationEngine engine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, true, false);
+
+            Expression<Func<double>> expression = () => 5;
+            expression.Compile();
+
+            engine.AddFunction("test", expression.Compile());
+
+            double result = engine.Calculate("test()");
             Assert.AreEqual(5.0, result);
         }
     }
