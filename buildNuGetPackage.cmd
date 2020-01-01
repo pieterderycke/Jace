@@ -1,8 +1,8 @@
 SET jaceVersion="1.0"
 
-SET msbuild="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\msbuild.exe"
+FOR /F "tokens=*" %%i IN ('"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe') do (SET msbuild=%%i)
 
-Call %msbuild% /p:Configuration=Release Jace\Jace.csproj
+Call "%msbuild%" /p:Configuration=Release Jace\Jace.csproj
 MKDIR nuget\lib\netstandard1.6
 COPY Jace\bin\Release\netstandard1.6\*.dll nuget\lib\netstandard1.6\
 

@@ -5,7 +5,7 @@
     <version>$version$</version>
     <title>Jace.NET</title>
     <authors>Pieter De Rycke</authors>
-    <licenseUrl>https://github.com/pieterderycke/Jace/blob/master/LICENSE.md</licenseUrl>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/pieterderycke/Jace</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
@@ -17,5 +17,8 @@
 		Jace can execute functions in two modes: in interpreted mode and in a dynamic compilation mode. If dynamic compilation mode is used, Jace will create a dynamic method at runtime and will generate the necessary MSIL opcodes for native execution of the function. If a function is re-executed with other variables, Jace will take the dynamically generated method from its cache. It is recommended to use Jace in dynamic compilation mode.
 	</summary>
 	<tags>math interprete parse windows phone mathematical formula calculation expression parse evaluate</tags>
+	<dependencies>
+		<group targetFramework=".NETStandard1.6" />
+	</dependencies>
   </metadata>
 </package>
