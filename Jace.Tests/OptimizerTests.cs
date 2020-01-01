@@ -15,7 +15,7 @@ namespace Jace.Tests
     public class OptimizerTests
     {
         [TestMethod]
-        public void TestFunctionOptimization1()
+        public void TestIdempotentFunctionOptimization()
         {
             Optimizer optimizer = new Optimizer(new Interpreter());
 
@@ -31,6 +31,26 @@ namespace Jace.Tests
             Function optimizedFuction = (Function)optimizer.Optimize(operation, functionRegistry, null);
 
             Assert.AreEqual(typeof(FloatingPointConstant), optimizedFuction.Arguments[1].GetType());
+        }
+
+        [TestMethod]
+        public void TestNonIdempotentFunctionOptimization()
+        {
+            Optimizer optimizer = new Optimizer(new Interpreter());
+
+            TokenReader tokenReader = new TokenReader(CultureInfo.InvariantCulture);
+            IList<Token> tokens = tokenReader.Read("test(500)");
+
+            IFunctionRegistry functionRegistry = new FunctionRegistry(true);
+            functionRegistry.RegisterFunction("test", (Func<double, double>)(a => a), false, true);
+
+            AstBuilder astBuilder = new AstBuilder(functionRegistry, true);
+            Operation operation = astBuilder.Build(tokens);
+
+            Operation optimizedFuction = optimizer.Optimize(operation, functionRegistry, null);
+
+            Assert.AreEqual(typeof(Function), optimizedFuction.GetType());
+            Assert.AreEqual(typeof(IntegerConstant), ((Function)optimizedFuction).Arguments[0].GetType());
         }
     }
 }

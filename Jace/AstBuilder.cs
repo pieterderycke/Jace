@@ -317,7 +317,7 @@ namespace Jace
                         operations.Add(resultStack.Pop());
                     operations.Reverse();
 
-                    return new Function(DataType.FloatingPoint, functionName, operations);
+                    return new Function(DataType.FloatingPoint, functionName, operations, functionInfo.IsIdempotent);
                 }
                 else
                 {

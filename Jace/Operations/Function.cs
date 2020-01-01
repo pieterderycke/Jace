@@ -9,8 +9,8 @@ namespace Jace.Operations
     {
         private IList<Operation> arguments;
 
-        public Function(DataType dataType, string functionName, IList<Operation> arguments)
-            : base(dataType, arguments.FirstOrDefault(o => o.DependsOnVariables) != null)
+        public Function(DataType dataType, string functionName, IList<Operation> arguments, bool isIdempotent)
+            : base(dataType, arguments.FirstOrDefault(o => o.DependsOnVariables) != null, isIdempotent && arguments.All(o => o.IsIdempotent))
         {
             this.FunctionName = functionName;
             this.arguments = arguments;

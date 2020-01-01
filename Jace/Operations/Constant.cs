@@ -8,7 +8,7 @@ namespace Jace.Operations
     public abstract class Constant<T> : Operation
     {
         public Constant(DataType dataType, T value)
-            : base(dataType, false)
+            : base(dataType, false, true)
         {
             this.Value = value;
         }

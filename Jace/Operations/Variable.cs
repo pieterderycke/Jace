@@ -11,7 +11,7 @@ namespace Jace.Operations
     public class Variable : Operation
     {
         public Variable(string name)
-            : base(DataType.FloatingPoint, true)
+            : base(DataType.FloatingPoint, true, false)
         {
             this.Name = name;
         }

@@ -18,7 +18,7 @@ namespace Jace
 
         public Operation Optimize(Operation operation, IFunctionRegistry functionRegistry, IConstantRegistry constantRegistry)
         {
-            if (!operation.DependsOnVariables && operation.GetType() != typeof(IntegerConstant)
+            if (!operation.DependsOnVariables && operation.IsIdempotent && operation.GetType() != typeof(IntegerConstant)
                 && operation.GetType() != typeof(FloatingPointConstant))
             {
                 double result = executor.Execute(operation, functionRegistry, constantRegistry);

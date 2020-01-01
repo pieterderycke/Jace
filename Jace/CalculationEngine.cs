@@ -27,6 +27,8 @@ namespace Jace
         private readonly bool optimizerEnabled;
         private readonly bool caseSensitive;
 
+        private readonly Random random;
+
         /// <summary>
         /// Creates a new instance of the <see cref="CalculationEngine"/> class with
         /// default parameters.
@@ -113,6 +115,8 @@ namespace Jace
             this.cacheEnabled = options.CacheEnabled;
             this.optimizerEnabled = options.OptimizerEnabled;
             this.caseSensitive = options.CaseSensitive;
+
+            this.random = new Random();
 
             if (options.ExecutionMode == ExecutionMode.Interpreted)
                 executor = new Interpreter(caseSensitive);
@@ -403,6 +407,9 @@ namespace Jace
             FunctionRegistry.RegisterFunction("min", (DynamicFunc<double, double>)((a) => a.Min()), true, false);
             FunctionRegistry.RegisterFunction("avg", (DynamicFunc<double, double>)((a) => a.Average()), true, false);
             FunctionRegistry.RegisterFunction("median", (DynamicFunc<double, double>)((a) => MathExtended.Median(a)), true, false);
+
+            // Non Idempotent Functions
+            FunctionRegistry.RegisterFunction("random", (Func<double>)random.NextDouble, false, false);
         }
 
         private void RegisterDefaultConstants()
