@@ -1,8 +1,6 @@
-﻿using Jace.Execution;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using Jace.Execution;
 using System.Globalization;
-using System.Text;
 
 namespace Jace
 {
@@ -22,6 +20,7 @@ namespace Jace
             DefaultConstants = true;
             CacheMaximumSize = DefaultCacheMaximumSize;
             CacheReductionSize = DefaultCacheReductionSize;
+            EnableSingleCharacterOperations = false;
         }
 
         /// <summary>
@@ -83,5 +82,6 @@ namespace Jace
         /// Enable or disable the default constants.
         /// </summary>
         public bool DefaultConstants { get; set; }
+        public bool EnableSingleCharacterOperations { get; set; }
     }
 }

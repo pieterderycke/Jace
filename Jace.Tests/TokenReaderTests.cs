@@ -40,6 +40,29 @@ namespace Jace.Tests
         }
 
         [TestMethod]
+        [DataRow("42==31", '=', false)]
+        [DataRow("42=31", '=', true)] 
+        [DataRow("42!=31", '≠', false)]
+        [DataRow("42!31", '≠', true)]
+        [DataRow("42||31", '|', false)]
+        [DataRow("42|31", '|', true)]
+        [DataRow("42&&31", '&', false)]
+        [DataRow("42&31", '&', true)]
+        public void TestTokenReader_Equals(string expression, object token, bool enableSingleCharacterOperations)
+        {
+            TokenReader reader = new TokenReader(new JaceOptions() { EnableSingleCharacterOperations = enableSingleCharacterOperations });
+            List<Token> tokens = reader.Read(expression);
+
+            Assert.AreEqual(3, tokens.Count);
+
+            Assert.AreEqual(42, tokens[0].Value);
+
+            Assert.AreEqual(token, tokens[1].Value);
+
+            Assert.AreEqual(31, tokens[2].Value);
+        }
+
+        [TestMethod]
         public void TestTokenReader2()
         {
             TokenReader reader = new TokenReader();
