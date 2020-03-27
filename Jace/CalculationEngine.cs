@@ -19,6 +19,7 @@ namespace Jace
     /// </summary>
     public class CalculationEngine
     {
+        private readonly JaceOptions options;
         private readonly IExecutor executor;
         private readonly Optimizer optimizer;
         private readonly CultureInfo cultureInfo;
@@ -26,6 +27,7 @@ namespace Jace
         private readonly bool cacheEnabled;
         private readonly bool optimizerEnabled;
         private readonly bool caseSensitive;
+        private readonly bool enableSingleCharacterOperations;
 
         private readonly Random random;
 
@@ -108,6 +110,7 @@ namespace Jace
         /// <param name="options">The <see cref="JaceOptions"/> to configure the behaviour of the engine.</param>
         public CalculationEngine(JaceOptions options)
         {
+            this.options = options;
             this.executionFormulaCache = new MemoryCache<string, Func<IDictionary<string, double>, double>>(options.CacheMaximumSize, options.CacheReductionSize);
             this.FunctionRegistry = new FunctionRegistry(false);
             this.ConstantRegistry = new ConstantRegistry(false);
@@ -115,6 +118,7 @@ namespace Jace
             this.cacheEnabled = options.CacheEnabled;
             this.optimizerEnabled = options.OptimizerEnabled;
             this.caseSensitive = options.CaseSensitive;
+            this.enableSingleCharacterOperations = options.EnableSingleCharacterOperations;
 
             this.random = new Random();
 
@@ -434,7 +438,8 @@ namespace Jace
         /// <returns>The abstract syntax tree of the formula.</returns>
         private Operation BuildAbstractSyntaxTree(string formulaText, ConstantRegistry compiledConstants)
         {
-            TokenReader tokenReader = new TokenReader(cultureInfo);
+            TokenReader tokenReader = new TokenReader(cultureInfo, options);
+
             List<Token> tokens = tokenReader.Read(formulaText);
             
             AstBuilder astBuilder = new AstBuilder(FunctionRegistry, caseSensitive, compiledConstants);

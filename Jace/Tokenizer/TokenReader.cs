@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 
 namespace Jace.Tokenizer
@@ -14,10 +13,25 @@ namespace Jace.Tokenizer
         private readonly CultureInfo cultureInfo;
         private readonly char decimalSeparator;
         private readonly char argumentSeparator;
+        private readonly bool enableSingleCharacterOperations;
+
+        public TokenReader(JaceOptions options)
+            : this()
+        {
+            if (options == null) throw new ArgumentNullException(nameof(options));
+            enableSingleCharacterOperations = options.EnableSingleCharacterOperations;
+        }
 
         public TokenReader() 
             : this(CultureInfo.CurrentCulture)
         {
+        }
+
+        public TokenReader(CultureInfo cultureInfo, JaceOptions options)
+            : this(cultureInfo)
+        {
+            if (options == null) throw new ArgumentNullException(nameof(options));
+            enableSingleCharacterOperations = options.EnableSingleCharacterOperations;
         }
 
         public TokenReader(CultureInfo cultureInfo)
@@ -26,7 +40,7 @@ namespace Jace.Tokenizer
             this.decimalSeparator = cultureInfo.NumberFormat.NumberDecimalSeparator[0];
             this.argumentSeparator = cultureInfo.TextInfo.ListSeparator[0];
         }
-
+        
         /// <summary>
         /// Read in the provided formula and convert it into a list of takens that can be processed by the
         /// Abstract Syntax Tree Builder.
@@ -182,6 +196,11 @@ namespace Jace.Tokenizer
                             {
                                 tokens.Add(new Token() { TokenType = TokenType.Operation, Value = '≠', StartPosition = i++, Length = 2 });
                                 isFormulaSubPart = false;
+                            } 
+                            else if (enableSingleCharacterOperations)
+                            {
+                                tokens.Add(new Token() { TokenType = TokenType.Operation, Value = '≠', StartPosition = i, Length = 1 });
+                                isFormulaSubPart = false;
                             }
                             else
                                 throw new ParseException(string.Format("Invalid token \"{0}\" detected at position {1}.", characters[i], i));
@@ -190,6 +209,11 @@ namespace Jace.Tokenizer
                             if (i + 1 < characters.Length && characters[i + 1] == '&')
                             {
                                 tokens.Add(new Token() { TokenType = TokenType.Operation, Value = '&', StartPosition = i++, Length = 2 });
+                                isFormulaSubPart = false;
+                            }
+                            else if (enableSingleCharacterOperations)
+                            {
+                                tokens.Add(new Token() { TokenType = TokenType.Operation, Value = '&', StartPosition = i, Length = 1 });
                                 isFormulaSubPart = false;
                             }
                             else
@@ -201,6 +225,11 @@ namespace Jace.Tokenizer
                                 tokens.Add(new Token() { TokenType = TokenType.Operation, Value = '|', StartPosition = i++, Length = 2 });
                                 isFormulaSubPart = false;
                             }
+                            else if (enableSingleCharacterOperations)
+                            {
+                                tokens.Add(new Token() { TokenType = TokenType.Operation, Value = '|', StartPosition = i, Length = 1 });
+                                isFormulaSubPart = false;
+                            }
                             else
                                 throw new ParseException(string.Format("Invalid token \"{0}\" detected at position {1}.", characters[i], i));
                             break;
@@ -208,6 +237,11 @@ namespace Jace.Tokenizer
                             if (i + 1 < characters.Length && characters[i + 1] == '=')
                             {
                                 tokens.Add(new Token() { TokenType = TokenType.Operation, Value = '=', StartPosition = i++, Length = 2 });
+                                isFormulaSubPart = false;
+                            }
+                            else if (enableSingleCharacterOperations)
+                            {
+                                tokens.Add(new Token() { TokenType = TokenType.Operation, Value = '=', StartPosition = i, Length = 1 });
                                 isFormulaSubPart = false;
                             }
                             else
