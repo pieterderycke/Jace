@@ -22,11 +22,11 @@ namespace Jace.Tests
         [TestMethod]
         public void TestAddConstant()
         {
-            ConstantRegistry registry = new ConstantRegistry(false);
+            var registry = new ConstantRegistry<double>(false);
             
             registry.RegisterConstant("test", 42.0);
 
-            ConstantInfo functionInfo = registry.GetConstantInfo("test");
+            var functionInfo = registry.GetConstantInfo("test");
             
             Assert.IsNotNull(functionInfo);
             Assert.AreEqual("test", functionInfo.ConstantName);
@@ -36,7 +36,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestOverwritable()
         {
-            ConstantRegistry registry = new ConstantRegistry(false);
+            var registry = new ConstantRegistry<double>(false);
 
             registry.RegisterConstant("test", 42.0);
             registry.RegisterConstant("test", 26.3);
@@ -45,7 +45,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestNotOverwritable()
         {
-            ConstantRegistry registry = new ConstantRegistry(false);
+            var registry = new ConstantRegistry<double>(false);
 
             registry.RegisterConstant("test", 42.0, false);
 

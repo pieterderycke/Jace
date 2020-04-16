@@ -8,7 +8,7 @@ using Jace.Util;
 
 namespace Jace.Execution
 {
-    public class FunctionRegistry : IFunctionRegistry
+    public class FunctionRegistry<T> : IFunctionRegistry<T>
     {
         private const string DynamicFuncName = "Jace.DynamicFunc";
 
@@ -60,13 +60,13 @@ namespace Jace.Execution
             if (funcType.FullName.StartsWith("System.Func"))
             {
                 foreach (Type genericArgument in funcType.GenericTypeArguments)
-                    if (genericArgument != typeof(double))
-                        throw new ArgumentException("Only doubles are supported as function arguments.", "function");
+                    if (genericArgument != typeof(T))
+                        throw new ArgumentException($"Only {typeof(T)} are supported as function arguments.", "function");
 
                 numberOfParameters = function
                     .GetMethodInfo()
                     .GetParameters()
-                    .Count(p => p.ParameterType == typeof(double));
+                    .Count(p => p.ParameterType == typeof(T));
             }
             else if (funcType.FullName.StartsWith(DynamicFuncName))
             {

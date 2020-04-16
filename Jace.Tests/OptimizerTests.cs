@@ -17,34 +17,34 @@ namespace Jace.Tests
         [TestMethod]
         public void TestOptimizerIdempotentFunction()
         {
-            Optimizer optimizer = new Optimizer(new Interpreter());
+            var optimizer = new Optimizer<double>(new Interpreter<double>(DoubleNumericalOperations.Instance));
 
             TokenReader tokenReader = new TokenReader(CultureInfo.InvariantCulture);
             IList<Token> tokens = tokenReader.Read("test(var1, (2+3) * 500)");
 
-            IFunctionRegistry functionRegistry = new FunctionRegistry(true);
+            var functionRegistry = new FunctionRegistry<double>(true);
             functionRegistry.RegisterFunction("test", (Func<double, double, double>)((a, b) =>  a + b));
 
-            AstBuilder astBuilder = new AstBuilder(functionRegistry, true);
+            var astBuilder = new AstBuilder<double>(functionRegistry, true);
             Operation operation = astBuilder.Build(tokens);
 
             Function optimizedFuction = (Function)optimizer.Optimize(operation, functionRegistry, null);
 
-            Assert.AreEqual(typeof(FloatingPointConstant), optimizedFuction.Arguments[1].GetType());
+            Assert.AreEqual(typeof(FloatingPointConstant<double>), optimizedFuction.Arguments[1].GetType());
         }
 
         [TestMethod]
         public void TestOptimizerNonIdempotentFunction()
         {
-            Optimizer optimizer = new Optimizer(new Interpreter());
+            var optimizer = new Optimizer<double>(new Interpreter<double>(DoubleNumericalOperations.Instance));
 
             TokenReader tokenReader = new TokenReader(CultureInfo.InvariantCulture);
             IList<Token> tokens = tokenReader.Read("test(500)");
 
-            IFunctionRegistry functionRegistry = new FunctionRegistry(true);
+            var functionRegistry = new FunctionRegistry<double>(true);
             functionRegistry.RegisterFunction("test", (Func<double, double>)(a => a), false, true);
 
-            AstBuilder astBuilder = new AstBuilder(functionRegistry, true);
+            var astBuilder = new AstBuilder<double>(functionRegistry, true);
             Operation operation = astBuilder.Build(tokens);
 
             Operation optimizedFuction = optimizer.Optimize(operation, functionRegistry, null);
@@ -56,20 +56,20 @@ namespace Jace.Tests
         [TestMethod]
         public void TestOptimizerMultiplicationByZero()
         {
-            Optimizer optimizer = new Optimizer(new Interpreter());
+            var optimizer = new Optimizer<double>(new Interpreter<double>(DoubleNumericalOperations.Instance));
 
             TokenReader tokenReader = new TokenReader(CultureInfo.InvariantCulture);
             IList<Token> tokens = tokenReader.Read("var1 * 0.0");
 
-            IFunctionRegistry functionRegistry = new FunctionRegistry(true);
+            var functionRegistry = new FunctionRegistry<double>(true);
 
-            AstBuilder astBuilder = new AstBuilder(functionRegistry, true);
+            var astBuilder = new AstBuilder<double>(functionRegistry, true);
             Operation operation = astBuilder.Build(tokens);
 
             Operation optimizedOperation = optimizer.Optimize(operation, functionRegistry, null);
 
-            Assert.AreEqual(typeof(FloatingPointConstant), optimizedOperation.GetType());
-            Assert.AreEqual(0.0, ((FloatingPointConstant)optimizedOperation).Value);
+            Assert.AreEqual(typeof(FloatingPointConstant<double>), optimizedOperation.GetType());
+            Assert.AreEqual(0.0, ((FloatingPointConstant<double>)optimizedOperation).Value);
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Jace.Execution
 {
-    public interface IFunctionRegistry : IEnumerable<FunctionInfo>
+    public interface IFunctionRegistry<T> : IEnumerable<FunctionInfo>
     {
         FunctionInfo GetFunctionInfo(string functionName);
         bool IsFunctionName(string functionName);

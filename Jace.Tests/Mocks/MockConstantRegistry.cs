@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Jace.Tests.Mocks
 {
-    public class MockConstantRegistry : IConstantRegistry
+    public class MockConstantRegistry<T> : IConstantRegistry<T>
     {
         private readonly HashSet<string> constantNames;
 
@@ -20,12 +20,12 @@ namespace Jace.Tests.Mocks
             this.constantNames = new HashSet<string>(constantNames);
         }
 
-        public ConstantInfo GetConstantInfo(string constantName)
+        public ConstantInfo<T> GetConstantInfo(string constantName)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerator<ConstantInfo> GetEnumerator()
+        public IEnumerator<ConstantInfo<T>> GetEnumerator()
         {
             throw new NotImplementedException();
         }
@@ -35,12 +35,12 @@ namespace Jace.Tests.Mocks
             throw new NotImplementedException();
         }
 
-        public void RegisterConstant(string constantName, double value)
+        public void RegisterConstant(string constantName, T value)
         {
             throw new NotImplementedException();
         }
 
-        public void RegisterConstant(string constantName, double value, bool isOverWritable)
+        public void RegisterConstant(string constantName, T value, bool isOverWritable)
         {
             throw new NotImplementedException();
         }

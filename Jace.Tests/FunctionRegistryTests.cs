@@ -22,7 +22,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestAddFunc2()
         {
-            FunctionRegistry registry = new FunctionRegistry(false);
+            var registry = new FunctionRegistry<double>(false);
             
             Func<double, double, double> testFunction = (a, b) => a * b;
             registry.RegisterFunction("test", testFunction);
@@ -40,7 +40,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestOverwritable()
         {
-            FunctionRegistry registry = new FunctionRegistry(false);
+            var registry = new FunctionRegistry<double>(false);
 
             Func<double, double, double> testFunction1 = (a, b) => a * b;
             Func<double, double, double> testFunction2 = (a, b) => a * b;
@@ -51,7 +51,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestNotOverwritable()
         {
-            FunctionRegistry registry = new FunctionRegistry(false);
+            var registry = new FunctionRegistry<double>(false);
 
             Func<double, double, double> testFunction1 = (a, b) => a * b;
             Func<double, double, double> testFunction2 = (a, b) => a * b;

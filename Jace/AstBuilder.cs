@@ -9,23 +9,23 @@ using Jace.Util;
 
 namespace Jace
 {
-    public class AstBuilder
+    public class AstBuilder<T>
     {
-        private readonly IFunctionRegistry functionRegistry;
-        private readonly IConstantRegistry localConstantRegistry;
+        private readonly IFunctionRegistry<T> functionRegistry;
+        private readonly IConstantRegistry<T> localConstantRegistry;
         private readonly bool caseSensitive;
         private Dictionary<char, int> operationPrecedence = new Dictionary<char, int>();
         private Stack<Operation> resultStack = new Stack<Operation>();
         private Stack<Token> operatorStack = new Stack<Token>();
         private Stack<int> parameterCount = new Stack<int>();
 
-        public AstBuilder(IFunctionRegistry functionRegistry, bool caseSensitive, IConstantRegistry compiledConstants = null)
+        public AstBuilder(IFunctionRegistry<T> functionRegistry, bool caseSensitive, IConstantRegistry<T> compiledConstants = null)
         {
             if (functionRegistry == null)
                 throw new ArgumentNullException("functionRegistry");
 
             this.functionRegistry = functionRegistry;
-            this.localConstantRegistry = compiledConstants ?? new ConstantRegistry(caseSensitive);
+            this.localConstantRegistry = compiledConstants ?? new ConstantRegistry<T>(caseSensitive);
             this.caseSensitive = caseSensitive;
 
             operationPrecedence.Add('(', 0);
@@ -63,7 +63,7 @@ namespace Jace
                         resultStack.Push(new IntegerConstant((int)token.Value));
                         break;
                     case TokenType.FloatingPoint:
-                        resultStack.Push(new FloatingPointConstant((double)token.Value));
+                        resultStack.Push(new FloatingPointConstant<T>((T)token.Value));
                         break;
                     case TokenType.Text:
                         if (functionRegistry.IsFunctionName((string)token.Value))
@@ -76,7 +76,7 @@ namespace Jace
                             string tokenValue = (string)token.Value;
                             if (localConstantRegistry.IsConstantName(tokenValue))
                             {
-                                resultStack.Push(new FloatingPointConstant(localConstantRegistry.GetConstantInfo(tokenValue).Value));
+                                resultStack.Push(new FloatingPointConstant<T>(localConstantRegistry.GetConstantInfo(tokenValue).Value));
                             }
                             else
                             {
@@ -348,9 +348,9 @@ namespace Jace
                         IntegerConstant constant = (IntegerConstant)operation;
                         throw new ParseException(string.Format("Unexpected integer constant \"{0}\" found.", constant.Value));
                     }
-                    else if (operation.GetType() == typeof(FloatingPointConstant))
+                    else if (operation.GetType() == typeof(FloatingPointConstant<T>))
                     {
-                        FloatingPointConstant constant = (FloatingPointConstant)operation;
+                        FloatingPointConstant<T> constant = (FloatingPointConstant<T>)operation;
                         throw new ParseException(string.Format("Unexpected floating point constant \"{0}\" found.", constant.Value)); 
                     }
                 }

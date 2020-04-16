@@ -38,9 +38,9 @@ namespace Jace.Operations
         }
     }
 
-    public class FloatingPointConstant : Constant<double>
+    public class FloatingPointConstant<T> : Constant<T>
     {
-        public FloatingPointConstant(double value)
+        public FloatingPointConstant(T value)
             : base(DataType.FloatingPoint, value)
         {
         }

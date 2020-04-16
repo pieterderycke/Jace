@@ -7,18 +7,18 @@ using Jace.Util;
 
 namespace Jace.Execution
 {
-    public class ConstantRegistry : IConstantRegistry
+    public class ConstantRegistry<T> : IConstantRegistry<T>
     {
         private readonly bool caseSensitive;
-        private readonly Dictionary<string, ConstantInfo> constants;
+        private readonly Dictionary<string, ConstantInfo<T>> constants;
 
         public ConstantRegistry(bool caseSensitive)
         {
             this.caseSensitive = caseSensitive;
-            this.constants = new Dictionary<string, ConstantInfo>();
+            this.constants = new Dictionary<string, ConstantInfo<T>>();
         }
 
-        public IEnumerator<ConstantInfo> GetEnumerator()
+        public IEnumerator<ConstantInfo<T>> GetEnumerator()
         {
             return constants.Values.GetEnumerator();
         }
@@ -28,12 +28,12 @@ namespace Jace.Execution
             return this.GetEnumerator();
         }
 
-        public ConstantInfo GetConstantInfo(string constantName)
+        public ConstantInfo<T> GetConstantInfo(string constantName)
         {
             if (string.IsNullOrEmpty(constantName))
                 throw new ArgumentNullException("constantName");
 
-            ConstantInfo constantInfo = null;
+            ConstantInfo<T> constantInfo = null;
             return constants.TryGetValue(ConvertConstantName(constantName), out constantInfo) ? constantInfo : null;
         }
 
@@ -45,12 +45,12 @@ namespace Jace.Execution
             return constants.ContainsKey(ConvertConstantName(constantName));
         }
 
-        public void RegisterConstant(string constantName, double value)
+        public void RegisterConstant(string constantName, T value)
         {
             RegisterConstant(constantName, value, true);
         }
 
-        public void RegisterConstant(string constantName, double value, bool isOverWritable)
+        public void RegisterConstant(string constantName, T value, bool isOverWritable)
         {
             if(string.IsNullOrEmpty(constantName))
                 throw new ArgumentNullException("constantName");
@@ -63,7 +63,7 @@ namespace Jace.Execution
                 throw new Exception(message);
             }
 
-            ConstantInfo constantInfo = new ConstantInfo(constantName, value, isOverWritable);
+            ConstantInfo<T> constantInfo = new ConstantInfo<T>(constantName, value, isOverWritable);
 
             if (constants.ContainsKey(constantName))
                 constants[constantName] = constantInfo;
