@@ -468,9 +468,7 @@ namespace Jace
             FunctionRegistry.RegisterFunction("log10", (Func<decimal, decimal>)((a) => (decimal)Math.Log10((double)a)), true, false);
             FunctionRegistry.RegisterFunction("logn", (Func<decimal, decimal, decimal>)((a, b) => (decimal)Math.Log((double)a, (double)b)), true, false);
             FunctionRegistry.RegisterFunction("sqrt", (Func<decimal, decimal>)((a) => (decimal)Math.Sqrt((double)a)), true, false);
-            FunctionRegistry.RegisterFunction("abs", (Func<decimal, decimal>)((a) => Math.Abs(a)), true, false);
-            FunctionRegistry.RegisterFunction("max", (Func<decimal, decimal, decimal>)((a, b) => Math.Max(a, b)), true, false);
-            FunctionRegistry.RegisterFunction("min", (Func<decimal, decimal, decimal>)((a, b) => Math.Min(a, b)), true, false);
+            FunctionRegistry.RegisterFunction("abs", (Func<decimal, decimal>)((a) => Math.Abs(a)), true, false);            
             FunctionRegistry.RegisterFunction("if", (Func<decimal, decimal, decimal, decimal>)((a, b, c) => (a != 0.0m ? b : c)), true, false);
             FunctionRegistry.RegisterFunction("ifless", (Func<decimal, decimal, decimal, decimal, decimal>)((a, b, c, d) => (a < b ? c : d)), true, false);
             FunctionRegistry.RegisterFunction("ifmore", (Func<decimal, decimal, decimal, decimal, decimal>)((a, b, c, d) => (a > b ? c : d)), true, false);
@@ -478,7 +476,7 @@ namespace Jace
             FunctionRegistry.RegisterFunction("ceiling", (Func<decimal, decimal>)((a) => Math.Ceiling(a)), true, false);
             FunctionRegistry.RegisterFunction("floor", (Func<decimal, decimal>)((a) => Math.Floor(a)), true, false);
             FunctionRegistry.RegisterFunction("truncate", (Func<decimal, decimal>)((a) => Math.Truncate(a)), true, false);
-            FunctionRegistry.RegisterFunction("round", (Func<double, double>)Math.Round, true, false);
+            FunctionRegistry.RegisterFunction("round", (Func<decimal, decimal>)Math.Round, true, false);
 
             // Dynamic based arguments Functions
             FunctionRegistry.RegisterFunction("max", (DynamicFunc<decimal, decimal>)((a) => a.Max()), true, false);

@@ -10,7 +10,8 @@
     <Compile Include="..\Jace.Tests\AssertExtensions.cs" Link="AssertExtensions.cs" />
     <Compile Include="..\Jace.Tests\AstBuilderTests.cs" Link="AstBuilderTests.cs" />
     <Compile Include="..\Jace.Tests\BasicInterpreterTests.cs" Link="BasicInterpreterTests.cs" />
-    <Compile Include="..\Jace.Tests\CalculationEngineTests.cs" Link="CalculationEngineTests.cs" />
+    <Compile Include="..\Jace.Tests\DoubleCalculationEngineTests.cs" Link="DoubleCalculationEngineTests.cs" />
+    <Compile Include="..\Jace.Tests\DecimalCalculationEngineTests.cs" Link="DecimalCalculationEngineTests.cs" />
     <Compile Include="..\Jace.Tests\ConstantRegistryTests.cs" Link="ConstantRegistryTests.cs" />
     <Compile Include="..\Jace.Tests\FuncAdapterTests.cs" Link="FuncAdapterTests.cs" />
     <Compile Include="..\Jace.Tests\FunctionRegistryTests.cs" Link="FunctionRegistryTests.cs" />

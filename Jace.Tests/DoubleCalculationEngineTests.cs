@@ -11,7 +11,7 @@ using System.Linq.Expressions;
 namespace Jace.Tests
 {
     [TestClass]
-    public class CalculationEngineTests
+    public class DoubleCalculationEngineTests
     {
 
         ICalculationEngine<T> CreateEngineHelper<T>(CultureInfo culture = null, ExecutionMode execMode = ExecutionMode.Compiled, bool cacheEnabled = true, bool optmizerEnabled = true, bool caseSensitive = false)
