@@ -47,8 +47,19 @@ namespace Jace
 
         void AddFunction(string functionName, DynamicFunc<T, T> functionDelegate, bool isIdempotent = true);
         
+    }
+
+    public interface IInternalCalculationEngine<T> : ICalculationEngine<T>
+    {
         void VerifyVariableNames(IDictionary<string, T> variables);
 
+        IExecutor<T> CreateDynamicCompiler(bool? caseSensitive);
 
+        IExecutor<T> CreateInterpreter(bool? caseSensitive);
+
+        void RegisterDefaultConstants();
+
+        void RegisterDefaultFunctions();
     }
+
 }

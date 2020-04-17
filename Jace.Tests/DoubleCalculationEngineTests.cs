@@ -16,7 +16,7 @@ namespace Jace.Tests
 
         ICalculationEngine<T> CreateEngineHelper<T>(CultureInfo culture = null, ExecutionMode execMode = ExecutionMode.Compiled, bool cacheEnabled = true, bool optmizerEnabled = true, bool caseSensitive = false)
         {
-            var engine = CalculationEngine.Create<T>(new JaceOptions
+            var engine = CalculationEngine.New<T>(new JaceOptions
             {
                 CultureInfo = culture ?? CultureInfo.InvariantCulture,
                 ExecutionMode = execMode,
@@ -1068,7 +1068,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestCalculationFormulaBuildingWithConstantsCache1()
         {
-            var engine = CalculationEngine.Create<double>(new JaceOptions { CacheEnabled = true });
+            var engine = CalculationEngine.New<double>(new JaceOptions { CacheEnabled = true });
 
             var fn = engine.Build("a+b+c", new Dictionary<string, double> { { "a", 1 } });
             double result = fn(new Dictionary<string, double> { { "b", 2 }, { "c", 2 } });
@@ -1084,7 +1084,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestCalculationFormulaBuildingWithConstantsCache2()
         {
-            var engine = CalculationEngine.Create<double>(new JaceOptions { CacheEnabled = true });
+            var engine = CalculationEngine.New<double>(new JaceOptions { CacheEnabled = true });
             var fn = engine.Build("a+b+c");
             double result = fn(new Dictionary<string, double> { { "a", 1 }, { "b", 2 }, { "c", 2 } });
             Assert.AreEqual(5.0, result);
@@ -1174,7 +1174,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestCalculationFormulaBuildingWithConstantsCache7()
         {
-            var engine = CalculationEngine.Create<double>(new JaceOptions { CacheEnabled = true });
+            var engine = CalculationEngine.New<double>(new JaceOptions { CacheEnabled = true });
 
             var fn = engine.Build("a+b+c");
             double result = fn(new Dictionary<string, double> { { "a", 1 }, { "b", 2 }, { "c", 2 } });

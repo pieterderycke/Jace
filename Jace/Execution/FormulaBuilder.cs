@@ -11,7 +11,7 @@ namespace Jace.Execution
 {
     public class FormulaBuilder<T>
     {
-        private readonly ICalculationEngine<T> engine;
+        private readonly IInternalCalculationEngine<T> engine;
 
         private string formulaText;
         private bool caseSensitive;
@@ -26,7 +26,7 @@ namespace Jace.Execution
         /// A calculation engine instance that can be used for interpreting and executing 
         /// the formula.
         /// </param>
-        internal FormulaBuilder(string formulaText, bool caseSensitive, ICalculationEngine<T> engine)
+        internal FormulaBuilder(string formulaText, bool caseSensitive, IInternalCalculationEngine<T> engine)
         {
             this.parameters = new List<ParameterInfo>();
             this.constants = new Dictionary<string, T>();

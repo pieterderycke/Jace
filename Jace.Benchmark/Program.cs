@@ -32,7 +32,7 @@ namespace Jace.Benchmark
         { 
             TimeSpan duration;
 
-            var interpretedEngine = CalculationEngine.Create<double>(new JaceOptions
+            var interpretedEngine = CalculationEngine.New<double>(new JaceOptions
             {
                 CultureInfo = CultureInfo.InvariantCulture,
                 ExecutionMode = ExecutionMode.Interpreted,
@@ -41,7 +41,7 @@ namespace Jace.Benchmark
                 CaseSensitive = true
             });
 
-            var interpretedEngineCaseSensitive = CalculationEngine.Create<double>(new JaceOptions
+            var interpretedEngineCaseSensitive = CalculationEngine.New<double>(new JaceOptions
             {
                 CultureInfo = CultureInfo.InvariantCulture,
                 ExecutionMode = ExecutionMode.Interpreted,
@@ -50,7 +50,7 @@ namespace Jace.Benchmark
                 CaseSensitive = false
             });
 
-            var compiledEngine = CalculationEngine.Create<double>(new JaceOptions
+            var compiledEngine = CalculationEngine.New<double>(new JaceOptions
             {
                 CultureInfo = CultureInfo.InvariantCulture,
                 ExecutionMode = ExecutionMode.Compiled,
@@ -59,7 +59,7 @@ namespace Jace.Benchmark
                 CaseSensitive = true
             });
 
-            var compiledEngineCaseSensitive = CalculationEngine.Create<double>(new JaceOptions
+            var compiledEngineCaseSensitive = CalculationEngine.New<double>(new JaceOptions
             {
                 CultureInfo = CultureInfo.InvariantCulture,
                 ExecutionMode = ExecutionMode.Compiled,

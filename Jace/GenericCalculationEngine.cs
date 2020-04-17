@@ -17,7 +17,7 @@ namespace Jace
     /// mathematical formulas into .NET Delegates and to calculate the result.
     /// It can be configured to run in a number of modes based on the constructor parameters choosen.
     /// </summary>
-    public abstract class GenericCalculationEngine<T> : ICalculationEngine<T>
+    public abstract class GenericCalculationEngine<T> : IInternalCalculationEngine<T>
     {
         private readonly IExecutor<T> executor;
         private readonly Optimizer<T> optimizer;
@@ -33,7 +33,7 @@ namespace Jace
         /// Creates a new instance of the <see cref="CalculationEngine"/> class.
         /// </summary>
         /// <param name="options">The <see cref="JaceOptions"/> to configure the behaviour of the engine.</param>
-        public GenericCalculationEngine(JaceOptions options)
+        internal GenericCalculationEngine(JaceOptions options)
         {
             this.executionFormulaCache = new MemoryCache<string, Func<IDictionary<string, T>, T>>(options.CacheMaximumSize, options.CacheReductionSize);
             this.FunctionRegistry = new FunctionRegistry<T>(false);
@@ -46,14 +46,14 @@ namespace Jace
             this.random = new Random();
 
             if (options.ExecutionMode == ExecutionMode.Interpreted)
-                executor = CreateGenericInterpreter(caseSensitive);
+                executor = CreateInterpreter(caseSensitive);
             else if (options.ExecutionMode == ExecutionMode.Compiled)
-                executor = CreateGenericDynamicCompiler(caseSensitive);
+                executor = CreateDynamicCompiler(caseSensitive);
             else
                 throw new ArgumentException(string.Format("Unsupported execution mode \"{0}\".", options.ExecutionMode),
                     "executionMode");
 
-            optimizer = new Optimizer<T>(CreateGenericInterpreter(caseSensitive)); // We run the optimizer with the interpreter 
+            optimizer = new Optimizer<T>(CreateInterpreter(caseSensitive)); // We run the optimizer with the interpreter 
 
             // Register the default constants of Jace.NET into the constant registry
             if (options.DefaultConstants)
@@ -64,41 +64,17 @@ namespace Jace
                 RegisterDefaultFunctions();
         }
 
-        private IExecutor<T> CreateGenericInterpreter(bool? caseSensitive = null)
+        public static ICalculationEngine<T> New(JaceOptions options)
         {
-            IExecutor<T> genericExecutor = null;
-
             if (typeof(T) == typeof(double))
             {
-                genericExecutor = (IExecutor<T>)new Interpreter<double>(DoubleNumericalOperations.Instance, caseSensitive ?? false);
+                return (ICalculationEngine<T>) new DoubleCalculationEngine(options);
             }
             else
             {
-                genericExecutor = (IExecutor<T>)new Interpreter<decimal>(DecimalNumericalOperations.Instance, caseSensitive ?? false);
+                return (ICalculationEngine<T>) new DecimalCalculationEngine(options);
             }
-
-            return genericExecutor;
         }
-
-        private IExecutor<T> CreateGenericDynamicCompiler(bool? caseSensitive = null)
-        {
-            IExecutor<T> genericExecutor = null;
-
-            if (typeof(T) == typeof(double))
-            {
-                genericExecutor = (IExecutor<T>)new DynamicCompiler<double>(DoubleNumericalOperations.Instance, caseSensitive ?? false);
-            }
-            else
-            {
-                genericExecutor = (IExecutor<T>)new DynamicCompiler<decimal>(DecimalNumericalOperations.Instance, caseSensitive ?? false);
-            }
-
-            return genericExecutor;
-        }
-
-        protected abstract void RegisterDefaultConstants();
-
-        protected abstract void RegisterDefaultFunctions();
 
         public IFunctionRegistry<T> FunctionRegistry { get; private set; }
 
@@ -411,15 +387,25 @@ namespace Jace
                     throw new ArgumentException(string.Format("The name \"{0}\" is a function name. Parameters cannot have this name.", variableName), "variables");
             }
         }
+
+        public abstract IExecutor<T> CreateDynamicCompiler(bool? caseSensitive);
+
+        public abstract IExecutor<T> CreateInterpreter(bool? caseSensitive);
+
+        public abstract void RegisterDefaultConstants();
+
+        public abstract void RegisterDefaultFunctions();
+
     }
 
     public class DoubleCalculationEngine : GenericCalculationEngine<double>
     {
-        public DoubleCalculationEngine(JaceOptions options) : base(options)
+        internal DoubleCalculationEngine(JaceOptions options) : base(options)
         {
+
         }
 
-        protected override void RegisterDefaultFunctions()
+        public override void RegisterDefaultFunctions()
         {
             FunctionRegistry.RegisterFunction("sin", (Func<double, double>)Math.Sin, true, false);
             FunctionRegistry.RegisterFunction("cos", (Func<double, double>)Math.Cos, true, false);
@@ -455,20 +441,30 @@ namespace Jace
             FunctionRegistry.RegisterFunction("random", (Func<double>) random.NextDouble, false, false);
         }
 
-        protected override void RegisterDefaultConstants()
+        public override void RegisterDefaultConstants()
         {
             ConstantRegistry.RegisterConstant("e", Math.E, false);
             ConstantRegistry.RegisterConstant("pi", Math.PI, false);
+        }
+
+        public override IExecutor<double> CreateDynamicCompiler(bool? caseSensitive)
+        {
+            return new DynamicCompiler<double>(DoubleNumericalOperations.Instance, caseSensitive ?? false);
+        }
+
+        public override IExecutor<double> CreateInterpreter(bool? caseSensitive)
+        {
+            return new Interpreter<double>(DoubleNumericalOperations.Instance, caseSensitive ?? false); 
         }
     }
 
     public class DecimalCalculationEngine : GenericCalculationEngine<decimal>
     {
-        public DecimalCalculationEngine(JaceOptions options) : base(options)
+        internal DecimalCalculationEngine(JaceOptions options) : base(options)
         {
         }
 
-        protected override void RegisterDefaultFunctions()
+        public override void RegisterDefaultFunctions()
         {
             FunctionRegistry.RegisterFunction("sin", (Func<decimal, decimal>)((a) => (decimal)Math.Sin((double)a)), true, false);
             FunctionRegistry.RegisterFunction("cos", (Func<decimal, decimal>)((a) => (decimal)Math.Cos((double)a)), true, false);
@@ -505,10 +501,20 @@ namespace Jace
 
         }
 
-        protected override void RegisterDefaultConstants()
+        public override void RegisterDefaultConstants()
         {
             ConstantRegistry.RegisterConstant("e", (decimal) Math.E, false);
             ConstantRegistry.RegisterConstant("pi", (decimal) Math.PI, false);
+        }
+
+        public override IExecutor<decimal> CreateDynamicCompiler(bool? caseSensitive)
+        {
+            return new DynamicCompiler<decimal>(DecimalNumericalOperations.Instance, caseSensitive ?? false);
+        }
+
+        public override IExecutor<decimal> CreateInterpreter(bool? caseSensitive)
+        {
+            return new Interpreter<decimal>(DecimalNumericalOperations.Instance, caseSensitive ?? false);
         }
     }
 
