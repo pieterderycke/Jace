@@ -76,10 +76,8 @@ namespace Jace.Execution
 
             if (operation.GetType() == typeof(IntegerConstant))
             {
-                IntegerConstant constant = (IntegerConstant)operation;
-
-                double value = constant.Value;
-                return Expression.Constant(value, typeof(double));
+                IntegerConstant constant = (IntegerConstant)operation;                
+                return Expression.Constant(Convert.ChangeType(constant.Value,typeof(T)), typeof(T));
             }
             else if (operation.GetType() == typeof(FloatingPointConstant<T>))
             {
