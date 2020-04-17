@@ -36,7 +36,7 @@ namespace Jace.DemoApp
 
                 string formula = formulaTextBox.Text;
 
-                TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
+                var reader = new TokenReader<double>(CultureInfo.InvariantCulture, DoubleNumericalOperations.Instance);
                 List<Token> tokens = reader.Read(formula);
 
                 ShowTokens(tokens);

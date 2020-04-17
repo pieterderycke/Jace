@@ -341,7 +341,16 @@ namespace Jace
         /// <returns>The abstract syntax tree of the formula.</returns>
         private Operation BuildAbstractSyntaxTree(string formulaText, ConstantRegistry<T> compiledConstants)
         {
-            TokenReader tokenReader = new TokenReader(cultureInfo);
+            ITokenReader<T> tokenReader = null;
+            if (typeof(T) == typeof(double))
+            {
+                tokenReader = (ITokenReader<T>)new TokenReader<double>(cultureInfo, DoubleNumericalOperations.Instance);
+            }
+            else
+            {
+                tokenReader = (ITokenReader<T>)new TokenReader<decimal>(cultureInfo, DecimalNumericalOperations.Instance);
+            }
+
             List<Token> tokens = tokenReader.Read(formulaText);
             
             AstBuilder<T> astBuilder = new AstBuilder<T>(FunctionRegistry, caseSensitive, compiledConstants);

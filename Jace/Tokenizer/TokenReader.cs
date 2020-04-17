@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Jace.Execution;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -6,25 +7,33 @@ using System.Text;
 
 namespace Jace.Tokenizer
 {
+
+    public interface ITokenReader<T>
+    {
+        List<Token> Read(string formula);
+    }
+
     /// <summary>
     /// A token reader that converts the input string in a list of tokens.
     /// </summary>
-    public class TokenReader
+    public class TokenReader<T> : ITokenReader<T>
     {
         private readonly CultureInfo cultureInfo;
         private readonly char decimalSeparator;
         private readonly char argumentSeparator;
+        private readonly INumericalOperations<T> numericalOperations;
 
-        public TokenReader() 
-            : this(CultureInfo.CurrentCulture)
+        public TokenReader(INumericalOperations<T> numericalOperations) 
+            : this(CultureInfo.CurrentCulture, numericalOperations)
         {
         }
 
-        public TokenReader(CultureInfo cultureInfo)
+        public TokenReader(CultureInfo cultureInfo, INumericalOperations<T> numericalOperations)
         {
             this.cultureInfo = cultureInfo;
             this.decimalSeparator = cultureInfo.NumberFormat.NumberDecimalSeparator[0];
             this.argumentSeparator = cultureInfo.TextInfo.ListSeparator[0];
+            this.numericalOperations = numericalOperations;
         }
 
         /// <summary>
@@ -82,11 +91,10 @@ namespace Jace.Tokenizer
                     }
                     else
                     {
-                        double doubleValue;
-                        if (double.TryParse(buffer.ToString(), NumberStyles.Float | NumberStyles.AllowThousands,
-                            cultureInfo, out doubleValue))
+                        T floatingVal; ;
+                        if (numericalOperations.TryParseFloatingPoint(buffer.ToString(), cultureInfo, out floatingVal))
                         {
-                            tokens.Add(new Token() { TokenType = TokenType.FloatingPoint, Value = doubleValue, StartPosition = startPosition, Length = i - startPosition });
+                            tokens.Add(new Token() { TokenType = TokenType.FloatingPoint, Value = floatingVal, StartPosition = startPosition, Length = i - startPosition });
                             isScientific = false;
                             isFormulaSubPart = false;
                         }

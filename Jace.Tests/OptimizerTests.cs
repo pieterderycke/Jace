@@ -19,7 +19,7 @@ namespace Jace.Tests
         {
             var optimizer = new Optimizer<double>(new Interpreter<double>(DoubleNumericalOperations.Instance));
 
-            TokenReader tokenReader = new TokenReader(CultureInfo.InvariantCulture);
+            TokenReader<double> tokenReader = new TokenReader<double>(CultureInfo.InvariantCulture, DoubleNumericalOperations.Instance);            
             IList<Token> tokens = tokenReader.Read("test(var1, (2+3) * 500)");
 
             var functionRegistry = new FunctionRegistry<double>(true);
@@ -38,7 +38,7 @@ namespace Jace.Tests
         {
             var optimizer = new Optimizer<double>(new Interpreter<double>(DoubleNumericalOperations.Instance));
 
-            TokenReader tokenReader = new TokenReader(CultureInfo.InvariantCulture);
+            TokenReader<double> tokenReader = new TokenReader<double>(CultureInfo.InvariantCulture, DoubleNumericalOperations.Instance);
             IList<Token> tokens = tokenReader.Read("test(500)");
 
             var functionRegistry = new FunctionRegistry<double>(true);
@@ -58,7 +58,7 @@ namespace Jace.Tests
         {
             var optimizer = new Optimizer<double>(new Interpreter<double>(DoubleNumericalOperations.Instance));
 
-            TokenReader tokenReader = new TokenReader(CultureInfo.InvariantCulture);
+            TokenReader<double> tokenReader = new TokenReader<double>(CultureInfo.InvariantCulture, DoubleNumericalOperations.Instance);
             IList<Token> tokens = tokenReader.Read("var1 * 0.0");
 
             var functionRegistry = new FunctionRegistry<double>(true);
