@@ -17,7 +17,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestOptimizerIdempotentFunction()
         {
-            var optimizer = new Optimizer<double>(new Interpreter<double>(DoubleNumericalOperations.Instance));
+            var optimizer = new Optimizer<double>(new Interpreter<double>(DoubleNumericalOperations.Instance), DoubleNumericalOperations.Instance);
 
             TokenReader<double> tokenReader = new TokenReader<double>(CultureInfo.InvariantCulture, DoubleNumericalOperations.Instance);            
             IList<Token> tokens = tokenReader.Read("test(var1, (2+3) * 500)");
@@ -36,7 +36,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestOptimizerNonIdempotentFunction()
         {
-            var optimizer = new Optimizer<double>(new Interpreter<double>(DoubleNumericalOperations.Instance));
+            var optimizer = new Optimizer<double>(new Interpreter<double>(DoubleNumericalOperations.Instance), DoubleNumericalOperations.Instance);
 
             TokenReader<double> tokenReader = new TokenReader<double>(CultureInfo.InvariantCulture, DoubleNumericalOperations.Instance);
             IList<Token> tokens = tokenReader.Read("test(500)");
@@ -56,7 +56,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestOptimizerMultiplicationByZero()
         {
-            var optimizer = new Optimizer<double>(new Interpreter<double>(DoubleNumericalOperations.Instance));
+            var optimizer = new Optimizer<double>(new Interpreter<double>(DoubleNumericalOperations.Instance), DoubleNumericalOperations.Instance);
 
             TokenReader<double> tokenReader = new TokenReader<double>(CultureInfo.InvariantCulture, DoubleNumericalOperations.Instance);
             IList<Token> tokens = tokenReader.Read("var1 * 0.0");
@@ -70,6 +70,25 @@ namespace Jace.Tests
 
             Assert.AreEqual(typeof(FloatingPointConstant<double>), optimizedOperation.GetType());
             Assert.AreEqual(0.0, ((FloatingPointConstant<double>)optimizedOperation).Value);
+        }
+
+        [TestMethod]
+        public void TestOptimizerMultiplicationByZeroDecimal()
+        {
+            var optimizer = new Optimizer<decimal>(new Interpreter<decimal>(DecimalNumericalOperations.Instance), DecimalNumericalOperations.Instance);
+
+            var tokenReader = new TokenReader<decimal>(CultureInfo.InvariantCulture, DecimalNumericalOperations.Instance);
+            IList<Token> tokens = tokenReader.Read("var1 * 0.0");
+
+            var functionRegistry = new FunctionRegistry<decimal>(true);
+
+            var astBuilder = new AstBuilder<decimal>(functionRegistry, true);
+            Operation operation = astBuilder.Build(tokens);
+
+            Operation optimizedOperation = optimizer.Optimize(operation, functionRegistry, null);
+
+            Assert.AreEqual(typeof(FloatingPointConstant<decimal>), optimizedOperation.GetType());
+            Assert.AreEqual(0.0m, ((FloatingPointConstant<decimal>)optimizedOperation).Value);
         }
     }
 }

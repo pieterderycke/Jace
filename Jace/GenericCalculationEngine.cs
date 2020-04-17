@@ -20,8 +20,8 @@ namespace Jace
     public abstract class GenericCalculationEngine<T> : IInternalCalculationEngine<T>
     {
         private readonly IExecutor<T> executor;
-        private readonly Optimizer<T> optimizer;
-        private readonly CultureInfo cultureInfo;
+        private readonly IOptimizer<T> optimizer;
+        protected readonly CultureInfo cultureInfo;
         private readonly MemoryCache<string, Func<IDictionary<string, T>, T>> executionFormulaCache;
         private readonly bool cacheEnabled;
         private readonly bool optimizerEnabled;
@@ -53,7 +53,7 @@ namespace Jace
                 throw new ArgumentException(string.Format("Unsupported execution mode \"{0}\".", options.ExecutionMode),
                     "executionMode");
 
-            optimizer = new Optimizer<T>(CreateInterpreter(caseSensitive)); // We run the optimizer with the interpreter 
+            optimizer = CreateOptimizer(CreateInterpreter(caseSensitive)); // We run the optimizer with the interpreter 
 
             // Register the default constants of Jace.NET into the constant registry
             if (options.DefaultConstants)
@@ -333,16 +333,7 @@ namespace Jace
         /// <returns>The abstract syntax tree of the formula.</returns>
         private Operation BuildAbstractSyntaxTree(string formulaText, ConstantRegistry<T> compiledConstants)
         {
-            ITokenReader<T> tokenReader = null;
-            if (typeof(T) == typeof(double))
-            {
-                tokenReader = (ITokenReader<T>)new TokenReader<double>(cultureInfo, DoubleNumericalOperations.Instance);
-            }
-            else
-            {
-                tokenReader = (ITokenReader<T>)new TokenReader<decimal>(cultureInfo, DecimalNumericalOperations.Instance);
-            }
-
+            ITokenReader<T> tokenReader = CreateTokenReader();        
             List<Token> tokens = tokenReader.Read(formulaText);
             
             AstBuilder<T> astBuilder = new AstBuilder<T>(FunctionRegistry, caseSensitive, compiledConstants);
@@ -396,6 +387,10 @@ namespace Jace
 
         public abstract void RegisterDefaultFunctions();
 
+        public abstract IOptimizer<T> CreateOptimizer(IExecutor<T> executor);
+
+        public abstract ITokenReader<T> CreateTokenReader();
+        
     }
 
     public class DoubleCalculationEngine : GenericCalculationEngine<double>
@@ -456,6 +451,16 @@ namespace Jace
         {
             return new Interpreter<double>(DoubleNumericalOperations.Instance, caseSensitive ?? false); 
         }
+
+        public override IOptimizer<double> CreateOptimizer(IExecutor<double> executor)
+        {
+            return new Optimizer<double>(executor, DoubleNumericalOperations.Instance);
+        }
+
+        public override ITokenReader<double> CreateTokenReader()
+        {
+            return new TokenReader<double>(cultureInfo, DoubleNumericalOperations.Instance);
+        }
     }
 
     public class DecimalCalculationEngine : GenericCalculationEngine<decimal>
@@ -515,6 +520,16 @@ namespace Jace
         public override IExecutor<decimal> CreateInterpreter(bool? caseSensitive)
         {
             return new Interpreter<decimal>(DecimalNumericalOperations.Instance, caseSensitive ?? false);
+        }
+
+        public override IOptimizer<decimal> CreateOptimizer(IExecutor<decimal> executor)
+        {
+            return new Optimizer<decimal>(executor, DecimalNumericalOperations.Instance);
+        }
+
+        public override ITokenReader<decimal> CreateTokenReader()
+        {
+            return new TokenReader<decimal>(cultureInfo, DecimalNumericalOperations.Instance);
         }
     }
 

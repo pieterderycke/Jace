@@ -1,4 +1,5 @@
 ﻿using Jace.Execution;
+using Jace.Tokenizer;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -56,6 +57,10 @@ namespace Jace
         IExecutor<T> CreateDynamicCompiler(bool? caseSensitive);
 
         IExecutor<T> CreateInterpreter(bool? caseSensitive);
+
+        IOptimizer<T> CreateOptimizer(IExecutor<T> executor);
+
+        ITokenReader<T> CreateTokenReader();
 
         void RegisterDefaultConstants();
 
