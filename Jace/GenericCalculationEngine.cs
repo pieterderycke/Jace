@@ -48,7 +48,7 @@ namespace Jace
             if (options.ExecutionMode == ExecutionMode.Interpreted)
                 executor = CreateGenericInterpreter(caseSensitive);
             else if (options.ExecutionMode == ExecutionMode.Compiled)
-                executor = new DynamicCompiler<T>(caseSensitive);
+                executor = CreateGenericDynamicCompiler(caseSensitive);
             else
                 throw new ArgumentException(string.Format("Unsupported execution mode \"{0}\".", options.ExecutionMode),
                     "executionMode");
@@ -75,6 +75,22 @@ namespace Jace
             else
             {
                 genericExecutor = (IExecutor<T>)new Interpreter<decimal>(DecimalNumericalOperations.Instance, caseSensitive ?? false);
+            }
+
+            return genericExecutor;
+        }
+
+        private IExecutor<T> CreateGenericDynamicCompiler(bool? caseSensitive = null)
+        {
+            IExecutor<T> genericExecutor = null;
+
+            if (typeof(T) == typeof(double))
+            {
+                genericExecutor = (IExecutor<T>)new DynamicCompiler<double>(DoubleNumericalOperations.Instance, caseSensitive ?? false);
+            }
+            else
+            {
+                genericExecutor = (IExecutor<T>)new DynamicCompiler<decimal>(DecimalNumericalOperations.Instance, caseSensitive ?? false);
             }
 
             return genericExecutor;

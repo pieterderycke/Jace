@@ -14,11 +14,13 @@ namespace Jace.Execution
     {
         private string FuncAssemblyQualifiedName;
         private readonly bool caseSensitive;
+        private readonly INumericalOperations<T> numericalOperations;
 
-        public DynamicCompiler(): this(false) { }
-        public DynamicCompiler(bool caseSensitive)
+        public DynamicCompiler(INumericalOperations<T> numericalOperations) : this(numericalOperations, false) { }
+        public DynamicCompiler(INumericalOperations<T> numericalOperations, bool caseSensitive)
         {
-            this.caseSensitive = caseSensitive;
+            this.caseSensitive       = caseSensitive;
+            this.numericalOperations = numericalOperations;
             // The lower func reside in mscorelib, the higher ones in another assembly.
             // This is  an easy cross platform way to to have this AssemblyQualifiedName.
             FuncAssemblyQualifiedName = typeof(Func<T, T, T, T, T, T, T, T, T, T>).GetTypeInfo().Assembly.FullName;
@@ -138,10 +140,20 @@ namespace Jace.Execution
             else if (operation.GetType() == typeof(Exponentiation))
             {
                 Exponentiation exponentation = (Exponentiation)operation;
-                Expression @base = GenerateMethodBody(exponentation.Base, contextParameter, functionRegistry);
+                Expression @base    = GenerateMethodBody(exponentation.Base, contextParameter, functionRegistry);
                 Expression exponent = GenerateMethodBody(exponentation.Exponent, contextParameter, functionRegistry);
+                var isDecimalEngine = typeof(T) == typeof(decimal);
 
-                return Expression.Call(null, typeof(Math).GetRuntimeMethod("Pow", new Type[] { typeof(T), typeof(T) }), @base, exponent);
+                if (isDecimalEngine)
+                {
+                    @base = Expression.Convert(@base, typeof(double));
+                    exponent = Expression.Convert(exponent, typeof(double));
+                }
+
+                return isDecimalEngine
+                    ? Expression.Convert(Expression.Call(null, typeof(Math).GetRuntimeMethod("Pow", new Type[] { typeof(double), typeof(double) }), @base, exponent), typeof(decimal))
+                    : (Expression)Expression.Call(null, typeof(Math).GetRuntimeMethod("Pow", new Type[] { typeof(double), typeof(double) }), @base, exponent);
+
             }
             else if (operation.GetType() == typeof(UnaryMinus))
             {
@@ -152,22 +164,22 @@ namespace Jace.Execution
             else if (operation.GetType() == typeof(And))
             {
                 And and = (And)operation;
-                Expression argument1 = Expression.NotEqual(GenerateMethodBody(and.Argument1, contextParameter, functionRegistry), Expression.Constant(0.0));
-                Expression argument2 = Expression.NotEqual(GenerateMethodBody(and.Argument2, contextParameter, functionRegistry), Expression.Constant(0.0));
+                Expression argument1 = Expression.NotEqual(GenerateMethodBody(and.Argument1, contextParameter, functionRegistry), Expression.Constant(numericalOperations.Constants.Zero));
+                Expression argument2 = Expression.NotEqual(GenerateMethodBody(and.Argument2, contextParameter, functionRegistry), Expression.Constant(numericalOperations.Constants.Zero));
 
                 return Expression.Condition(Expression.And(argument1, argument2),
-                    Expression.Constant(1.0),
-                    Expression.Constant(0.0));
+                    Expression.Constant(numericalOperations.Constants.One),
+                    Expression.Constant(numericalOperations.Constants.Zero));
             }
             else if (operation.GetType() == typeof(Or))
             {
                 Or and = (Or)operation;
-                Expression argument1 = Expression.NotEqual(GenerateMethodBody(and.Argument1, contextParameter, functionRegistry), Expression.Constant(0.0));
-                Expression argument2 = Expression.NotEqual(GenerateMethodBody(and.Argument2, contextParameter, functionRegistry), Expression.Constant(0.0));
+                Expression argument1 = Expression.NotEqual(GenerateMethodBody(and.Argument1, contextParameter, functionRegistry), Expression.Constant(numericalOperations.Constants.Zero));
+                Expression argument2 = Expression.NotEqual(GenerateMethodBody(and.Argument2, contextParameter, functionRegistry), Expression.Constant(numericalOperations.Constants.Zero));
 
                 return Expression.Condition(Expression.Or(argument1, argument2),
-                    Expression.Constant(1.0),
-                    Expression.Constant(0.0));
+                    Expression.Constant(numericalOperations.Constants.One),
+                    Expression.Constant(numericalOperations.Constants.Zero));
             }
             else if (operation.GetType() == typeof(LessThan))
             {
@@ -176,8 +188,8 @@ namespace Jace.Execution
                 Expression argument2 = GenerateMethodBody(lessThan.Argument2, contextParameter, functionRegistry);
 
                 return Expression.Condition(Expression.LessThan(argument1, argument2),
-                    Expression.Constant(1.0),
-                    Expression.Constant(0.0));
+                    Expression.Constant(numericalOperations.Constants.One),
+                    Expression.Constant(numericalOperations.Constants.Zero));
             }
             else if (operation.GetType() == typeof(LessOrEqualThan))
             {
@@ -186,8 +198,8 @@ namespace Jace.Execution
                 Expression argument2 = GenerateMethodBody(lessOrEqualThan.Argument2, contextParameter, functionRegistry);
 
                 return Expression.Condition(Expression.LessThanOrEqual(argument1, argument2),
-                    Expression.Constant(1.0),
-                    Expression.Constant(0.0));
+                    Expression.Constant(numericalOperations.Constants.One),
+                    Expression.Constant(numericalOperations.Constants.Zero));
             }
             else if (operation.GetType() == typeof(GreaterThan))
             {
@@ -196,8 +208,8 @@ namespace Jace.Execution
                 Expression argument2 = GenerateMethodBody(greaterThan.Argument2, contextParameter, functionRegistry);
 
                 return Expression.Condition(Expression.GreaterThan(argument1, argument2),
-                    Expression.Constant(1.0),
-                    Expression.Constant(0.0));
+                    Expression.Constant(numericalOperations.Constants.One),
+                    Expression.Constant(numericalOperations.Constants.Zero));
             }
             else if (operation.GetType() == typeof(GreaterOrEqualThan))
             {
@@ -206,8 +218,8 @@ namespace Jace.Execution
                 Expression argument2 = GenerateMethodBody(greaterOrEqualThan.Argument2, contextParameter, functionRegistry);
 
                 return Expression.Condition(Expression.GreaterThanOrEqual(argument1, argument2),
-                    Expression.Constant(1.0),
-                    Expression.Constant(0.0));
+                    Expression.Constant(numericalOperations.Constants.One),
+                    Expression.Constant(numericalOperations.Constants.Zero));
             }
             else if (operation.GetType() == typeof(Equal))
             {
@@ -216,8 +228,8 @@ namespace Jace.Execution
                 Expression argument2 = GenerateMethodBody(equal.Argument2, contextParameter, functionRegistry);
 
                 return Expression.Condition(Expression.Equal(argument1, argument2),
-                    Expression.Constant(1.0),
-                    Expression.Constant(0.0));
+                    Expression.Constant(numericalOperations.Constants.One),
+                    Expression.Constant(numericalOperations.Constants.Zero));
             }
             else if (operation.GetType() == typeof(NotEqual))
             {
@@ -226,8 +238,8 @@ namespace Jace.Execution
                 Expression argument2 = GenerateMethodBody(notEqual.Argument2, contextParameter, functionRegistry);
 
                 return Expression.Condition(Expression.NotEqual(argument1, argument2),
-                    Expression.Constant(1.0),
-                    Expression.Constant(0.0));
+                    Expression.Constant(numericalOperations.Constants.One),
+                    Expression.Constant(numericalOperations.Constants.Zero));
             }
             else if (operation.GetType() == typeof(Function))
             {

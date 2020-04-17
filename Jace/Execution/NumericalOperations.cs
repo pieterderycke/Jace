@@ -89,12 +89,12 @@ namespace Jace.Execution
         {
             public decimal Zero
             {
-                get { return 0; }
+                get { return 0m; }
             }
 
             public decimal One
             {
-                get { return 1; }
+                get { return 1m; }
             }
         }
 
