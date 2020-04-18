@@ -1241,5 +1241,44 @@ namespace Jace.Tests
             double result = engine.Calculate("test()");
             Assert.AreEqual(5.0, result);
         }
+
+        [TestMethod]
+        public void TestPowInterpreted()
+        {
+            var engine = CreateEngineHelper<double>(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false, true);
+            double result = engine.Calculate("2^2");
+
+            Assert.AreEqual(4, result);
+        }
+
+
+        [TestMethod]
+        public void TestPowCompiled()
+        {
+            var engine = CreateEngineHelper<double>(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false, true);
+            double result = engine.Calculate("2^2");
+
+            Assert.AreEqual(4, result);
+        }
+
+
+        [TestMethod]
+        public void TestBasicInterpreted()
+        {
+            var engine = CreateEngineHelper<double>(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false, true);
+            double result = engine.Calculate("1 + 2.0");
+
+            Assert.AreEqual(3, result);
+        }
+
+
+        [TestMethod]
+        public void TestBasicCompiled()
+        {
+            var engine = CreateEngineHelper<double>(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false, true);
+            double result = engine.Calculate("1 + 2.0");
+
+            Assert.AreEqual(3, result);
+        }
     }
 }

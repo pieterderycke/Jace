@@ -1260,5 +1260,25 @@ namespace Jace.Tests
 
             Assert.AreEqual(4m, result);
         }
+
+
+        [TestMethod]
+        public void TestBasicInterpreted()
+        {
+            var engine = CreateEngineHelper<decimal>(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, false, true);
+            decimal result = engine.Calculate("1 + 2.0");
+
+            Assert.AreEqual(3m, result);
+        }
+
+
+        [TestMethod]
+        public void TestBasicCompiled()
+        {
+            var engine = CreateEngineHelper<decimal>(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, false, true);
+            decimal result = engine.Calculate("1 + 2.0");
+
+            Assert.AreEqual(3m, result);
+        }
     }
 }
