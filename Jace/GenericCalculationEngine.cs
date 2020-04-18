@@ -65,15 +65,16 @@ namespace Jace
         }
 
         public static ICalculationEngine<T> New(JaceOptions options)
-        {
-            if (typeof(T) == typeof(double))
+        {      
+            switch (Type.GetTypeCode(typeof(T)))
             {
-                return (ICalculationEngine<T>) new DoubleCalculationEngine(options);
-            }
-            else
-            {
-                return (ICalculationEngine<T>) new DecimalCalculationEngine(options);
-            }
+                case TypeCode.Double:
+                    return (ICalculationEngine<T>)new DoubleCalculationEngine(options);
+                case TypeCode.Decimal:
+                    return (ICalculationEngine<T>)new DecimalCalculationEngine(options);
+                default:
+                    throw new ArgumentException("Only types double an decimal are supported.");                
+            }   
         }
 
         public IFunctionRegistry<T> FunctionRegistry { get; private set; }

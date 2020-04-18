@@ -6,6 +6,12 @@ namespace Jace
 {
     public static class CalculationEngine
     {
+
+        public static ICalculationEngine<T> New<T>()
+        {
+            return GenericCalculationEngine<T>.New(new JaceOptions());
+        }
+
         public static ICalculationEngine<T> New<T>(JaceOptions options)
         {
             return GenericCalculationEngine<T>.New(options);
