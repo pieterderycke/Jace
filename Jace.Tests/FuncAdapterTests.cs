@@ -24,7 +24,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestFuncAdapterWrap()
         {
-            FuncAdapter adapter = new FuncAdapter();
+            var adapter = new FuncAdapter<double>();
 
             List<ParameterInfo> parameters = new List<ParameterInfo>() { 
                 new ParameterInfo() { Name = "test1", DataType = DataType.Integer },
@@ -41,7 +41,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestFuncAdapterWrapAndGC()
         {
-            FuncAdapter adapter = new FuncAdapter();
+            var adapter = new FuncAdapter<double>();
 
             List<ParameterInfo> parameters = new List<ParameterInfo>() { 
                 new ParameterInfo() { Name = "test1", DataType = DataType.Integer },
@@ -61,7 +61,7 @@ namespace Jace.Tests
         [TestMethod]
         public void TestFourArguments()
         {
-            FuncAdapter adapater = new FuncAdapter();
+            var adapter = new FuncAdapter<double>();
 
             List<ParameterInfo> parameters = new List<ParameterInfo>() { 
                 new ParameterInfo() { Name = "test1", DataType = DataType.Integer },
@@ -70,7 +70,7 @@ namespace Jace.Tests
                 new ParameterInfo() { Name = "test4", DataType = DataType.Integer }
             };
 
-            Func<int, int, int, int, double> wrappedFunction = (Func<int, int, int, int, double>)adapater.Wrap(parameters, dictionary => dictionary["test4"]);
+            Func<int, int, int, int, double> wrappedFunction = (Func<int, int, int, int, double>) adapter.Wrap(parameters, dictionary => dictionary["test4"]);
 
             Assert.AreEqual(8.0, wrappedFunction(2, 4, 6, 8));
         }

@@ -9,15 +9,15 @@ using Jace.Util;
 
 namespace Jace.Execution
 {
-    public class FormulaBuilder
+    public class FormulaBuilder<T>
     {
-        private readonly CalculationEngine engine;
+        private readonly IInternalCalculationEngine<T> engine;
 
         private string formulaText;
         private bool caseSensitive;
         private DataType? resultDataType;
         private List<ParameterInfo> parameters;
-        private IDictionary<string, double> constants;
+        private IDictionary<string, T> constants;
 
         /// <summary>
         /// Creates a new instance of the FormulaBuilder class.
@@ -26,10 +26,10 @@ namespace Jace.Execution
         /// A calculation engine instance that can be used for interpreting and executing 
         /// the formula.
         /// </param>
-        internal FormulaBuilder(string formulaText, bool caseSensitive, CalculationEngine engine)
+        internal FormulaBuilder(string formulaText, bool caseSensitive, IInternalCalculationEngine<T> engine)
         {
             this.parameters = new List<ParameterInfo>();
-            this.constants = new Dictionary<string, double>();
+            this.constants = new Dictionary<string, T>();
             this.formulaText = formulaText;
             this.engine = engine;
             this.caseSensitive = caseSensitive;
@@ -42,7 +42,7 @@ namespace Jace.Execution
         /// <param name="name">The name of the parameter.</param>
         /// <param name="dataType">The date type of the parameter.</param>
         /// <returns>The <see cref="FormulaBuilder"/> instance.</returns>
-        public FormulaBuilder Parameter(string name, DataType dataType)
+        public FormulaBuilder<T> Parameter(string name, DataType dataType)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException("name");
@@ -63,9 +63,9 @@ namespace Jace.Execution
         /// <param name="name">The name of the constant.</param>
         /// <param name="constantValue">The value of the constant. Variables for which a constant value is defined will be replaced at pre-compilation time.</param>
         /// <returns>The <see cref="FormulaBuilder"/> instance.</returns>
-        public FormulaBuilder Constant(string name, int constantValue)
+        public FormulaBuilder<T> Constant(string name, int constantValue)
         {
-            return Constant(name, (double)constantValue);
+            return Constant(name, (T) Convert.ChangeType(constantValue, typeof(T)));
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace Jace.Execution
         /// <param name="name">The name of the constant.</param>
         /// <param name="constantValue">The value of the constant.</param>
         /// <returns>The <see cref="FormulaBuilder"/> instance.</returns>
-        public FormulaBuilder Constant(string name, double constantValue)
+        public FormulaBuilder<T> Constant(string name, T constantValue)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException("name");
@@ -91,7 +91,7 @@ namespace Jace.Execution
         /// </summary>
         /// <param name="dataType">The result data type for the formula.</param>
         /// <returns>The <see cref="FormulaBuilder"/> instance.</returns>
-        public FormulaBuilder Result(DataType dataType)
+        public FormulaBuilder<T> Result(DataType dataType)
         {
             if (resultDataType.HasValue)
                 throw new InvalidOperationException("The result can only be defined once for a given formula.");
@@ -110,9 +110,9 @@ namespace Jace.Execution
             if (!resultDataType.HasValue)
                 throw new Exception("Please define a result data type for the formula.");
 
-            Func<IDictionary<string, double>, double> formula = engine.Build(formulaText, constants);
+            var formula = engine.Build(formulaText, constants);
 
-            FuncAdapter adapter = new FuncAdapter();
+            FuncAdapter<T> adapter = new FuncAdapter<T>();
             return adapter.Wrap(parameters, variables => {
 
                 if(!caseSensitive)
@@ -121,7 +121,7 @@ namespace Jace.Execution
                 engine.VerifyVariableNames(variables);
 
                 // Add the reserved variables to the dictionary
-                foreach (ConstantInfo constant in engine.ConstantRegistry)
+                foreach (ConstantInfo<T> constant in engine.ConstantRegistry)
                     variables.Add(constant.ConstantName, constant.Value);
 
                 return formula(variables);

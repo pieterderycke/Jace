@@ -59,5 +59,19 @@ namespace Jace.Tests
             Assert.IsTrue(cache.ContainsKey("test3"));
             Assert.AreEqual(1, cache.Count);
         }
+
+
+        [TestMethod]
+        public void TestCacheIsolation()
+        {
+            var doubleEngine = CalculationEngine.New<double>(new JaceOptions { CacheEnabled = true });
+
+            var decimalEngine = CalculationEngine.New<decimal>(new JaceOptions { CacheEnabled = true });
+
+            Assert.IsInstanceOfType(doubleEngine.Calculate("a + 1", new Dictionary<string, double> { { "a", 1.0 } }), typeof(double));
+            Assert.IsInstanceOfType(decimalEngine.Calculate("a + 1", new Dictionary<string, decimal> { { "a", 1.0m } }), typeof(decimal));
+            Assert.IsInstanceOfType(doubleEngine.Calculate("a + 1", new Dictionary<string, double> { { "a", 1.0 } }), typeof(double));
+
+        }
     }
 }

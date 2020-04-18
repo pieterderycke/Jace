@@ -24,10 +24,10 @@ namespace Jace.Tests
         [TestMethod]
         public void TestBasicInterpreterSubstraction()
         {
-            IFunctionRegistry functionRegistry = new MockFunctionRegistry();
-            IConstantRegistry constantRegistry = new MockConstantRegistry();
+            var functionRegistry = new MockFunctionRegistry<double>();
+            var constantRegistry = new MockConstantRegistry<double>();
 
-            IExecutor executor = new Interpreter();
+            var executor = new Interpreter<double>(DoubleNumericalOperations.Instance);
             double result = executor.Execute(new Subtraction(
                 DataType.Integer,
                 new IntegerConstant(6),
@@ -39,10 +39,10 @@ namespace Jace.Tests
         [TestMethod]
         public void TestBasicInterpreter1()
         {
-            IFunctionRegistry functionRegistry = new MockFunctionRegistry();
-            IConstantRegistry constantRegistry = new MockConstantRegistry();
+            var functionRegistry = new MockFunctionRegistry<double>();
+            var constantRegistry = new MockConstantRegistry<double>();
 
-            IExecutor executor = new Interpreter();
+            var executor = new Interpreter<double>(DoubleNumericalOperations.Instance);
             // 6 + (2 * 4)
             double result = executor.Execute(
                 new Addition(
@@ -59,14 +59,15 @@ namespace Jace.Tests
         [TestMethod]
         public void TestBasicInterpreterWithVariables()
         {
-            IFunctionRegistry functionRegistry = new MockFunctionRegistry();
-            IConstantRegistry constantRegistry = new MockConstantRegistry();
+            var functionRegistry = new MockFunctionRegistry<double>();
+            var constantRegistry = new MockConstantRegistry<double>();
 
             Dictionary<string, double> variables = new Dictionary<string, double>();
             variables.Add("var1", 2);
             variables.Add("age", 4);
 
-            IExecutor interpreter = new Interpreter();
+            var interpreter = new Interpreter<double>(DoubleNumericalOperations.Instance);
+
             // var1 + 2 * (3 * age)
             double result = interpreter.Execute(
                 new Addition(DataType.FloatingPoint,

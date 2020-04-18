@@ -32,15 +32,47 @@ namespace Jace.Benchmark
         { 
             TimeSpan duration;
 
-            CalculationEngine interpretedEngine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, true, true);
-            CalculationEngine interpretedEngineCaseSensitive = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted, true, true, false);
-            CalculationEngine compiledEngine = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, true, true);
-            CalculationEngine compiledEngineCaseSensitive = new CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Compiled, true, true, false);
+            var interpretedEngine = CalculationEngine.New<double>(new JaceOptions
+            {
+                CultureInfo = CultureInfo.InvariantCulture,
+                ExecutionMode = ExecutionMode.Interpreted,
+                CacheEnabled = true,
+                OptimizerEnabled = true,
+                CaseSensitive = true
+            });
 
-            BenchMarkOperation[] benchmarks = {
-                new BenchMarkOperation() { Formula = "2+3*7", Mode = BenchmarkMode.Static, BenchMarkDelegate = BenchMarkCalculationEngine },
-                new BenchMarkOperation() { Formula = "logn(var1, (2+3) * 500)", Mode = BenchmarkMode.SimpleFunction , BenchMarkDelegate = BenchMarkCalculationEngineFunctionBuild },
-                new BenchMarkOperation() { Formula = "(var1 + var2 * 3)/(2+3) - something", Mode = BenchmarkMode.Simple , BenchMarkDelegate = BenchMarkCalculationEngineFunctionBuild },
+            var interpretedEngineCaseSensitive = CalculationEngine.New<double>(new JaceOptions
+            {
+                CultureInfo = CultureInfo.InvariantCulture,
+                ExecutionMode = ExecutionMode.Interpreted,
+                CacheEnabled = true,
+                OptimizerEnabled = true,
+                CaseSensitive = false
+            });
+
+            var compiledEngine = CalculationEngine.New<double>(new JaceOptions
+            {
+                CultureInfo = CultureInfo.InvariantCulture,
+                ExecutionMode = ExecutionMode.Compiled,
+                CacheEnabled = true,
+                OptimizerEnabled = true,
+                CaseSensitive = true
+            });
+
+            var compiledEngineCaseSensitive = CalculationEngine.New<double>(new JaceOptions
+            {
+                CultureInfo = CultureInfo.InvariantCulture,
+                ExecutionMode = ExecutionMode.Compiled,
+                CacheEnabled = true,
+                OptimizerEnabled = true,
+                CaseSensitive = false
+            });
+                        
+
+            BenchMarkOperation<double>[] benchmarks = {
+                new BenchMarkOperation<double>() { Formula = "2+3*7", Mode = BenchmarkMode.Static, BenchMarkDelegate = BenchMarkCalculationEngine },
+                new BenchMarkOperation<double>() { Formula = "logn(var1, (2+3) * 500)", Mode = BenchmarkMode.SimpleFunction , BenchMarkDelegate = BenchMarkCalculationEngineFunctionBuild },
+                new BenchMarkOperation<double>() { Formula = "(var1 + var2 * 3)/(2+3) - something", Mode = BenchmarkMode.Simple , BenchMarkDelegate = BenchMarkCalculationEngineFunctionBuild },
             };
 
             DataTable table = new DataTable();
@@ -51,7 +83,7 @@ namespace Jace.Benchmark
             table.Columns.Add("Total Iteration", typeof(int));
             table.Columns.Add("Total Duration");
 
-            foreach (BenchMarkOperation benchmark in benchmarks)
+            foreach (var benchmark in benchmarks)
             {
                 if (mode == BenchmarkMode.All || mode == benchmark.Mode)
                 {
@@ -121,7 +153,7 @@ namespace Jace.Benchmark
             return table;
         }
 
-        private static TimeSpan BenchMarkCalculationEngine(CalculationEngine engine, string functionText)
+        private static TimeSpan BenchMarkCalculationEngine(ICalculationEngine<double> engine, string functionText)
         {
             DateTime start = DateTime.Now;
 
@@ -135,7 +167,7 @@ namespace Jace.Benchmark
             return end - start;
         }
 
-        private static TimeSpan BenchMarkCalculationEngineFunctionBuild(CalculationEngine engine, string functionText)
+        private static TimeSpan BenchMarkCalculationEngineFunctionBuild(ICalculationEngine<double> engine, string functionText)
         {
             DateTime start = DateTime.Now;
 
@@ -169,7 +201,7 @@ namespace Jace.Benchmark
             return result;
         }
 
-        private static TimeSpan BenchMarkCalculationEngineRandomFunctionBuild(CalculationEngine engine, List<string> functions, 
+        private static TimeSpan BenchMarkCalculationEngineRandomFunctionBuild(ICalculationEngine<double> engine, List<string> functions, 
             int numberOfTests)
         {
             Random random = new Random();

@@ -7,22 +7,29 @@ using Jace.Execution;
 
 namespace Jace
 {
-    public class Optimizer
+    public interface IOptimizer<T>
     {
-        private readonly IExecutor executor;
+        Operation Optimize(Operation operation, IFunctionRegistry<T> functionRegistry, IConstantRegistry<T> constantRegistry);
+    }
 
-        public Optimizer(IExecutor executor)
+    public class Optimizer<T> : IOptimizer<T>
+    {
+        private readonly IExecutor<T> executor;
+        private readonly INumericalOperations<T> numericalOperations;
+
+        public Optimizer(IExecutor<T> executor, INumericalOperations<T> numericalOperations)
         {
             this.executor = executor;
+            this.numericalOperations = numericalOperations;
         }
 
-        public Operation Optimize(Operation operation, IFunctionRegistry functionRegistry, IConstantRegistry constantRegistry)
+        public Operation Optimize(Operation operation, IFunctionRegistry<T> functionRegistry, IConstantRegistry<T> constantRegistry)
         {
             if (!operation.DependsOnVariables && operation.IsIdempotent && operation.GetType() != typeof(IntegerConstant)
-                && operation.GetType() != typeof(FloatingPointConstant))
+                && operation.GetType() != typeof(FloatingPointConstant<T>))
             {
-                double result = executor.Execute(operation, functionRegistry, constantRegistry);
-                return new FloatingPointConstant(result);
+                T result = executor.Execute(operation, functionRegistry, constantRegistry);
+                return new FloatingPointConstant<T>(result);
             }
             else
             {
@@ -44,10 +51,12 @@ namespace Jace
                     multiplication.Argument1 = Optimize(multiplication.Argument1, functionRegistry, constantRegistry);
                     multiplication.Argument2 = Optimize(multiplication.Argument2, functionRegistry, constantRegistry);
 
-                    if ((multiplication.Argument1.GetType() == typeof(FloatingPointConstant) && ((FloatingPointConstant)multiplication.Argument1).Value == 0.0)
-                        || (multiplication.Argument2.GetType() == typeof(FloatingPointConstant) && ((FloatingPointConstant)multiplication.Argument2).Value == 0.0))
+                    if (
+                        (multiplication.Argument1.GetType() == typeof(FloatingPointConstant<T>) && ((FloatingPointConstant<T>)multiplication.Argument1).Value.Equals(numericalOperations.Constants.Zero)) ||    
+                        (multiplication.Argument2.GetType() == typeof(FloatingPointConstant<T>) && ((FloatingPointConstant<T>)multiplication.Argument2).Value.Equals(numericalOperations.Constants.Zero))
+                        )
                     {
-                        return new FloatingPointConstant(0.0);
+                        return new FloatingPointConstant<T>(numericalOperations.Constants.Zero);
                     }
                 }
                 else if (operation.GetType() == typeof(Division))

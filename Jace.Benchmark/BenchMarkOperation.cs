@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Jace.Benchmark
 {
-    public class BenchMarkOperation
+    public class BenchMarkOperation<T>
     {
         public string Formula { get; set; }
         public BenchmarkMode Mode { get; set; }
-        public Func<CalculationEngine, string, TimeSpan>  BenchMarkDelegate { get; set; }
+        public Func<ICalculationEngine<T>, string, TimeSpan>  BenchMarkDelegate { get; set; }
     }
 }

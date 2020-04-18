@@ -5,11 +5,11 @@ using System.Text;
 
 namespace Jace.Execution
 {
-    public interface IConstantRegistry : IEnumerable<ConstantInfo>
+    public interface IConstantRegistry<T> : IEnumerable<ConstantInfo<T>>
     {
-        ConstantInfo GetConstantInfo(string constantName);
+        ConstantInfo<T> GetConstantInfo(string constantName);
         bool IsConstantName(string constantName);
-        void RegisterConstant(string constantName, double value);
-        void RegisterConstant(string constantName, double value, bool isOverWritable);
+        void RegisterConstant(string constantName, T value);
+        void RegisterConstant(string constantName, T value, bool isOverWritable);
     }
 }

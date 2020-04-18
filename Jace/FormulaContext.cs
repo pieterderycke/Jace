@@ -6,20 +6,20 @@ using Jace.Execution;
 
 namespace Jace
 {
-    public class FormulaContext
+    public class FormulaContext<T>
     {
-        public FormulaContext(IDictionary<string, double> variables,
-            IFunctionRegistry functionRegistry,
-            IConstantRegistry constantRegistry)
+        public FormulaContext(IDictionary<string, T> variables,
+            IFunctionRegistry<T> functionRegistry,
+            IConstantRegistry<T> constantRegistry)
         {
             this.Variables = variables;
             this.FunctionRegistry = functionRegistry;
             this.ConstantRegistry = constantRegistry;
         }
 
-        public IDictionary<string, double> Variables { get; private set; }
+        public IDictionary<string, T> Variables { get; private set; }
 
-        public IFunctionRegistry FunctionRegistry { get; private set; }
-        public IConstantRegistry ConstantRegistry { get; private set; }
+        public IFunctionRegistry<T> FunctionRegistry { get; private set; }
+        public IConstantRegistry<T> ConstantRegistry { get; private set; }
     }
 }

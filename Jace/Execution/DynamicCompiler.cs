@@ -10,57 +10,58 @@ using Jace.Util;
 
 namespace Jace.Execution
 {
-    public class DynamicCompiler : IExecutor
+    public class DynamicCompiler<T> : IExecutor<T>
     {
         private string FuncAssemblyQualifiedName;
         private readonly bool caseSensitive;
+        private readonly INumericalOperations<T> numericalOperations;
 
-        public DynamicCompiler(): this(false) { }
-        public DynamicCompiler(bool caseSensitive)
+        public DynamicCompiler(INumericalOperations<T> numericalOperations) : this(numericalOperations, false) { }
+        public DynamicCompiler(INumericalOperations<T> numericalOperations, bool caseSensitive)
         {
-            this.caseSensitive = caseSensitive;
+            this.caseSensitive       = caseSensitive;
+            this.numericalOperations = numericalOperations;
             // The lower func reside in mscorelib, the higher ones in another assembly.
             // This is  an easy cross platform way to to have this AssemblyQualifiedName.
-            FuncAssemblyQualifiedName =
-                typeof(Func<double, double, double, double, double, double, double, double, double, double>).GetTypeInfo().Assembly.FullName;
+            FuncAssemblyQualifiedName = typeof(Func<T, T, T, T, T, T, T, T, T, T>).GetTypeInfo().Assembly.FullName;
         }
 
-        public double Execute(Operation operation, IFunctionRegistry functionRegistry, IConstantRegistry constantRegistry)
+        public T Execute(Operation operation, IFunctionRegistry<T> functionRegistry, IConstantRegistry<T> constantRegistry)
         {
-            return Execute(operation, functionRegistry, constantRegistry, new Dictionary<string, double>());
+            return Execute(operation, functionRegistry, constantRegistry, new Dictionary<string, T>());
         }
 
-        public double Execute(Operation operation, IFunctionRegistry functionRegistry, IConstantRegistry constantRegistry, 
-            IDictionary<string, double> variables)
+        public T Execute(Operation operation, IFunctionRegistry<T> functionRegistry, IConstantRegistry<T> constantRegistry, 
+            IDictionary<string, T> variables)
         {
             return BuildFormula(operation, functionRegistry, constantRegistry)(variables);
         }
 
-        public Func<IDictionary<string, double>, double> BuildFormula(Operation operation,
-            IFunctionRegistry functionRegistry, IConstantRegistry constantRegistry)
+        public Func<IDictionary<string, T>, T> BuildFormula(Operation operation,
+            IFunctionRegistry<T> functionRegistry, IConstantRegistry<T> constantRegistry)
         {
-            Func<FormulaContext, double> func = BuildFormulaInternal(operation, functionRegistry);
+            Func<FormulaContext<T>, T> func = BuildFormulaInternal(operation, functionRegistry);
             return caseSensitive
-                ? (Func<IDictionary<string, double>, double>)(variables =>
+                ? (Func<IDictionary<string, T>, T>)(variables =>
                 {
-                    return func(new FormulaContext(variables, functionRegistry, constantRegistry));
+                    return func(new FormulaContext<T>(variables, functionRegistry, constantRegistry));
                 })
-                : (Func<IDictionary<string, double>, double>)(variables =>
+                : (Func<IDictionary<string, T>, T>)(variables =>
                 {
                     variables = EngineUtil.ConvertVariableNamesToLowerCase(variables);
-                    FormulaContext context = new FormulaContext(variables, functionRegistry, constantRegistry);
+                    FormulaContext<T> context = new FormulaContext<T>(variables, functionRegistry, constantRegistry);
                     return func(context);
                 });
         }
 
-        private Func<FormulaContext, double> BuildFormulaInternal(Operation operation, 
-            IFunctionRegistry functionRegistry)
+        private Func<FormulaContext<T>, T> BuildFormulaInternal(Operation operation, 
+            IFunctionRegistry<T> functionRegistry)
         {
-            ParameterExpression contextParameter = Expression.Parameter(typeof(FormulaContext), "context");
+            ParameterExpression contextParameter = Expression.Parameter(typeof(FormulaContext<T>), "context");
 
-            LabelTarget returnLabel = Expression.Label(typeof(double));
+            LabelTarget returnLabel = Expression.Label(typeof(T));
 
-            Expression<Func<FormulaContext, double>> lambda = Expression.Lambda<Func<FormulaContext, double>>(
+            Expression<Func<FormulaContext<T>, T>> lambda = Expression.Lambda<Func<FormulaContext<T>, T>>(
                 GenerateMethodBody(operation, contextParameter, functionRegistry),
                 contextParameter
             );
@@ -70,29 +71,27 @@ namespace Jace.Execution
         
 
         private Expression GenerateMethodBody(Operation operation, ParameterExpression contextParameter,
-            IFunctionRegistry functionRegistry)
+            IFunctionRegistry<T> functionRegistry)
         {
             if (operation == null)
                 throw new ArgumentNullException("operation");
 
             if (operation.GetType() == typeof(IntegerConstant))
             {
-                IntegerConstant constant = (IntegerConstant)operation;
-
-                double value = constant.Value;
-                return Expression.Constant(value, typeof(double));
+                IntegerConstant constant = (IntegerConstant)operation;                
+                return Expression.Constant(Convert.ChangeType(constant.Value,typeof(T)), typeof(T));
             }
-            else if (operation.GetType() == typeof(FloatingPointConstant))
+            else if (operation.GetType() == typeof(FloatingPointConstant<T>))
             {
-                FloatingPointConstant constant = (FloatingPointConstant)operation;
+                FloatingPointConstant<T> constant = (FloatingPointConstant<T>)operation;
 
-                return Expression.Constant(constant.Value, typeof(double));
+                return Expression.Constant(constant.Value, typeof(T));
             }
             else if (operation.GetType() == typeof(Variable))
             {
                 Variable variable = (Variable)operation;
 
-                Func<string, FormulaContext, double> getVariableValueOrThrow = PrecompiledMethods.GetVariableValueOrThrow;
+                Func<string, FormulaContext<T>, T> getVariableValueOrThrow = PrecompiledMethods.GetVariableValueOrThrow;
                 return Expression.Call(null,
                     getVariableValueOrThrow.GetMethodInfo(),
                     Expression.Constant(variable.Name),
@@ -141,10 +140,20 @@ namespace Jace.Execution
             else if (operation.GetType() == typeof(Exponentiation))
             {
                 Exponentiation exponentation = (Exponentiation)operation;
-                Expression @base = GenerateMethodBody(exponentation.Base, contextParameter, functionRegistry);
+                Expression @base    = GenerateMethodBody(exponentation.Base, contextParameter, functionRegistry);
                 Expression exponent = GenerateMethodBody(exponentation.Exponent, contextParameter, functionRegistry);
+                var isDecimalEngine = typeof(T) == typeof(decimal);
 
-                return Expression.Call(null, typeof(Math).GetRuntimeMethod("Pow", new Type[] { typeof(double), typeof(double) }), @base, exponent);
+                if (isDecimalEngine)
+                {
+                    @base = Expression.Convert(@base, typeof(double));
+                    exponent = Expression.Convert(exponent, typeof(double));
+                }
+
+                return isDecimalEngine
+                    ? Expression.Convert(Expression.Call(null, typeof(Math).GetRuntimeMethod("Pow", new Type[] { typeof(double), typeof(double) }), @base, exponent), typeof(decimal))
+                    : (Expression)Expression.Call(null, typeof(Math).GetRuntimeMethod("Pow", new Type[] { typeof(double), typeof(double) }), @base, exponent);
+
             }
             else if (operation.GetType() == typeof(UnaryMinus))
             {
@@ -155,22 +164,22 @@ namespace Jace.Execution
             else if (operation.GetType() == typeof(And))
             {
                 And and = (And)operation;
-                Expression argument1 = Expression.NotEqual(GenerateMethodBody(and.Argument1, contextParameter, functionRegistry), Expression.Constant(0.0));
-                Expression argument2 = Expression.NotEqual(GenerateMethodBody(and.Argument2, contextParameter, functionRegistry), Expression.Constant(0.0));
+                Expression argument1 = Expression.NotEqual(GenerateMethodBody(and.Argument1, contextParameter, functionRegistry), Expression.Constant(numericalOperations.Constants.Zero));
+                Expression argument2 = Expression.NotEqual(GenerateMethodBody(and.Argument2, contextParameter, functionRegistry), Expression.Constant(numericalOperations.Constants.Zero));
 
                 return Expression.Condition(Expression.And(argument1, argument2),
-                    Expression.Constant(1.0),
-                    Expression.Constant(0.0));
+                    Expression.Constant(numericalOperations.Constants.One),
+                    Expression.Constant(numericalOperations.Constants.Zero));
             }
             else if (operation.GetType() == typeof(Or))
             {
                 Or and = (Or)operation;
-                Expression argument1 = Expression.NotEqual(GenerateMethodBody(and.Argument1, contextParameter, functionRegistry), Expression.Constant(0.0));
-                Expression argument2 = Expression.NotEqual(GenerateMethodBody(and.Argument2, contextParameter, functionRegistry), Expression.Constant(0.0));
+                Expression argument1 = Expression.NotEqual(GenerateMethodBody(and.Argument1, contextParameter, functionRegistry), Expression.Constant(numericalOperations.Constants.Zero));
+                Expression argument2 = Expression.NotEqual(GenerateMethodBody(and.Argument2, contextParameter, functionRegistry), Expression.Constant(numericalOperations.Constants.Zero));
 
                 return Expression.Condition(Expression.Or(argument1, argument2),
-                    Expression.Constant(1.0),
-                    Expression.Constant(0.0));
+                    Expression.Constant(numericalOperations.Constants.One),
+                    Expression.Constant(numericalOperations.Constants.Zero));
             }
             else if (operation.GetType() == typeof(LessThan))
             {
@@ -179,8 +188,8 @@ namespace Jace.Execution
                 Expression argument2 = GenerateMethodBody(lessThan.Argument2, contextParameter, functionRegistry);
 
                 return Expression.Condition(Expression.LessThan(argument1, argument2),
-                    Expression.Constant(1.0),
-                    Expression.Constant(0.0));
+                    Expression.Constant(numericalOperations.Constants.One),
+                    Expression.Constant(numericalOperations.Constants.Zero));
             }
             else if (operation.GetType() == typeof(LessOrEqualThan))
             {
@@ -189,8 +198,8 @@ namespace Jace.Execution
                 Expression argument2 = GenerateMethodBody(lessOrEqualThan.Argument2, contextParameter, functionRegistry);
 
                 return Expression.Condition(Expression.LessThanOrEqual(argument1, argument2),
-                    Expression.Constant(1.0),
-                    Expression.Constant(0.0));
+                    Expression.Constant(numericalOperations.Constants.One),
+                    Expression.Constant(numericalOperations.Constants.Zero));
             }
             else if (operation.GetType() == typeof(GreaterThan))
             {
@@ -199,8 +208,8 @@ namespace Jace.Execution
                 Expression argument2 = GenerateMethodBody(greaterThan.Argument2, contextParameter, functionRegistry);
 
                 return Expression.Condition(Expression.GreaterThan(argument1, argument2),
-                    Expression.Constant(1.0),
-                    Expression.Constant(0.0));
+                    Expression.Constant(numericalOperations.Constants.One),
+                    Expression.Constant(numericalOperations.Constants.Zero));
             }
             else if (operation.GetType() == typeof(GreaterOrEqualThan))
             {
@@ -209,8 +218,8 @@ namespace Jace.Execution
                 Expression argument2 = GenerateMethodBody(greaterOrEqualThan.Argument2, contextParameter, functionRegistry);
 
                 return Expression.Condition(Expression.GreaterThanOrEqual(argument1, argument2),
-                    Expression.Constant(1.0),
-                    Expression.Constant(0.0));
+                    Expression.Constant(numericalOperations.Constants.One),
+                    Expression.Constant(numericalOperations.Constants.Zero));
             }
             else if (operation.GetType() == typeof(Equal))
             {
@@ -219,8 +228,8 @@ namespace Jace.Execution
                 Expression argument2 = GenerateMethodBody(equal.Argument2, contextParameter, functionRegistry);
 
                 return Expression.Condition(Expression.Equal(argument1, argument2),
-                    Expression.Constant(1.0),
-                    Expression.Constant(0.0));
+                    Expression.Constant(numericalOperations.Constants.One),
+                    Expression.Constant(numericalOperations.Constants.Zero));
             }
             else if (operation.GetType() == typeof(NotEqual))
             {
@@ -229,8 +238,8 @@ namespace Jace.Execution
                 Expression argument2 = GenerateMethodBody(notEqual.Argument2, contextParameter, functionRegistry);
 
                 return Expression.Condition(Expression.NotEqual(argument1, argument2),
-                    Expression.Constant(1.0),
-                    Expression.Constant(0.0));
+                    Expression.Constant(numericalOperations.Constants.One),
+                    Expression.Constant(numericalOperations.Constants.Zero));
             }
             else if (operation.GetType() == typeof(Function))
             {
@@ -243,8 +252,8 @@ namespace Jace.Execution
 
                 if (functionInfo.IsDynamicFunc)
                 {
-                    funcType = typeof(DynamicFunc<double, double>);
-                    parameterTypes = new Type[] { typeof(double[]) };
+                    funcType = typeof(DynamicFunc<T, T>);
+                    parameterTypes = new Type[] { typeof(T[]) };
 
 
                     Expression[] arrayArguments = new Expression[function.Arguments.Count];
@@ -252,13 +261,13 @@ namespace Jace.Execution
                         arrayArguments[i] = GenerateMethodBody(function.Arguments[i], contextParameter, functionRegistry);
 
                     arguments = new Expression[1];
-                    arguments[0] = NewArrayExpression.NewArrayInit(typeof(double), arrayArguments);
+                    arguments[0] = NewArrayExpression.NewArrayInit(typeof(T), arrayArguments);
                 }
                 else
                 {
                     funcType = GetFuncType(functionInfo.NumberOfParameters);
                     parameterTypes = (from i in Enumerable.Range(0, functionInfo.NumberOfParameters)
-                                             select typeof(double)).ToArray();
+                                             select typeof(T)).ToArray();
 
                     arguments = new Expression[functionInfo.NumberOfParameters];
                     for (int i = 0; i < functionInfo.NumberOfParameters; i++)
@@ -276,7 +285,7 @@ namespace Jace.Execution
                         Expression.Property(
                             Expression.Call(
                                 getFunctionRegistry,
-                                typeof(IFunctionRegistry).GetRuntimeMethod("GetFunctionInfo", new Type[] { typeof(string) }),
+                                typeof(IFunctionRegistry<T>).GetRuntimeMethod("GetFunctionInfo", new Type[] { typeof(string) }),
                                 Expression.Constant(function.FunctionName)),
                             "Function"),
                         funcType);
@@ -306,16 +315,16 @@ namespace Jace.Execution
 
             Type[] typeArguments = new Type[numberOfParameters + 1];
             for (int i = 0; i < typeArguments.Length; i++)
-                typeArguments[i] = typeof(double);
+                typeArguments[i] = typeof(T);
 
             return funcType.MakeGenericType(typeArguments);
         }
 
         private static class PrecompiledMethods
         {
-            public static double GetVariableValueOrThrow(string variableName, FormulaContext context)
+            public static T GetVariableValueOrThrow(string variableName, FormulaContext<T> context)
             {
-                if (context.Variables.TryGetValue(variableName, out double result))
+                if (context.Variables.TryGetValue(variableName, out T result))
                     return result;
                 else if (context.ConstantRegistry.IsConstantName(variableName))
                     return context.ConstantRegistry.GetConstantInfo(variableName).Value;
