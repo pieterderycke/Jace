@@ -42,8 +42,8 @@ namespace Jace
             operationPrecedence.Add('*', 4);
             operationPrecedence.Add('/', 4);
             operationPrecedence.Add('%', 4);
-            operationPrecedence.Add('_', 6);
-            operationPrecedence.Add('^', 5);
+            operationPrecedence.Add('_', 5);
+            operationPrecedence.Add('^', 6);
         }
 
         public Operation Build(IList<Token> tokens)
