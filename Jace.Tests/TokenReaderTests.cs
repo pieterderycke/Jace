@@ -574,5 +574,84 @@ namespace Jace.Tests
             Assert.AreEqual(7, tokens[2].StartPosition);
             Assert.AreEqual(6, tokens[2].Length);
         }
+
+        [TestMethod]
+        public void TestTokenReader32()
+        {
+            TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
+            List<Token> tokens = reader.Read("-e");
+
+            Assert.AreEqual(2, tokens.Count);
+
+            Assert.AreEqual('_', tokens[0].Value);
+            Assert.AreEqual(0, tokens[0].StartPosition);
+            Assert.AreEqual(1, tokens[0].Length);
+
+            Assert.AreEqual("e", tokens[1].Value);
+            Assert.AreEqual(1, tokens[1].StartPosition);
+            Assert.AreEqual(1, tokens[1].Length);
+        }
+
+        [TestMethod]
+        public void TestTokenReader33()
+        {
+            TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
+            List<Token> tokens = reader.Read("1-e");
+
+            Assert.AreEqual(3, tokens.Count);
+
+            Assert.AreEqual(1, tokens[0].Value);
+            Assert.AreEqual(0, tokens[0].StartPosition);
+            Assert.AreEqual(1, tokens[0].Length);
+
+            Assert.AreEqual('-', tokens[1].Value);
+            Assert.AreEqual(1, tokens[1].StartPosition);
+            Assert.AreEqual(1, tokens[1].Length);
+
+            Assert.AreEqual("e", tokens[2].Value);
+            Assert.AreEqual(2, tokens[2].StartPosition);
+            Assert.AreEqual(1, tokens[2].Length);
+        }
+
+        [TestMethod]
+        public void TestTokenReader34()
+        {
+            TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
+            List<Token> tokens = reader.Read("1+e");
+
+            Assert.AreEqual(3, tokens.Count);
+
+            Assert.AreEqual(1, tokens[0].Value);
+            Assert.AreEqual(0, tokens[0].StartPosition);
+            Assert.AreEqual(1, tokens[0].Length);
+
+            Assert.AreEqual('+', tokens[1].Value);
+            Assert.AreEqual(1, tokens[1].StartPosition);
+            Assert.AreEqual(1, tokens[1].Length);
+
+            Assert.AreEqual("e", tokens[2].Value);
+            Assert.AreEqual(2, tokens[2].StartPosition);
+            Assert.AreEqual(1, tokens[2].Length);
+        }
+
+        [TestMethod]
+        public void TestTokenReader35()
+        {
+            AssertExtensions.ThrowsException<ParseException>(() =>
+            {
+                TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
+                List<Token> tokens = reader.Read("2.11E-e3");
+            });
+        }
+
+        [TestMethod]
+        public void TestTokenReader36()
+        {
+            AssertExtensions.ThrowsException<ParseException>(() =>
+            {
+                TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
+                List<Token> tokens = reader.Read("2.11E-e");
+            });
+        }
     }
 }
