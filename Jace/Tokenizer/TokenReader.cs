@@ -64,7 +64,7 @@ namespace Jace.Tokenizer
                         {
                             isScientific = IsScientificNotation(characters[i]);
 
-                            if (characters[i + 1] == '-')
+                            if (characters.Length > i + 1 && characters[i + 1] == '-')
                             {
                                 buffer.Append(characters[i++]);
                             }
@@ -95,7 +95,10 @@ namespace Jace.Tokenizer
                             // Verify if we have a unary minus, we use the token '_' for a unary minus in the AST builder
                             tokens.Add(new Token() { TokenType = TokenType.Operation, Value = '_', StartPosition = startPosition, Length = 1 });
                         }
-                        // Else we skip
+                        else
+                        {
+                            throw new ParseException(string.Format("Invalid floating point number: {0}", buffer.ToString()));
+                        }
                     }
 
                     if (i == characters.Length)

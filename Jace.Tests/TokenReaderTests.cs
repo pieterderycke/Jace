@@ -574,5 +574,15 @@ namespace Jace.Tests
             Assert.AreEqual(7, tokens[2].StartPosition);
             Assert.AreEqual(6, tokens[2].Length);
         }
+
+        [TestMethod]
+        public void TestTokenReader37()
+        {
+            AssertExtensions.ThrowsException<ParseException>(() =>
+            {
+                TokenReader reader = new TokenReader(CultureInfo.InvariantCulture);
+                List<Token> tokens = reader.Read("3e");
+            });
+        }
     }
 }
