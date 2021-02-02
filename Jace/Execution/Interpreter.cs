@@ -66,8 +66,11 @@ namespace Jace.Execution
 
                 if (variableFound)
                     return value;
-                else
-                    throw new VariableNotDefinedException(string.Format("The variable \"{0}\" used is not defined.", variable.Name));
+                
+                if (constantRegistry.IsConstantName(variable.Name))
+                    return constantRegistry.GetConstantInfo(variable.Name).Value;
+
+                throw new VariableNotDefinedException(string.Format("The variable \"{0}\" used is not defined.", variable.Name));
             }
             else if (operation.GetType() == typeof(Multiplication))
             {
