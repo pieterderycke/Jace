@@ -39,6 +39,8 @@ namespace Jace.Benchmark
 
             BenchMarkOperation[] benchmarks = {
                 new BenchMarkOperation() { Formula = "2+3*7", Mode = BenchmarkMode.Static, BenchMarkDelegate = BenchMarkCalculationEngine },
+                new BenchMarkOperation() { Formula = "something2 - (var1 + var2 * 3)/(2+3)", Mode = BenchmarkMode.Simple, BenchMarkDelegate = BenchMarkCalculationEngine, 
+                        VariableDict = new Dictionary<string, double>(){{"var1", 4.5642}, {"var2", 845.4235}, { "something2", 25038.66 } } },
                 new BenchMarkOperation() { Formula = "logn(var1, (2+3) * 500)", Mode = BenchmarkMode.SimpleFunction , BenchMarkDelegate = BenchMarkCalculationEngineFunctionBuild },
                 new BenchMarkOperation() { Formula = "(var1 + var2 * 3)/(2+3) - something", Mode = BenchmarkMode.Simple , BenchMarkDelegate = BenchMarkCalculationEngineFunctionBuild },
             };
@@ -57,25 +59,25 @@ namespace Jace.Benchmark
                 {
                     if (caseSensitivity == CaseSensitivity.All || caseSensitivity == CaseSensitivity.CaseInSensitive)
                     {
-                        duration = benchmark.BenchMarkDelegate(interpretedEngine, benchmark.Formula);
+                        duration = benchmark.BenchMarkDelegate(interpretedEngine, benchmark.Formula, benchmark.VariableDict);
                         table.AddBenchmarkRecord("Interpreted", false, benchmark.Formula, null, NumberOfTests, duration);
                     }
 
                     if (caseSensitivity == CaseSensitivity.All || caseSensitivity == CaseSensitivity.CaseSensitive)
                     {
-                        duration = benchmark.BenchMarkDelegate(interpretedEngineCaseSensitive, benchmark.Formula);
+                        duration = benchmark.BenchMarkDelegate(interpretedEngineCaseSensitive, benchmark.Formula, benchmark.VariableDict);
                         table.AddBenchmarkRecord("Interpreted", true, benchmark.Formula, null, NumberOfTests, duration);
                     }
 
                     if (caseSensitivity == CaseSensitivity.All || caseSensitivity == CaseSensitivity.CaseInSensitive)
                     {
-                        duration = benchmark.BenchMarkDelegate(compiledEngine, benchmark.Formula);
+                        duration = benchmark.BenchMarkDelegate(compiledEngine, benchmark.Formula, benchmark.VariableDict);
                         table.AddBenchmarkRecord("Compiled", false, benchmark.Formula, null, NumberOfTests, duration);
                     }
 
                     if (caseSensitivity == CaseSensitivity.All || caseSensitivity == CaseSensitivity.CaseSensitive)
                     {
-                        duration = benchmark.BenchMarkDelegate(compiledEngineCaseSensitive, benchmark.Formula);
+                        duration = benchmark.BenchMarkDelegate(compiledEngineCaseSensitive, benchmark.Formula, benchmark.VariableDict);
                         table.AddBenchmarkRecord("Compiled", true, benchmark.Formula, null, NumberOfTests, duration);
                     }
                 }
@@ -121,13 +123,21 @@ namespace Jace.Benchmark
             return table;
         }
 
-        private static TimeSpan BenchMarkCalculationEngine(CalculationEngine engine, string functionText)
+        private static TimeSpan BenchMarkCalculationEngine(CalculationEngine engine, string functionText, Dictionary<string, double> variableDict)
         {
             DateTime start = DateTime.Now;
 
             for (int i = 0; i < NumberOfTests; i++)
             {
-                engine.Calculate(functionText);
+                if (variableDict == null)
+                {
+                    engine.Calculate(functionText);
+                }
+                else
+                {
+                    engine.Calculate(functionText, new Dictionary<string, double>(variableDict));
+                }
+                
             }
 
             DateTime end = DateTime.Now;
@@ -135,7 +145,7 @@ namespace Jace.Benchmark
             return end - start;
         }
 
-        private static TimeSpan BenchMarkCalculationEngineFunctionBuild(CalculationEngine engine, string functionText)
+        private static TimeSpan BenchMarkCalculationEngineFunctionBuild(CalculationEngine engine, string functionText, Dictionary<string, double> variableDict)
         {
             DateTime start = DateTime.Now;
 

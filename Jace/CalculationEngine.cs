@@ -108,13 +108,13 @@ namespace Jace
         /// <param name="options">The <see cref="JaceOptions"/> to configure the behaviour of the engine.</param>
         public CalculationEngine(JaceOptions options)
         {
+            this.caseSensitive = options.CaseSensitive;
             this.executionFormulaCache = new MemoryCache<string, Func<IDictionary<string, double>, double>>(options.CacheMaximumSize, options.CacheReductionSize);
-            this.FunctionRegistry = new FunctionRegistry(false);
-            this.ConstantRegistry = new ConstantRegistry(false);
+            this.FunctionRegistry = new FunctionRegistry(caseSensitive);
+            this.ConstantRegistry = new ConstantRegistry(caseSensitive);
             this.cultureInfo = options.CultureInfo;
             this.cacheEnabled = options.CacheEnabled;
             this.optimizerEnabled = options.OptimizerEnabled;
-            this.caseSensitive = options.CaseSensitive;
 
             this.random = new Random();
 
