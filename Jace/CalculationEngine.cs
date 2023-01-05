@@ -414,6 +414,7 @@ namespace Jace
             FunctionRegistry.RegisterFunction("min", (DynamicFunc<double, double>)((a) => a.Min()), true, false);
             FunctionRegistry.RegisterFunction("avg", (DynamicFunc<double, double>)((a) => a.Average()), true, false);
             FunctionRegistry.RegisterFunction("median", (DynamicFunc<double, double>)((a) => MathExtended.Median(a)), true, false);
+            FunctionRegistry.RegisterFunction("sum", (DynamicFunc<double, double>)((a) => a.Sum()), true, false);
 
             // Non Idempotent Functions
             FunctionRegistry.RegisterFunction("random", (Func<double>)random.NextDouble, false, false);
